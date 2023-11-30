@@ -22,7 +22,7 @@ export default function PlayerComponent () {
 
   let videoSrc = ''
   if (currentMusic.song !== undefined && currentMusic.playlist !== undefined) {
-    videoSrc = `music/${+currentMusic.playlist.id}/${currentMusic.song.title}.${currentMusic.song?.format}`
+    videoSrc = `file://D:/Musica/Anime/${currentMusic.song.title}.mp4`
     // console.log(videoSrc)
   }
 

@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain } from 'electron'
 import path from 'node:path'
 
 // The built directory structure
@@ -21,7 +21,10 @@ function createWindow () {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+      webSecurity: false
     },
     width: 1500,
     height: 900,
@@ -35,11 +38,11 @@ function createWindow () {
     win?.webContents.send('main-process-message', (new Date()).toLocaleString())
   })
 
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
+  if (VITE_DEV_SERVER_URL != null) {
+    void win.loadURL(VITE_DEV_SERVER_URL)
   } else {
     // win.loadFile('dist/index.html')
-    win.loadFile(path.join(process.env.DIST, 'index.html'))
+    void win.loadFile(path.join(process.env.DIST, 'index.html'))
   }
 }
 
@@ -61,4 +64,12 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+void app.whenReady().then(createWindow)
+
+ipcMain.handle('open-directory-dialog', async () => {
+  const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })
+  if (result.canceled) {
+    return
+  }
+  return result.filePaths[0] // Ruta de la carpeta seleccionada
+})

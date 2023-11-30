@@ -28,6 +28,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     randomPlaylist
   } = usePlayerStore((state) => state)
   const playSong = (song: Song) => {
+    console.log('playSong', song)
     let playListSongs = songs.filter((song) => song.albumId === +id)
     setCopyCurrentMusic({
       playlist,
