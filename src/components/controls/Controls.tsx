@@ -1,0 +1,171 @@
+'use client'
+import CurrentSong from './CurrentSong'
+import { PlayIcon } from '@/icons/controls/Play'
+import { PauseIcon } from '@/icons/controls/Pause'
+import { Volume } from './Volume'
+import { SongControl } from './SongControl'
+import { NextIcon } from '@/icons/controls/Next'
+import { PreviousIcon } from '@/icons/controls/Previous'
+import { IconControls } from './IconControls'
+import {
+  RepeatOffIcon,
+  RepeatOnIcon,
+  RepeatOneIcon
+} from '@/icons/controls/Repeat'
+import { RandomOffIcon, RandomOnIcon } from '@/icons/controls/Random'
+import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { shuffleSongsWithCurrentSong } from '@/utils/random'
+
+export default function Controls () {
+  const {
+    currentMusic,
+    setCurrentMusic,
+    repeatPlaylist,
+    setRepeatPlaylist,
+    setIsPlaying,
+    isPlaying,
+    setRandomPlaylist,
+    randomPlaylist,
+    copyCurrentMusic
+  } = usePlayerStore<StoreType>((state) => state)
+
+  const handleClick = () => {
+    if (currentMusic.song === undefined) return
+    setIsPlaying(!isPlaying)
+  }
+
+  const handleButtonClick = (): void => {
+    if (currentMusic.song === undefined) return
+
+    if (!randomPlaylist) {
+      const shufflededSongs = shuffleSongsWithCurrentSong(currentMusic.songs, currentMusic.song.id)
+      console.log(shufflededSongs)
+      setCurrentMusic({
+        ...currentMusic,
+        songs: shufflededSongs
+      })
+    } else {
+      setCurrentMusic({
+        ...currentMusic,
+        songs: copyCurrentMusic.songs
+      })
+    }
+    setRandomPlaylist(!randomPlaylist)
+  }
+
+  const handleNextSong = () => {
+    const actualSong = currentMusic.songs.findIndex(
+      (song) => song.id === currentMusic.song?.id
+    )
+    if (actualSong === -1) {
+      console.log('No song selected')
+      return
+    }
+    if (repeatPlaylist === 'one') {
+      setRepeatPlaylist('on')
+    }
+    if (
+      actualSong === currentMusic.songs.length - 1 &&
+      repeatPlaylist === 'on'
+    ) {
+      setCurrentMusic({
+        ...currentMusic,
+        song: currentMusic.songs[0]
+      })
+      return
+    }
+    if (
+      actualSong === currentMusic.songs.length - 1 &&
+      repeatPlaylist === 'off'
+    ) {
+      return
+    }
+
+    setCurrentMusic({
+      ...currentMusic,
+      song: currentMusic.songs[actualSong + 1]
+    })
+  }
+
+  const handlePreviousSong = () => {
+    const actualSong = currentMusic.songs.findIndex(
+      (song) => song.id === currentMusic.song?.id
+    )
+    if (repeatPlaylist === 'one') {
+      setRepeatPlaylist('on')
+    }
+    if (actualSong === -1) {
+      console.log('No song selected')
+      return
+    }
+    if (actualSong === 0) return
+
+    setCurrentMusic({
+      ...currentMusic,
+      song: currentMusic.songs[actualSong - 1]
+    })
+  }
+
+  const handleRepeat = () => {
+    if (repeatPlaylist === 'off') {
+      setRepeatPlaylist('on')
+    }
+    if (repeatPlaylist === 'on') {
+      setRepeatPlaylist('one')
+    }
+    if (repeatPlaylist === 'one') {
+      setRepeatPlaylist('off')
+    }
+  }
+
+  return (
+    <div className='flex flex-row justify-between w-full px-1 z-50'>
+      <div className='w-[300px]'>
+        <CurrentSong />
+      </div>
+
+      <div className='grid place-content-center gap-4 flex-1'>
+        <div className='flex justify-center flex-col items-center'>
+          <div className='flex flex-row'>
+            <button className='mr-6' onClick={handleButtonClick}>
+              <IconControls
+                Icon={randomPlaylist ? RandomOffIcon : RandomOnIcon}
+                className={`${
+                  randomPlaylist ? 'text-green-400 opacity-80' : ''
+                }`}
+              />
+            </button>
+            <button className='mr-6' onClick={handlePreviousSong}>
+              <IconControls Icon={PreviousIcon} />
+            </button>
+            <button className='bg-white rounded-full p-2' onClick={handleClick}>
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            </button>
+            <button className='ml-6' onClick={handleNextSong}>
+              <IconControls Icon={NextIcon} />
+            </button>
+            <button className='ml-6' onClick={handleRepeat}>
+              <IconControls
+                Icon={
+                  repeatPlaylist === 'off'
+                    ? RepeatOffIcon
+                    : repeatPlaylist === 'on'
+                      ? RepeatOnIcon
+                      : RepeatOneIcon
+                }
+                className={`${
+                  repeatPlaylist !== 'off' ? 'text-green-400 opacity-70' : ''
+                }`}
+              />
+            </button>
+          </div>
+          <SongControl />
+        </div>
+      </div>
+
+      <div className='grid place-content-center mr-4'>
+        <Volume />
+      </div>
+    </div>
+  )
+}

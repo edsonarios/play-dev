@@ -1,7 +1,116 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-#root {
-  color: #d3d1d1 !important;
-  background-color: #242424;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+#app {
+  display: grid;
+  grid-template-areas:
+    "aside main main"
+    "player player player";
+  grid-template-columns: 350px 1fr;
+  grid-template-rows: 1fr auto;
+}
+
+html {
+  font-family: "CircularStd", system-ui, sans-serif;
+  background: #010101;
+  color: white;
+}
+
+@font-face {
+  font-family: "CircularStd";
+  src: url("/fonts/CircularStd-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CircularStd";
+  src: url("/fonts/CircularStd-Book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CircularStd";
+  src: url("/fonts/CircularStd-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CircularStd";
+  src: url("/fonts/CircularStd-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "CircularStd";
+  src: url("/fonts/CircularStd-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Reproductor player */
+.plyr__video-wrapper {
+  min-width: 1300px;
+  max-width: 1300px;
+  margin: auto;
+  aspect-ratio: 16 / 9;
+}
+/* Reproductor full screen */
+:fullscreen .plyr__video-wrapper,
+:-webkit-full-screen .plyr__video-wrapper{
+  max-width: none;
+}
+
+/* Base style for the scroll bar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Style for the scroll bar "track" */
+::-webkit-scrollbar-track {
+  background: #18181b;
+}
+
+/* Style for the "thumb" of the scroll bar */
+::-webkit-scrollbar-thumb {
+  background: #585858;
+  
+}
+
+/* Style for the scroll bar thumb hover state */
+::-webkit-scrollbar-thumb:hover {
+  background: #898989;
 }

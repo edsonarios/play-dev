@@ -33,6 +33,15 @@
       "coomon/*": [
         "./src/common/*"
       ],
+      "icons/*": [
+        "./src/icons/*"
+      ],
+      "lib/*": [
+        "./src/lib/*"
+      ],
+      "utils/*": [
+        "./src/utils/*"
+      ],
     },
   },
   "include": [
