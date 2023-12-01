@@ -91,10 +91,17 @@ app.on('will-quit', () => {
 })
 
 ipcMain.handle('open-directory-dialog', async () => {
-  const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })
-  if (result.canceled || (result.filePaths.length === 0)) return []
+  const result = await dialog.showOpenDialog({ properties: ['openFile'] })
+  if (result.canceled || result.filePaths.length === 0) return []
 
-  const directoryPath = result.filePaths[0]
+  let directoryPath
+
+  if (fs.lstatSync(result.filePaths[0]).isDirectory()) {
+    directoryPath = result.filePaths[0]
+  } else {
+    directoryPath = path.dirname(result.filePaths[0])
+  }
+
   try {
     const files = fs.readdirSync(directoryPath)
     const parseDirectoryPath = directoryPath.replaceAll('\\', '/')
@@ -103,7 +110,7 @@ ipcMain.handle('open-directory-dialog', async () => {
       files
     }
   } catch (err) {
-    console.error('Error to read Archive:', err)
+    console.error('Error al leer el directorio:', err)
     return {}
   }
 })
