@@ -43,6 +43,9 @@ export interface StoreType {
   randomPlaylist: boolean
   setRandomPlaylist: (randomPlaylist: boolean) => void
 
+  speed: number
+  setSpeed: (speed: number) => void
+
   copyCurrentMusic: CurrentMusicType
   setCopyCurrentMusic: (copyCurrentMusic: CurrentMusicType) => void
 }
@@ -92,6 +95,9 @@ export const usePlayerStore = create<StoreType>((set) => ({
 
   randomPlaylist: false,
   setRandomPlaylist: (randomPlaylist) => { set({ randomPlaylist }) },
+
+  speed: 1,
+  setSpeed: (speed) => { set({ speed }) },
 
   copyCurrentMusic: {
     playlist: undefined,

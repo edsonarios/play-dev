@@ -17,7 +17,9 @@ export default function PlayerComponent () {
     songCurrentTime,
     setLocalSongCurrentTime,
     setDurationSong,
-    playerOptions
+    playerOptions,
+    speed,
+    setSpeed
   } = usePlayerStore<StoreType>((state) => state)
 
   let videoSrc = ''
@@ -195,6 +197,48 @@ export default function PlayerComponent () {
       setDurationSong(playerRef.current.plyr.duration)
     }
   }, [playerRef.current?.plyr?.duration])
+
+  // Change playback speed
+  const speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4]
+  const changePlaybackSpeed = (increase: boolean) => {
+    if (playerRef.current?.plyr !== undefined) {
+      const currentSpeed = playerRef.current.plyr.speed
+      let newSpeedIndex
+
+      if (increase) {
+        newSpeedIndex = speeds.findIndex(speed => speed > currentSpeed)
+        if (newSpeedIndex === -1) newSpeedIndex = speeds.length - 1
+      } else {
+        newSpeedIndex = speeds.slice().reverse().findIndex(speed => speed < currentSpeed)
+        newSpeedIndex = newSpeedIndex !== -1 ? speeds.length - 1 - newSpeedIndex : 0
+      }
+      const newSpeed = speeds[newSpeedIndex]
+      setSpeed(newSpeed)
+      playerRef.current.plyr.speed = newSpeed
+    }
+  }
+
+  // Event change playback speed
+  useEffect(() => {
+    const handleKeyPress = (event: any) => {
+      if (event.key === '+') {
+        changePlaybackSpeed(true)
+      } else if (event.key === '-') {
+        changePlaybackSpeed(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
+
+  // Set speed from right control
+  useEffect(() => {
+    if (playerRef.current !== null) {
+      playerRef.current.plyr.speed = speed
+    }
+  }, [speed])
 
   // Event full screen
   useEffect(() => {

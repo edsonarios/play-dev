@@ -3,7 +3,7 @@ import { useEffect, useCallback } from 'react'
 import CurrentSong from './CurrentSong'
 import { PlayIcon } from '@/icons/controls/Play'
 import { PauseIcon } from '@/icons/controls/Pause'
-import { Volume } from './Volume'
+import { ControlsRight } from './ControlsRight'
 import { SongControl } from './SongControl'
 import { NextIcon } from '@/icons/controls/Next'
 import { PreviousIcon } from '@/icons/controls/Previous'
@@ -130,7 +130,7 @@ export default function Controls () {
     }
   }
 
-  const handleMediaAction = useCallback((event, action) => {
+  const handleMediaAction = useCallback((event: any, action: string) => {
     switch (action) {
       case 'play-pause':
         PlayPause()
@@ -200,7 +200,7 @@ export default function Controls () {
       </div>
 
       <div className='grid place-content-center mr-4'>
-        <Volume />
+        <ControlsRight />
       </div>
     </div>
   )
