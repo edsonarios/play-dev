@@ -24,12 +24,7 @@ export default function PlayerComponent () {
 
   let videoSrc = ''
   if (currentMusic.song !== undefined && currentMusic.playlist !== undefined) {
-    // videoSrc = `file://${currentMusic.playlist.directoryPath}/${currentMusic.song.title}${(currentMusic.song.format !== '') || '.mp4'}`
-    if (currentMusic.song.format !== '') {
-      videoSrc = `file://${currentMusic.playlist.directoryPath}/${currentMusic.song.title}.${currentMusic.song.format}`
-    } else {
-      videoSrc = `file://${currentMusic.playlist.directoryPath}/${currentMusic.song.title}`
-    }
+    videoSrc = `file://${currentMusic.song.directoryPath}/${currentMusic.song.title}`
   }
 
   const plyrComponent = useMemo(

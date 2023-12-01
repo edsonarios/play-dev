@@ -21,7 +21,6 @@ export default function SideMenuItem ({ Icon, text, href }: SideMenuType) {
         albumId: playlists.length + 1,
         title: titleFolder,
         color: getRandomColor(),
-        directoryPath: folderPath.parseDirectoryPath,
         cover: randomImage,
         artists: ['artists']
       })
@@ -32,6 +31,7 @@ export default function SideMenuItem ({ Icon, text, href }: SideMenuType) {
           id: index + 1,
           albumId: playlists.length,
           title: file,
+          directoryPath: folderPath.parseDirectoryPath,
           image: randomImage,
           artists: [titleFolder],
           album: titleFolder,

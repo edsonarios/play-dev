@@ -53,6 +53,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   }
 
   const delPlaylist = () => {
+    if (playlist.title === 'All Songs') return
     const newSongs = songs.filter((song) => song.albumId !== +playlist.id)
     setSongs(newSongs)
     const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
@@ -61,14 +62,17 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
 
   return (
     <div>
+      {/* Delte Playlist button */}
       <button className='absolute z-10 bg-slate-900 w-5 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity' onClick={delPlaylist}>
         X
       </button>
+      {/* Playlist item */}
       <a
         href='#'
         className='playlist-item flex relative group p-2 overflow-hidden items-center gap-5 rounded-md hover:bg-zinc-800'
         onClick={getPlaylist}
       >
+        {/* Image Playlist */}
         <picture className='h-12 w-12 flex-none'>
           <img
             src={cover}
@@ -77,6 +81,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
           />
         </picture>
 
+        {/* Title and Artist */}
         <div className='flex flex-auto flex-col truncate'>
           <h4
             className={`${
@@ -90,10 +95,14 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
 
           <span className='text-xs text-gray-400'>{artistsString}</span>
         </div>
+
+        {/* Play button */}
         <div className='absolute right-4 bottom-4 translate-y-4 transition-all duration-500 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10'>
           <CardPlayButton playlist={playlist} />
         </div>
       </a>
+
+      {/* Playlist songs */}
       {currentPlaylist.length > 0 && (
         <div className='bg-zinc-800 rounded-md'>
           <ul className='flex flex-col '>
@@ -112,6 +121,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                       : 'text-white'
                   } text-sm ml-4 truncate flex flex-row mr-4`}
                 >
+                  {/* id or equaliser gif */}
                   <div className='mr-3'>
                     {currentMusic.song?.id === song.id &&
                     currentMusic.song?.albumId === song.albumId
@@ -126,8 +136,12 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                           song.id
                         )}
                   </div>
+
+                  {/* Song title */}
                   <div className='truncate'>{song.title}</div>
                 </a>
+
+                  {/* Song duration */}
                 <div className='text-xs text-zinc-500'>{song.duration}</div>
               </li>
             ))}
