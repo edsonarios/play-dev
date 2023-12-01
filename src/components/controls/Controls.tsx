@@ -155,12 +155,12 @@ export default function Controls () {
   }, [handleMediaAction])
 
   return (
-    <div className='flex flex-row justify-between w-full px-1 z-50'>
-      <div className='w-[300px]'>
+    <div className='flex flex-row justify-between w-full pr-1 z-10'>
+      <div className='w-[600px]'>
         <CurrentSong />
       </div>
 
-      <div className='grid place-content-center gap-4 flex-1'>
+      <div className='grid place-content-center gap-4 flex-1 -ml-48'>
         <div className='flex justify-center flex-col items-center'>
           <div className='flex flex-row'>
             <button className='mr-6' onClick={handleButtonClick}>

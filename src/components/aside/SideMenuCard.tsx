@@ -16,7 +16,10 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setIsPlaying,
     setCopyCurrentMusic,
     randomPlaylist,
-    songs
+    songs,
+    setSongs,
+    playlists,
+    setPlaylists
   } = usePlayerStore<StoreType>((state) => state)
   const [currentPlaylist, setCurrentPlaylist] = useState<Song[]>([])
 
@@ -30,7 +33,6 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   }
 
   const playSong = (song: Song) => {
-    console.log('playSong', song)
     let playListSongs = songs.filter((song) => song.albumId === +id)
     setCopyCurrentMusic({
       playlist,
@@ -50,8 +52,18 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setIsPlaying(true)
   }
 
+  const delPlaylist = () => {
+    const newSongs = songs.filter((song) => song.albumId !== +playlist.id)
+    setSongs(newSongs)
+    const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
+    setPlaylists(newPlaylists)
+  }
+
   return (
     <div>
+      <button className='absolute z-10 bg-slate-900 w-5 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity' onClick={delPlaylist}>
+        X
+      </button>
       <a
         href='#'
         className='playlist-item flex relative group p-2 overflow-hidden items-center gap-5 rounded-md hover:bg-zinc-800'

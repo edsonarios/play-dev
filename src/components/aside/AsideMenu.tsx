@@ -8,10 +8,10 @@ import { useEffect } from 'react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 
 export default function AsideMenu () {
-  const { playlist, setPlaylist, setSongs } = usePlayerStore<StoreType>((state) => state)
+  const { playlists, setPlaylists, setSongs } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
-    setPlaylist(libPlaylist)
+    setPlaylists(libPlaylist)
     setSongs(songs)
   }, [])
 
@@ -27,7 +27,7 @@ export default function AsideMenu () {
       <div className='bg-zinc-900 rounded-lg p-2 flex-1'>
         <ul>
           <SideMenuItem Icon={LibraryIcon} text='Your Library' href='#' />
-          {playlist.length > 0 && playlist.map((playlist) => (
+          {playlists.length > 0 && playlists.map((playlist) => (
             <div key={playlist.id}>
               <SideMenuCard playlist={playlist} />
             </div>

@@ -13,8 +13,8 @@ export interface StoreType {
   playerOptions: PlyrOptions
   setPlayerOptions: (playerOptions: PlyrOptions) => void
 
-  playlist: Playlist[]
-  setPlaylist: (playlist: Playlist[]) => void
+  playlists: Playlist[]
+  setPlaylists: (playlists: Playlist[]) => void
 
   songs: Song[]
   setSongs: (songs: Song[]) => void
@@ -62,8 +62,8 @@ export const usePlayerStore = create<StoreType>((set) => ({
   },
   setPlayerOptions: (playerOptions) => { set({ playerOptions }) },
 
-  playlist: [],
-  setPlaylist: (playlist) => { set({ playlist }) },
+  playlists: [],
+  setPlaylists: (playlists) => { set({ playlists }) },
 
   songs: [],
   setSongs: (songs) => { set({ songs }) },
