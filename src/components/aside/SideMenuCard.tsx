@@ -1,6 +1,6 @@
 'use client'
-import { type Playlist, type Song, songs } from '@/lib/data'
-import { usePlayerStore } from '@/store/playerStore'
+import { type Playlist, type Song } from '@/lib/data'
+import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { useState } from 'react'
 import { CardPlayButton } from '../CardPlay'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
@@ -10,23 +10,25 @@ interface CardPlaylist {
 }
 
 export default function SideMenuCard ({ playlist }: CardPlaylist) {
+  const {
+    setCurrentMusic,
+    currentMusic,
+    setIsPlaying,
+    setCopyCurrentMusic,
+    randomPlaylist,
+    songs
+  } = usePlayerStore<StoreType>((state) => state)
+  const [currentPlaylist, setCurrentPlaylist] = useState<Song[]>([])
+
   const { id, title, artists, cover } = playlist
   const artistsString = artists.join(', ')
 
-  const [currentPlaylist, setCurrentPlaylist] = useState<Song[]>([])
   const getPlaylist = () => {
     if (currentPlaylist.length > 0) { setCurrentPlaylist([]); return }
     const playListSongs = songs.filter((song) => song.albumId === +id)
     setCurrentPlaylist(playListSongs)
   }
 
-  const {
-    setCurrentMusic,
-    currentMusic,
-    setIsPlaying,
-    setCopyCurrentMusic,
-    randomPlaylist
-  } = usePlayerStore((state) => state)
   const playSong = (song: Song) => {
     console.log('playSong', song)
     let playListSongs = songs.filter((song) => song.albumId === +id)

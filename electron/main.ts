@@ -1,6 +1,6 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron'
+import fs from 'node:fs'
 import path from 'node:path'
-
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -68,8 +68,18 @@ void app.whenReady().then(createWindow)
 
 ipcMain.handle('open-directory-dialog', async () => {
   const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })
-  if (result.canceled) {
-    return
+  if (result.canceled || (result.filePaths.length === 0)) return []
+
+  const directoryPath = result.filePaths[0]
+  try {
+    const files = fs.readdirSync(directoryPath)
+    const parseDirectoryPath = directoryPath.replaceAll('\\', '/')
+    return {
+      parseDirectoryPath,
+      files
+    }
+  } catch (err) {
+    console.error('Error to read Archive:', err)
+    return {}
   }
-  return result.filePaths[0] // Ruta de la carpeta seleccionada
 })

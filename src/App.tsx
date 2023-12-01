@@ -5,6 +5,20 @@ import PlayerComponent from './components/body/player'
 import Controls from './components/controls/Controls'
 import { colors } from './lib/colors'
 import { type StoreType, usePlayerStore } from './store/playerStore'
+interface OpenDirectoryDialog {
+  parseDirectoryPath: string
+  files: string[]
+}
+
+interface ElectronAPI {
+  openDirectoryDialog: () => Promise<OpenDirectoryDialog>
+}
+
+declare global {
+  interface Window {
+    electronAPI: ElectronAPI
+  }
+}
 
 export default function App () {
   const { currentMusic } = usePlayerStore<StoreType>(state => state)

@@ -13,6 +13,12 @@ export interface StoreType {
   playerOptions: PlyrOptions
   setPlayerOptions: (playerOptions: PlyrOptions) => void
 
+  playlist: Playlist[]
+  setPlaylist: (playlist: Playlist[]) => void
+
+  songs: Song[]
+  setSongs: (songs: Song[]) => void
+
   isPlaying: boolean
   setIsPlaying: (isPlaying: boolean) => void
 
@@ -52,6 +58,12 @@ export const usePlayerStore = create<StoreType>((set) => ({
     controls: ['play-large', 'pip', 'fullscreen']
   },
   setPlayerOptions: (playerOptions) => { set({ playerOptions }) },
+
+  playlist: [],
+  setPlaylist: (playlist) => { set({ playlist }) },
+
+  songs: [],
+  setSongs: (songs) => { set({ songs }) },
 
   isPlaying: false,
   setIsPlaying: (isPlaying) => { set({ isPlaying }) },

@@ -1,4 +1,5 @@
-import { type Song } from '../lib/data'
+import { colors } from '@/lib/colors'
+import { covers, type Song } from '../lib/data'
 
 // Function to shuffle the array but the current song is always the first
 export const shuffleSongsWithCurrentSong = (songs: Song[], currentSongId: number) => {
@@ -29,4 +30,16 @@ export const shuffleSongs = (songs: Song[]) => {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
   }
   return shuffled
+}
+
+export const getRandomColor = () => {
+  const colorKeys = Object.keys(colors)
+  const randomIndex = Math.floor(Math.random() * colorKeys.length)
+  const randomColorKey = colorKeys[randomIndex]
+  return colors[randomColorKey]
+}
+
+export const getRandomImage = () => {
+  const randomIndex = Math.floor(Math.random() * covers.length)
+  return covers[randomIndex]
 }
