@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useCallback } from 'react'
 import CurrentSong from './CurrentSong'
 import { PlayIcon } from '@/icons/controls/Play'
 import { PauseIcon } from '@/icons/controls/Pause'
@@ -29,11 +30,6 @@ export default function Controls () {
     copyCurrentMusic
   } = usePlayerStore<StoreType>((state) => state)
 
-  const handleClick = () => {
-    if (currentMusic.song === undefined) return
-    setIsPlaying(!isPlaying)
-  }
-
   const handleButtonClick = (): void => {
     if (currentMusic.song === undefined) return
 
@@ -53,7 +49,12 @@ export default function Controls () {
     setRandomPlaylist(!randomPlaylist)
   }
 
-  const handleNextSong = () => {
+  function PlayPause () {
+    if (currentMusic.song === undefined) return
+    setIsPlaying(!isPlaying)
+  }
+
+  function NextSong () {
     const actualSong = currentMusic.songs.findIndex(
       (song) => song.id === currentMusic.song?.id
     )
@@ -86,8 +87,7 @@ export default function Controls () {
       song: currentMusic.songs[actualSong + 1]
     })
   }
-
-  const handlePreviousSong = () => {
+  function PreviousSong () {
     const actualSong = currentMusic.songs.findIndex(
       (song) => song.id === currentMusic.song?.id
     )
@@ -106,6 +106,18 @@ export default function Controls () {
     })
   }
 
+  const handlePlayPause = () => {
+    PlayPause()
+  }
+
+  const handleNextSong = () => {
+    NextSong()
+  }
+
+  const handlePreviousSong = () => {
+    PreviousSong()
+  }
+
   const handleRepeat = () => {
     if (repeatPlaylist === 'off') {
       setRepeatPlaylist('on')
@@ -117,6 +129,30 @@ export default function Controls () {
       setRepeatPlaylist('off')
     }
   }
+
+  const handleMediaAction = useCallback((event, action) => {
+    switch (action) {
+      case 'play-pause':
+        PlayPause()
+        break
+      case 'next-track':
+        NextSong()
+        break
+      case 'previous-track':
+        PreviousSong()
+        break
+      default:
+        break
+    }
+  }, [currentMusic.song, repeatPlaylist, randomPlaylist, isPlaying])
+
+  useEffect(() => {
+    window.electronAPI.receive('media-action', handleMediaAction)
+
+    return () => {
+      window.electronAPI.removeListener('media-action', handleMediaAction)
+    }
+  }, [handleMediaAction])
 
   return (
     <div className='flex flex-row justify-between w-full px-1 z-50'>
@@ -138,7 +174,7 @@ export default function Controls () {
             <button className='mr-6' onClick={handlePreviousSong}>
               <IconControls Icon={PreviousIcon} />
             </button>
-            <button className='bg-white rounded-full p-2' onClick={handleClick}>
+            <button className='bg-white rounded-full p-2' onClick={handlePlayPause}>
               {isPlaying ? <PauseIcon /> : <PlayIcon />}
             </button>
             <button className='ml-6' onClick={handleNextSong}>

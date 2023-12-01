@@ -2,7 +2,10 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('electronAPI', {
-  openDirectoryDialog: async () => await ipcRenderer.invoke('open-directory-dialog')
+  openDirectoryDialog: async () => await ipcRenderer.invoke('open-directory-dialog'),
+  receive: (channel: any, func: any) => ipcRenderer.on(channel, func),
+  // removeListener: (channel: any, func: any) => ipcRenderer.removeListener(channel, func)
+  removeListener: (channel: any) => ipcRenderer.removeAllListeners(channel)
 })
 
 // --------- Preload scripts loading ---------

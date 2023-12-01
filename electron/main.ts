@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain } from 'electron'
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 // The built directory structure
@@ -65,6 +65,30 @@ app.on('activate', () => {
 })
 
 void app.whenReady().then(createWindow)
+
+void app.whenReady().then(() => {
+  // Made global shourcouts
+  // globalShortcut.register('CommandOrControl+X', () => {
+  //   console.log('GLobal command activate')
+  // })
+
+  globalShortcut.register('MediaPlayPause', () => {
+    win?.webContents.send('media-action', 'play-pause')
+  })
+
+  globalShortcut.register('MediaNextTrack', () => {
+    win?.webContents.send('media-action', 'next-track')
+  })
+
+  globalShortcut.register('MediaPreviousTrack', () => {
+    win?.webContents.send('media-action', 'previous-track')
+  })
+})
+
+app.on('will-quit', () => {
+  // Unregister all shourcout of the app
+  globalShortcut.unregisterAll()
+})
 
 ipcMain.handle('open-directory-dialog', async () => {
   const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })

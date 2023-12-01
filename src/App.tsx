@@ -12,6 +12,8 @@ interface OpenDirectoryDialog {
 
 interface ElectronAPI {
   openDirectoryDialog: () => Promise<OpenDirectoryDialog>
+  receive: (channel: string, func: (event: any, ...args: any[]) => void) => void
+  removeListener: (channel: string, func: (...args: any[]) => void) => void
 }
 
 declare global {
