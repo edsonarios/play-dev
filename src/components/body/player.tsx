@@ -22,7 +22,9 @@ export default function PlayerComponent () {
     setSpeed,
     songs,
     setSongs,
-    playlists
+    playlists,
+    pictureInPicture,
+    setPictureInPicture
   } = usePlayerStore<StoreType>((state) => state)
 
   let videoSrc = ''
@@ -237,6 +239,49 @@ export default function PlayerComponent () {
       playerRef.current.plyr.speed = speed
     }
   }, [speed])
+
+  // Picture in picture
+  useEffect(() => {
+    if (playerRef.current !== null) {
+      if (pictureInPicture) {
+        playerRef.current.plyr.pip = true
+      } else {
+        playerRef.current.plyr.pip = false
+      }
+    }
+  }, [pictureInPicture])
+
+  // Event Enter Picture in picture
+  useEffect(() => {
+    const handleVideoEnd = (event: any) => {
+      if (event.target !== undefined && playerRef.current !== null) {
+        setPictureInPicture(playerRef.current.plyr.pip)
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('enterpictureinpicture', handleVideoEnd)
+
+      return () => {
+        window.removeEventListener('enterpictureinpicture', handleVideoEnd)
+      }
+    }
+  }, [])
+
+  // Event Leave Picture in picture
+  useEffect(() => {
+    const handleVideoEnd = (event: any) => {
+      if (event.target !== undefined && playerRef.current !== null) {
+        setPictureInPicture(playerRef.current.plyr.pip)
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('leavepictureinpicture', handleVideoEnd)
+
+      return () => {
+        window.removeEventListener('leavepictureinpicture', handleVideoEnd)
+      }
+    }
+  }, [])
 
   // Event full screen
   useEffect(() => {

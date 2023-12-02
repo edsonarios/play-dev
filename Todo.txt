@@ -1,4 +1,4 @@
-* Button picture in picture
+* Button picture in picture ✅
 * When Picture in picture is enable, show a detail list of the playlists, with advanced options:
   - Show Playlist
   - Play Playlist
@@ -34,3 +34,4 @@
 * Integrate with Spotify and Youtube
 
 * Bug open folder, is mandatory choise any song, to select the actual folder, should be select the actual folder or just select a folder 
+* Made responsive plyr

@@ -8,9 +8,17 @@ import {
 import { Slider } from './Slider'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { SpeedIcon } from '@/icons/controls/Speed'
+import { PictureInPictureOffIcon } from '@/icons/controls/PictureInPicture'
 
 export function ControlsRight () {
-  const { setVolume, volume, speed, setSpeed } = usePlayerStore<StoreType>((state) => state)
+  const {
+    setVolume,
+    volume,
+    speed,
+    setSpeed,
+    pictureInPicture,
+    setPictureInPicture
+  } = usePlayerStore<StoreType>((state) => state)
   const previousVolumeRef = useRef(volume)
 
   const isVolumeSilenced = volume < 0.01
@@ -49,6 +57,18 @@ export function ControlsRight () {
     setShowSpeedOptions(false)
   }
 
+  const handlePictureInPicture = () => {
+    setPictureInPicture(!pictureInPicture)
+  }
+
+  const showIconPictureInPicture = () => {
+    if (pictureInPicture) {
+      return <PictureInPictureOffIcon />
+    } else {
+      return <PictureInPictureOffIcon />
+    }
+  }
+
   return (
     <div className="flex justify-center gap-x-2 text-white">
       <div className="relative inline-block">
@@ -63,9 +83,7 @@ export function ControlsRight () {
         </button>
 
         {showSpeedOptions && (
-          <div
-            className="absolute bottom-full mb-1 bg-white border border-gray-300 rounded shadow-lg transform -translate-x-1/2 left-1/2 text-slate-900 opacity-70"
-          >
+          <div className="absolute bottom-full mb-1 bg-white border border-gray-300 rounded shadow-lg transform -translate-x-1/2 left-1/2 text-slate-900 opacity-70">
             {speedOptions.map((speed) => (
               <div
                 key={speed}
@@ -100,6 +118,15 @@ export function ControlsRight () {
           setVolume(volumeValue)
         }}
       />
+
+      <button
+        className={`ml-2 opacity-60 hover:opacity-100 transition ${
+          pictureInPicture ? 'text-green-400' : ''
+        }`}
+        onClick={handlePictureInPicture}
+      >
+        {showIconPictureInPicture()}
+      </button>
     </div>
   )
 }

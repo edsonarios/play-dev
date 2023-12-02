@@ -46,6 +46,9 @@ export interface StoreType {
   speed: number
   setSpeed: (speed: number) => void
 
+  pictureInPicture: boolean
+  setPictureInPicture: (pictureInPicture: boolean) => void
+
   copyCurrentMusic: CurrentMusicType
   setCopyCurrentMusic: (copyCurrentMusic: CurrentMusicType) => void
 }
@@ -98,6 +101,9 @@ export const usePlayerStore = create<StoreType>((set) => ({
 
   speed: 1,
   setSpeed: (speed) => { set({ speed }) },
+
+  pictureInPicture: false,
+  setPictureInPicture: (pictureInPicture) => { set({ pictureInPicture }) },
 
   copyCurrentMusic: {
     playlist: undefined,
