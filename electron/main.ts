@@ -118,7 +118,7 @@ ipcMain.handle('open-directory-dialog', async () => {
           duration: formatTime(metadata.format.duration)
         }
       } catch (error) {
-        console.error(`Error al leer los metadatos del archivo: ${file}`, error)
+        console.error(`Error to read the metadata to file: ${file}`, error)
         return null
       }
     }))
@@ -127,7 +127,7 @@ ipcMain.handle('open-directory-dialog', async () => {
       files: songsWithMetadata
     }
   } catch (err) {
-    console.error('Error al leer el directorio:', err)
+    console.error('Error in read the directory', err)
     return {}
   }
 })

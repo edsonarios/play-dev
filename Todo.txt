@@ -1,0 +1,36 @@
+* Button picture in picture
+* When Picture in picture is enable, show a detail list of the playlists, with advanced options:
+  - Show Playlist
+  - Play Playlist
+  - Create New Playlist
+  - Edit Playlist
+  - Delete Playlist
+  - Show Songs
+  - Play Songs
+  - Create New Playlist
+  - Delete Playlist
+  - Rename Playlist
+  - Add Songs to Playlist (from open dialog and drag and drop)
+  - Remove Songs from Playlist
+  - Move Songs in Playlist
+  - Sort Songs in Playlist
+
+  - Show two sections showing the playlist, to move songs between them
+  - Update playlist with the original folder (e.g. if the playlist is created from a folder, and the folder change, update the playlist with the new folder)
+  - Show all songs in the folder, but choise the songs that reproduce (e.g. if the folder have 100 songs, but the playlist only have 10, show the 10 songs in the playlist and the 90 songs in the folder, and the user can add the songs to the playlist)
+  - Switch between the playlist and the folder
+
+  - Edit song and apply changes in the original file (only if the file is in the local machine e.g. rename, delete, move, etc)
+
+* Sort playlist by drag and drop
+* Click y song name in controls, in aside menu focus in the song name
+* Actually the plyr not reproduce any format song (works in .mp4 .mp3), maybe find a codecs to add o new player
+* Add Search in the playlist
+* Add a new playlist from the aside menu
+* Rezisable aside menu
+* AsideMenu in sections
+  - New section
+
+* Integrate with Spotify and Youtube
+
+* Bug open folder, is mandatory choise any song, to select the actual folder, should be select the actual folder or just select a folder 
