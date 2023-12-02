@@ -98,7 +98,15 @@ export default function Controls () {
       console.log('No song selected')
       return
     }
-    if (actualSong === 0) return
+    if (actualSong === 0 && repeatPlaylist === 'off') return
+
+    if (actualSong === 0 && repeatPlaylist === 'on') {
+      setCurrentMusic({
+        ...currentMusic,
+        song: currentMusic.songs[currentMusic.songs.length - 1]
+      })
+      return
+    }
 
     setCurrentMusic({
       ...currentMusic,
