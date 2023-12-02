@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { type Playlist, type Song } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { CardPlayButton } from '../CardPlay'
@@ -36,14 +36,15 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setCurrentPlaylist(playListSongs)
   }
 
+  // Reload playlist songs
   useEffect(() => {
-    if (playlist.id === 1 && currentPlaylist.length !== 0) {
+    if (currentPlaylist.length !== 0) {
       const playListSongs = songs.filter(
         (song) => song.albumId === playlist.id
       )
       setCurrentPlaylist(playListSongs)
     }
-  }, [songs.length, playlist.id, currentMusic.playlist?.id])
+  }, [songs.length])
 
   const playSong = (song: Song) => {
     let playListSongs = songs.filter((song) => song.albumId === +id)
@@ -73,11 +74,83 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setPlaylists(newPlaylists)
   }
 
+  // Drag and drop events and control blinking with useRef
+  const [isDragOver, setIsDragOver] = useState(false)
+  const dragCounter = useRef(0)
+
+  const handleDragEnter = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    dragCounter.current++
+    if (dragCounter.current === 1) {
+      setIsDragOver(true)
+    }
+  }
+
+  const handleDragLeave = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    dragCounter.current--
+    if (dragCounter.current === 0) {
+      setIsDragOver(false)
+    }
+  }
+
+  const handleDragOver = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    if (dragCounter.current === 1) {
+      setIsDragOver(true)
+    }
+  }
+
+  const handleDrop = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    setIsDragOver(false)
+    dragCounter.current = 0
+
+    // Use DataTransferItemList interface to access the file(s)
+    if (event.dataTransfer.items !== undefined) {
+      if (event.dataTransfer.items.length > 0 && event.dataTransfer.items[0].kind === 'file') {
+        for (const item of event.dataTransfer.items) {
+          // If dropped items aren't files, reject them
+          if (item.kind === 'file') {
+            const file = item.getAsFile()
+            console.log(file)
+            const folderPath = file.path.split(file.name)[0].replace(/\\/g, '/')
+            const songsByPlaylist = songs.filter((song) => song.albumId === playlist.id)
+            const newSongs = songs
+            const newSong = {
+              id: songsByPlaylist.length + 1,
+              albumId: playlist.id,
+              title: file.name,
+              directoryPath: folderPath,
+              image: playlists[playlist.id - 1].cover,
+              artists: ['artists'],
+              album: 'All Songs',
+              duration: '1:30',
+              format: ''
+            }
+            newSongs.push(newSong)
+            setSongs(newSongs)
+          }
+        }
+      }
+    }
+  }
+
   return (
-    <div>
+    <div
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className={`${isDragOver ? 'bg-zinc-700' : ''} overflow-auto relative`}
+    >
       {/* Delte Playlist button */}
       <button
-        className="absolute z-10 bg-slate-900 w-5 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity"
+        className="absolute z-20 bg-slate-900 w-5 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity"
         onClick={delPlaylist}
       >
         X
@@ -130,7 +203,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
             {currentPlaylist.map((song) => (
               <li
                 key={song.id}
-                className="hover:bg-zinc-900 rounded-md p-2 pl-0 flex flex-row justify-between"
+                className={`${isDragOver ? 'bg-zinc-700' : ''} hover:bg-zinc-900 rounded-md p-2 pl-0 flex flex-row justify-between`}
                 onClick={() => {
                   playSong(song)
                 }}

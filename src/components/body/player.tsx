@@ -267,10 +267,12 @@ export default function PlayerComponent () {
     }
   }, [])
 
+  // drang and drop
   const handleDragOver = (event: any) => {
     event.preventDefault()
   }
 
+  // drang and drop main process
   const handleDropElectron = (event: any) => {
     event.preventDefault()
     // Use DataTransferItemList interface to access the file(s)
