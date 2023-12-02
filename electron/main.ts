@@ -1,6 +1,8 @@
 import { app, BrowserWindow, dialog, globalShortcut, ipcMain } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
+import musicMetadata from 'music-metadata'
+import { formatTime } from './utils'
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -90,11 +92,12 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll()
 })
 
+// Open directory dialog
 ipcMain.handle('open-directory-dialog', async () => {
   const result = await dialog.showOpenDialog({ properties: ['openFile'] })
   if (result.canceled || result.filePaths.length === 0) return []
 
-  let directoryPath
+  let directoryPath: string
 
   if (fs.lstatSync(result.filePaths[0]).isDirectory()) {
     directoryPath = result.filePaths[0]
@@ -105,9 +108,23 @@ ipcMain.handle('open-directory-dialog', async () => {
   try {
     const files = fs.readdirSync(directoryPath)
     const parseDirectoryPath = directoryPath.replaceAll('\\', '/')
+
+    const songsWithMetadata = await Promise.all(files.map(async (file) => {
+      const filePath = path.join(directoryPath, file)
+      try {
+        const metadata = await musicMetadata.parseFile(filePath)
+        return {
+          name: file,
+          duration: formatTime(metadata.format.duration)
+        }
+      } catch (error) {
+        console.error(`Error al leer los metadatos del archivo: ${file}`, error)
+        return null
+      }
+    }))
     return {
-      parseDirectoryPath,
-      files
+      directoryPath: parseDirectoryPath,
+      files: songsWithMetadata
     }
   } catch (err) {
     console.error('Error al leer el directorio:', err)

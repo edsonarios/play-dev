@@ -10,9 +10,9 @@ interface SideMenuType {
 export default function SideMenuItem ({ Icon, text, href }: SideMenuType) {
   const { playlists, setPlaylists, songs, setSongs } = usePlayerStore<StoreType>((state) => state)
   const handleSelectFolder = async () => {
-    const folderPath = await window.electronAPI.openDirectoryDialog()
-    if (folderPath !== undefined) {
-      const nameFolder = folderPath.parseDirectoryPath.split('/')
+    const folder = await window.electronAPI.openDirectoryDialog()
+    if (folder !== undefined) {
+      const nameFolder = folder.directoryPath.split('/')
       const titleFolder = nameFolder[nameFolder.length - 1]
       const Newplaylists = playlists
       const randomImage = getRandomImage()
@@ -26,16 +26,16 @@ export default function SideMenuItem ({ Icon, text, href }: SideMenuType) {
       })
       setPlaylists(Newplaylists)
       const newSongs = songs
-      folderPath.files.forEach((file: string, index: number) => {
+      folder.files.forEach((file, index: number) => {
         newSongs.push({
           id: index + 1,
           albumId: playlists.length,
-          title: file,
-          directoryPath: folderPath.parseDirectoryPath,
+          title: file.name,
+          directoryPath: folder.directoryPath,
           image: randomImage,
           artists: [titleFolder],
           album: titleFolder,
-          duration: '1:30',
+          duration: file.duration,
           format: ''
         })
       })

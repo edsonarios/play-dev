@@ -5,9 +5,13 @@ import PlayerComponent from './components/body/player'
 import Controls from './components/controls/Controls'
 import { colors } from './lib/colors'
 import { type StoreType, usePlayerStore } from './store/playerStore'
+interface fileWithMedata {
+  name: string
+  duration: string
+}
 interface OpenDirectoryDialog {
-  parseDirectoryPath: string
-  files: string[]
+  directoryPath: string
+  files: fileWithMedata[]
 }
 
 interface ElectronAPI {
