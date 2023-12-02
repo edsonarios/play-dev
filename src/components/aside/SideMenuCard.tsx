@@ -1,7 +1,7 @@
 'use client'
+import { useEffect, useState } from 'react'
 import { type Playlist, type Song } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
-import { useState } from 'react'
 import { CardPlayButton } from '../CardPlay'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
 
@@ -31,6 +31,13 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     const playListSongs = songs.filter((song) => song.albumId === +id)
     setCurrentPlaylist(playListSongs)
   }
+
+  useEffect(() => {
+    if (playlist.id === currentMusic.playlist?.id) {
+      const playListSongs = songs.filter((song) => song.albumId === playlist.id)
+      setCurrentPlaylist(playListSongs)
+    }
+  }, [songs.length, playlist.id, currentMusic.playlist?.id])
 
   const playSong = (song: Song) => {
     let playListSongs = songs.filter((song) => song.albumId === +id)

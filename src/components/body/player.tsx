@@ -19,7 +19,10 @@ export default function PlayerComponent () {
     setDurationSong,
     playerOptions,
     speed,
-    setSpeed
+    setSpeed,
+    songs,
+    setSongs,
+    playlists
   } = usePlayerStore<StoreType>((state) => state)
 
   let videoSrc = ''
@@ -263,8 +266,45 @@ export default function PlayerComponent () {
       }
     }
   }, [])
+
+  const handleDragOver = (event: any) => {
+    event.preventDefault()
+  }
+
+  const handleDropElectron = (event: any) => {
+    event.preventDefault()
+    // Use DataTransferItemList interface to access the file(s)
+    if (event.dataTransfer.items !== undefined) {
+      if (event.dataTransfer.items.length > 0 && event.dataTransfer.items[0].kind === 'file') {
+        const file = event.dataTransfer.items[0].getAsFile()
+        const folderPath = file.path.split(file.name)[0]
+        const defaultSongs = songs.filter((song) => song.albumId === 1)
+        const newSongs = songs
+        const newSong = {
+          id: defaultSongs.length + 1,
+          albumId: 1,
+          title: file.name,
+          directoryPath: folderPath,
+          image: 'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353',
+          artists: ['artists'],
+          album: 'All Songs',
+          duration: '1:30',
+          format: ''
+        }
+        newSongs.push(newSong)
+        defaultSongs.push(newSong)
+        setSongs(newSongs)
+        setCurrentMusic({
+          playlist: playlists[0],
+          song: defaultSongs[defaultSongs.length - 1],
+          songs: defaultSongs
+        })
+      }
+    }
+  }
+
   return (
-    <div>
+    <div onDragOver={handleDragOver} onDrop={handleDropElectron}>
       {plyrComponent}
     </div>
   )
