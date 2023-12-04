@@ -7,6 +7,7 @@ import { colors } from './lib/colors'
 import { type StoreType, usePlayerStore } from './store/playerStore'
 import { PlaylistPipMode } from './components/body/pipMode/Playlist'
 import { PlaylistDetail } from './components/body/pipMode/PlaylistDetail'
+import { useEffect, useState } from 'react'
 interface fileWithMedata {
   name: string
   duration: number
@@ -29,9 +30,23 @@ declare global {
 }
 
 export default function App () {
-  const { currentMusic, pictureInPicture, playlistView } = usePlayerStore<StoreType>(state => state)
+  const { currentMusic, pictureInPicture, playlistView, playlists } = usePlayerStore<StoreType>(state => state)
 
-  const currentColor = (currentMusic.playlist != null) ? currentMusic.playlist?.color.dark : colors.gray.dark
+  const [currentColor, setCurrentColor] = useState(colors.gray.dark)
+  useEffect(() => {
+    let newColor = colors.gray.dark
+    if (currentMusic.playlist !== undefined) {
+      if (playlistView !== 0 && pictureInPicture) {
+        const viewPlaylist = playlists.find(playlist => playlist.id === playlistView)
+        if (viewPlaylist !== undefined) {
+          newColor = viewPlaylist.color.dark
+        }
+      } else {
+        newColor = currentMusic.playlist.color.dark
+      }
+    }
+    setCurrentColor(newColor)
+  }, [playlistView, pictureInPicture, currentMusic.playlist])
 
   const setPlaylist = () => {
     if (pictureInPicture && playlistView !== 0) {
@@ -39,6 +54,7 @@ export default function App () {
     }
     return <PlaylistPipMode />
   }
+
   return (
     <div id='app' className='relative h-screen p-2 gap-3'>
       <aside className='[grid-area:aside] flex-col flex overflow-y-auto'>

@@ -49,7 +49,7 @@ export function PlaylistTable ({ songs }: PlayListTable) {
               </picture>
               <div className="flex flex-col">
                 <h3
-                  className={`text-white text-base font-normal
+                  className={`text-base font-normal
                 ${
                   currentMusic.song?.id === song.id &&
                   currentMusic.song.albumId === song.albumId
