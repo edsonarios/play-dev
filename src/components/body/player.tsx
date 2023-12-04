@@ -362,7 +362,7 @@ export default function PlayerComponent () {
           options={playerOptions}
         />
       </div>
-      {pictureInPicture && <PlaylistPipMode />}
+      {/* {pictureInPicture && <PlaylistPipMode />} */}
     </div>
   )
 }

@@ -5,6 +5,7 @@ import PlayerComponent from './components/body/player'
 import Controls from './components/controls/Controls'
 import { colors } from './lib/colors'
 import { type StoreType, usePlayerStore } from './store/playerStore'
+import { PlaylistPipMode } from './components/body/pipMode/Playlist'
 interface fileWithMedata {
   name: string
   duration: string
@@ -27,7 +28,7 @@ declare global {
 }
 
 export default function App () {
-  const { currentMusic } = usePlayerStore<StoreType>(state => state)
+  const { currentMusic, pictureInPicture } = usePlayerStore<StoreType>(state => state)
   const currentColor = (currentMusic.playlist != null) ? currentMusic.playlist?.color.dark : colors.gray.dark
 
   return (
@@ -37,13 +38,24 @@ export default function App () {
       </aside>
 
       <main
-        className='[grid-area:main] rounded-lg overflow-y-auto w-full h-full flex justify-center items-center flex-col'
+        className='[grid-area:main] rounded-lg overflow-y-auto w-full h-full flex justify-center items-center flex-col relative'
         style={{
-          background: `linear-gradient(to bottom, ${currentColor}, #18181b)`
+          background: `linear-gradient(to bottom, ${currentColor}, #18181b)`,
+          transition: 'opacity 0.5s ease'
         }}
       >
+        {/* Just gradient with pictureInPicture is enable */}
+        <div
+          className="absolute top-0 left-0 w-full h-full"
+          style={{
+            background: 'linear-gradient(to bottom, #2c2c2c, #18181b)',
+            transition: 'opacity 0.7s ease',
+            opacity: pictureInPicture ? 1 : 0
+          }}
+        />
         <Header />
         <PlayerComponent />
+        {pictureInPicture && <PlaylistPipMode />}
       </main>
 
       <footer className='[grid-area:player] h-[80px]'>
