@@ -119,6 +119,7 @@ export default function Controls () {
   }
 
   const handleNextSong = () => {
+    console.log('next song')
     NextSong()
   }
 

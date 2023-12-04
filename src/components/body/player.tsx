@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { useRef, useEffect, useMemo } from 'react'
+import { useRef, useEffect } from 'react'
 import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { PlaylistPipMode } from './pipMode/Playlist'
 
 export default function PlayerComponent () {
   const playerRef = useRef<APITypes>(null)
@@ -27,29 +28,28 @@ export default function PlayerComponent () {
     setPictureInPicture
   } = usePlayerStore<StoreType>((state) => state)
 
-  let videoSrc = ''
-  if (currentMusic.song !== undefined && currentMusic.playlist !== undefined) {
-    videoSrc = `file://${currentMusic.song.directoryPath}/${currentMusic.song.title}`
-  }
+  useEffect(() => {
+    if (currentMusic.song !== undefined) {
+      const newVideoSrc = `file://${currentMusic.song.directoryPath}/${currentMusic.song.title}`
 
-  const plyrComponent = useMemo(
-    () => (
-      <Plyr
-        ref={playerRef}
-        source={{
+      if (playerRef.current !== undefined && playerRef.current?.plyr !== undefined) {
+        playerRef.current.plyr.source = {
           type: 'video',
           sources: [
             {
-              src: videoSrc,
+              src: newVideoSrc,
               provider: 'html5'
             }
           ]
-        }}
-        options={playerOptions}
-      />
-    ),
-    [playerRef, videoSrc]
-  )
+        }
+        void (playerRef.current.plyr.play() as Promise<void>).then(() => {
+          if (playerRef.current !== null && pictureInPicture) {
+            playerRef.current.plyr.pip = true
+          }
+        })
+      }
+    }
+  }, [currentMusic.song])
 
   // Event ended
   useEffect(() => {
@@ -351,8 +351,18 @@ export default function PlayerComponent () {
   }
 
   return (
-    <div onDragOver={handleDragOver} onDrop={handleDropElectron}>
-      {plyrComponent}
+    <div
+    className='relative'>
+      <div onDragOver={handleDragOver} onDrop={handleDropElectron} className={pictureInPicture ? 'opacity-0' : ''}>
+        {/* disable error, because de source is handled by useEffect */}
+        {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error */}
+        <Plyr
+          ref={playerRef}
+          options={playerOptions}
+        />
+      </div>
+      {pictureInPicture && <PlaylistPipMode />}
     </div>
   )
 }

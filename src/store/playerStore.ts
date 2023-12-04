@@ -55,7 +55,7 @@ export interface StoreType {
 export const usePlayerStore = create<StoreType>((set) => ({
   playerOptions: {
     loop: { active: false },
-    autoplay: true,
+    autoplay: false,
     hideControls: true,
     keyboard: {
       global: true
