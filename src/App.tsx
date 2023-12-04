@@ -6,9 +6,10 @@ import Controls from './components/controls/Controls'
 import { colors } from './lib/colors'
 import { type StoreType, usePlayerStore } from './store/playerStore'
 import { PlaylistPipMode } from './components/body/pipMode/Playlist'
+import { PlaylistDetail } from './components/body/pipMode/PlaylistDetail'
 interface fileWithMedata {
   name: string
-  duration: string
+  duration: number
 }
 interface OpenDirectoryDialog {
   directoryPath: string
@@ -28,9 +29,16 @@ declare global {
 }
 
 export default function App () {
-  const { currentMusic, pictureInPicture } = usePlayerStore<StoreType>(state => state)
+  const { currentMusic, pictureInPicture, playlistView } = usePlayerStore<StoreType>(state => state)
+
   const currentColor = (currentMusic.playlist != null) ? currentMusic.playlist?.color.dark : colors.gray.dark
 
+  const setPlaylist = () => {
+    if (pictureInPicture && playlistView !== 0) {
+      return <PlaylistDetail id={playlistView} />
+    }
+    return <PlaylistPipMode />
+  }
   return (
     <div id='app' className='relative h-screen p-2 gap-3'>
       <aside className='[grid-area:aside] flex-col flex overflow-y-auto'>
@@ -50,12 +58,12 @@ export default function App () {
           style={{
             background: 'linear-gradient(to bottom, #2c2c2c, #18181b)',
             transition: 'opacity 0.7s ease',
-            opacity: pictureInPicture ? 1 : 0
+            opacity: pictureInPicture && playlistView === 0 ? 1 : 0
           }}
         />
         <Header />
         <PlayerComponent />
-        {pictureInPicture && <PlaylistPipMode />}
+        {pictureInPicture && setPlaylist()}
       </main>
 
       <footer className='[grid-area:player] h-[80px]'>

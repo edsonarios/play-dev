@@ -4,7 +4,7 @@ import { usePlayerStore } from '../store/playerStore'
 import { type Playlist, songs } from '@/lib/data'
 import { shuffleSongs } from '../utils/random'
 interface CardPlayButtonType {
-  playlist: Playlist
+  playlist: Playlist | undefined
   size?: string
 }
 export function CardPlayButton ({ playlist, size = 'small' }: CardPlayButtonType) {
@@ -12,7 +12,7 @@ export function CardPlayButton ({ playlist, size = 'small' }: CardPlayButtonType
 
   const handleCardPlayPauseButton = (event: any) => {
     event.stopPropagation()
-    let playListSongs = songs.filter((song) => song.albumId === playlist.id)
+    let playListSongs = songs.filter((song) => song.albumId === playlist?.id)
     if (playListSongs.length === 0) return
     if (playlist !== undefined && currentMusic.playlist?.id === playlist.id && currentMusic.song !== undefined) {
       setIsPlaying(!isPlaying)
@@ -43,7 +43,7 @@ export function CardPlayButton ({ playlist, size = 'small' }: CardPlayButtonType
       onClick={handleCardPlayPauseButton}
       className='card-play-button rounded-full bg-green-500 p-3 hover:scale-110 transition hover:bg-green-400'
     >
-      {currentMusic.playlist?.id === playlist.id && isPlaying
+      {currentMusic.playlist?.id === playlist?.id && isPlaying
         ? (
         <CardPauseIcon className={iconClassName} />
           )

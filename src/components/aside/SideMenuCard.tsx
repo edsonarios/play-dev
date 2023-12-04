@@ -5,6 +5,7 @@ import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { CardPlayButton } from '../CardPlay'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { VolumeAsideIcon } from '@/icons/aside/Volume'
+import { formatTime } from '@/utils/time'
 
 interface CardPlaylist {
   playlist: Playlist
@@ -129,7 +130,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
               image: playlists[playlist.id - 1].cover,
               artists: ['artists'],
               album: 'All Songs',
-              duration: '1:30',
+              duration: 90,
               format: ''
             }
             newSongs.push(newSong)
@@ -238,7 +239,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                 </a>
 
                 {/* Song duration */}
-                <div className="text-xs text-zinc-500">{song.duration}</div>
+                <div className="text-xs text-zinc-500">{formatTime(song.duration)}</div>
               </li>
             ))}
           </ul>

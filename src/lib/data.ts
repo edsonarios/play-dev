@@ -29,7 +29,7 @@ export interface Song {
   image: string
   artists: string[]
   album: string
-  duration: string
+  duration: number
   format: string
 }
 

@@ -2,7 +2,6 @@ import { app, BrowserWindow, dialog, globalShortcut, ipcMain } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 import musicMetadata from 'music-metadata'
-import { formatTime } from './utils'
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -115,7 +114,7 @@ ipcMain.handle('open-directory-dialog', async () => {
         const metadata = await musicMetadata.parseFile(filePath)
         return {
           name: file,
-          duration: formatTime(metadata.format.duration)
+          duration: metadata.format.duration
         }
       } catch (error) {
         console.error(`Error to read the metadata to file: ${file}`, error)

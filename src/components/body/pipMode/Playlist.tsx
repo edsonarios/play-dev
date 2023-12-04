@@ -2,7 +2,11 @@ import { CardPlayButton } from '@/components/CardPlay'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 
 export function PlaylistPipMode () {
-  const { playlists } = usePlayerStore<StoreType>((state) => state)
+  const { playlists, setPlaylistView } = usePlayerStore<StoreType>((state) => state)
+
+  const handleSetPlaylist = (id: number) => {
+    setPlaylistView(id)
+  }
   return (
     <div className="absolute top-24 w-[95%] flex overflow-y-disable p-2 gap-10 flex-wrap">
         {playlists.map((playlist) => (
@@ -18,9 +22,9 @@ export function PlaylistPipMode () {
               >
                 <CardPlayButton playlist={playlist} />
               </div>
-              <a
-                href="#"
+              <button
                 className="transition-all duration-300 flex p-2 overflow-hidden gap-2 pb-6 rounded-md w-44 flex-col"
+                onClick={() => { handleSetPlaylist(playlist.id) }}
               >
                 <picture className="aspect-square">
                   <img
@@ -38,7 +42,7 @@ export function PlaylistPipMode () {
                     {playlist.artists.join(',')}
                   </span>
                 </div>
-              </a>
+              </ button>
             </article>
         ))}
     </div>

@@ -3,7 +3,6 @@
 import { useRef, useEffect } from 'react'
 import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
-import { PlaylistPipMode } from './pipMode/Playlist'
 
 export default function PlayerComponent () {
   const playerRef = useRef<APITypes>(null)
@@ -335,7 +334,7 @@ export default function PlayerComponent () {
           image: 'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353',
           artists: ['artists'],
           album: 'All Songs',
-          duration: '1:30',
+          duration: 90,
           format: ''
         }
         newSongs.push(newSong)
@@ -362,7 +361,6 @@ export default function PlayerComponent () {
           options={playerOptions}
         />
       </div>
-      {/* {pictureInPicture && <PlaylistPipMode />} */}
     </div>
   )
 }
