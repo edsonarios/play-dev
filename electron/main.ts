@@ -31,8 +31,8 @@ function createWindow () {
     width: 1500,
     height: 900,
     x: 1925,
-    y: 60,
-    alwaysOnTop: true
+    y: 60
+    // alwaysOnTop: true
   })
 
   // Test active push message to Renderer-process.

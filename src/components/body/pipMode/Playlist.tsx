@@ -2,11 +2,22 @@ import { CardPlayButton } from '@/components/CardPlay'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 
 export function PlaylistPipMode () {
-  const { playlists, setPlaylistView } = usePlayerStore<StoreType>((state) => state)
+  const { playlists, setPlaylistView, songs, setSongs, setPlaylists } = usePlayerStore<StoreType>((state) => state)
 
   const handleSetPlaylist = (id: string) => {
     setPlaylistView(id)
   }
+
+  const delPlaylist = (id: string) => {
+    const playlist = playlists.find((playlist) => playlist.id === id)
+    if (playlist === undefined) return
+    if (playlist.title === 'All Songs') return
+    const newSongs = songs.filter((song) => song.albumId !== playlist.id)
+    setSongs(newSongs)
+    const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
+    setPlaylists(newPlaylists)
+  }
+
   return (
     <div className="absolute top-24 w-[95%] flex overflow-y-disable p-2 gap-10 flex-wrap">
         {playlists.map((playlist) => (
@@ -14,6 +25,13 @@ export function PlaylistPipMode () {
               key={playlist.id}
               className="group relative hover:bg-zinc-800 shadow-lg hover:shadow-xl bg-zinc-500/30 rounded-md transition-all duration-300 h-60"
             >
+              {/* Delte Playlist button */}
+              <button
+                className="absolute z-40 bg-slate-900 w-5 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity"
+                onClick={() => { delPlaylist(playlist.id) }}
+              >
+                X
+              </button>
               <div
                 className="absolute right-4 bottom-20 translate-y-4
                             transition-all duration-500 opacity-0

@@ -71,6 +71,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
             key={song.id}
             className="border-spacing-0 text-gray-300 text-sm font-light hover:bg-white/10 overflow-hidden transition duration-300"
           >
+            {/* Id or equaliser icon */}
             <td
               className={'relative px-4 py-2 rounded-tl-lg rounded-bl-lg w-5'}
             >
@@ -96,6 +97,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
                 {<PlayTableIcon />}
               </button>
             </td>
+            {/* Title */}
             <td className="px-4 py-2 flex gap-3">
               <picture className="">
                 <img src={song.image} alt={song.title} className="w-11 h-11" />
@@ -116,8 +118,11 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
                 <span>{song.artists.join(', ')}</span>
               </div>
             </td>
+            {/* Album name */}
             <td className="px-4 py-2">{song.album}</td>
+            {/* Time duration */}
             <td className="px-4 py-2">{formatTime(song.duration)}</td>
+            {/* Delete Song Button */}
             <td className="text-zinc-400 px-4 py-2 rounded-tr-lg rounded-br-lg">
               <button className='opacity-0 hover:opacity-100'
               onClick={() => { deleteSong(song) }}
