@@ -1,20 +1,54 @@
 import { TimeIcon } from '@/icons/Time'
-import { type Song } from '@/lib/data'
+import { PlayTableIcon } from '@/icons/playlist/PlayPause'
+import { type Playlist, type Song } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { formatTime } from '@/utils/time'
 
 interface PlayListTable {
-  songs: Song[]
+  playlist: Playlist | undefined
+  playlistSongs: Song[]
 }
 
-export function PlaylistTable ({ songs }: PlayListTable) {
-  const { currentMusic } = usePlayerStore<StoreType>((state) => state)
+export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
+  const {
+    currentMusic,
+    setCurrentMusic,
+    setCopyCurrentMusic,
+    randomPlaylist,
+    setIsPlaying,
+    songs
+  } = usePlayerStore<StoreType>((state) => state)
+
+  const playSong = (toPlaySong: Song) => {
+    if (toPlaySong === undefined) return
+    let playListSongs = songs.filter(
+      (song) => song.albumId === toPlaySong.albumId
+    )
+    setCopyCurrentMusic({
+      playlist,
+      song: toPlaySong,
+      songs: playListSongs
+    })
+
+    if (randomPlaylist) {
+      playListSongs = shuffleSongsWithCurrentSong(playListSongs, toPlaySong.id)
+    }
+    setCurrentMusic({
+      playlist,
+      song: toPlaySong,
+      songs: playListSongs
+    })
+
+    setIsPlaying(true)
+  }
+
   return (
     <table className="table-auto text-left min-w-full divide-y divide-gray-500/20">
       <thead className="">
         <tr className="text-zinc-400 text-sm">
           <th className="px-4 py-2 font-light">#</th>
-          <th className="px-4 py-2 font-light">Título</th>
+          <th className="px-4 py-2 font-light">Title</th>
           <th className="px-4 py-2 font-light">Álbum</th>
           <th className="px-4 py-2 font-light">
             <TimeIcon />
@@ -24,12 +58,14 @@ export function PlaylistTable ({ songs }: PlayListTable) {
 
       <tbody>
         <tr className="h-[16px]"></tr>
-        {songs.map((song) => (
+        {playlistSongs.map((song) => (
           <tr
             key={song.id}
             className="border-spacing-0 text-gray-300 text-sm font-light hover:bg-white/10 overflow-hidden transition duration-300"
           >
-            <td className={'px-4 py-2 rounded-tl-lg rounded-bl-lg w-5'}>
+            <td
+              className={'relative px-4 py-2 rounded-tl-lg rounded-bl-lg w-5'}
+            >
               {currentMusic.song?.id === song.id &&
               currentMusic.song?.albumId === song.albumId
                 ? (
@@ -37,11 +73,20 @@ export function PlaylistTable ({ songs }: PlayListTable) {
                   src="/equaliser-animated-green.gif"
                   alt="equaliser"
                   width={16}
+                  className="hover:opacity-0"
                 />
                   )
                 : (
-                    song.id
+                <div className="hover:opacity-0">{song.id}</div>
                   )}
+              <button
+                className="absolute p-1 right-3 bottom-6 opacity-0 hover:opacity-100 bg-zinc-700 "
+                onClick={() => {
+                  playSong(song)
+                }}
+              >
+                {<PlayTableIcon />}
+              </button>
             </td>
             <td className="px-4 py-2 flex gap-3">
               <picture className="">

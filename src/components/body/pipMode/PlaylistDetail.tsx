@@ -50,7 +50,7 @@ export function PlaylistDetail ({ id }: { id: number }) {
         <div className="pl-6 pt-4">
           <CardPlayButton playlist={playlist} size="large" />
         </div>
-        <PlaylistTable songs={playListSongs} />
+        <PlaylistTable playlist={playlist} playlistSongs={playListSongs} />
       </section>
     </div>
   )
