@@ -4,7 +4,7 @@ import { type StoreType, usePlayerStore } from '@/store/playerStore'
 export function PlaylistPipMode () {
   const { playlists, setPlaylistView } = usePlayerStore<StoreType>((state) => state)
 
-  const handleSetPlaylist = (id: number) => {
+  const handleSetPlaylist = (id: string) => {
     setPlaylistView(id)
   }
   return (

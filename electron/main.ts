@@ -2,6 +2,7 @@ import { app, BrowserWindow, dialog, globalShortcut, ipcMain } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 import musicMetadata from 'music-metadata'
+import crypto from 'crypto'
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -113,6 +114,7 @@ ipcMain.handle('open-directory-dialog', async () => {
       try {
         const metadata = await musicMetadata.parseFile(filePath)
         return {
+          id: crypto.randomUUID(),
           name: file,
           duration: metadata.format.duration
         }

@@ -9,6 +9,7 @@ import { PlaylistPipMode } from './components/body/pipMode/Playlist'
 import { PlaylistDetail } from './components/body/pipMode/PlaylistDetail'
 import { useEffect, useState } from 'react'
 interface fileWithMedata {
+  id: string
   name: string
   duration: number
 }
@@ -36,7 +37,7 @@ export default function App () {
   useEffect(() => {
     let newColor = colors.gray.dark
     if (currentMusic.playlist !== undefined) {
-      if (playlistView !== 0 && pictureInPicture) {
+      if (playlistView !== '0' && pictureInPicture) {
         const viewPlaylist = playlists.find(playlist => playlist.id === playlistView)
         if (viewPlaylist !== undefined) {
           newColor = viewPlaylist.color.dark
@@ -49,7 +50,7 @@ export default function App () {
   }, [playlistView, pictureInPicture, currentMusic.playlist])
 
   const setPlaylist = () => {
-    if (pictureInPicture && playlistView !== 0) {
+    if (pictureInPicture && playlistView !== '0') {
       return <PlaylistDetail id={playlistView} />
     }
     return <PlaylistPipMode />
@@ -74,7 +75,7 @@ export default function App () {
           style={{
             background: 'linear-gradient(to bottom, #2c2c2c, #18181b)',
             transition: 'opacity 0.7s ease',
-            opacity: pictureInPicture && playlistView === 0 ? 1 : 0
+            opacity: pictureInPicture && playlistView === '0' ? 1 : 0
           }}
         />
         <Header />

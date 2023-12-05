@@ -25,15 +25,15 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   } = usePlayerStore<StoreType>((state) => state)
   const [currentPlaylist, setCurrentPlaylist] = useState<Song[]>([])
 
-  const { id, title, artists, cover } = playlist
-  const artistsString = artists.join(', ')
+  // const { id, title, artists, cover } = playlist
+  const artistsString = playlist.artists.join(', ')
 
   const getPlaylist = () => {
     if (currentPlaylist.length > 0) {
       setCurrentPlaylist([])
       return
     }
-    const playListSongs = songs.filter((song) => song.albumId === +id)
+    const playListSongs = songs.filter((song) => song.albumId === playlist.id)
     setCurrentPlaylist(playListSongs)
   }
 
@@ -48,7 +48,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   }, [songs.length])
 
   const playSong = (song: Song) => {
-    let playListSongs = songs.filter((song) => song.albumId === +id)
+    let playListSongs = songs.filter((song) => song.albumId === playlist.id)
     setCopyCurrentMusic({
       playlist,
       song,
@@ -69,7 +69,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
 
   const delPlaylist = () => {
     if (playlist.title === 'All Songs') return
-    const newSongs = songs.filter((song) => song.albumId !== +playlist.id)
+    const newSongs = songs.filter((song) => song.albumId !== playlist.id)
     setSongs(newSongs)
     const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
     setPlaylists(newPlaylists)
@@ -120,14 +120,13 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
             const file = item.getAsFile()
             console.log(file)
             const folderPath = file.path.split(file.name)[0].replace(/\\/g, '/')
-            const songsByPlaylist = songs.filter((song) => song.albumId === playlist.id)
             const newSongs = songs
-            const newSong = {
-              id: songsByPlaylist.length + 1,
+            const newSong: Song = {
+              id: window.crypto.randomUUID(),
               albumId: playlist.id,
               title: file.name,
               directoryPath: folderPath,
-              image: playlists[playlist.id - 1].cover,
+              image: playlist.cover,
               artists: ['artists'],
               album: 'All Songs',
               duration: 90,
@@ -165,8 +164,8 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
         {/* Image Playlist */}
         <picture className="h-12 w-12 flex-none">
           <img
-            src={cover}
-            alt={`Cover of ${title} by ${artistsString}`}
+            src={playlist.cover}
+            alt={`Cover of ${playlist.title} by ${artistsString}`}
             className="object-cover w-full h-full rounded-md"
           />
         </picture>
@@ -175,12 +174,12 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
         <div className="flex flex-auto flex-col truncate">
           <h4
             className={`${
-              currentMusic.song?.albumId === +playlist.id
+              currentMusic.song?.albumId === playlist.id
                 ? 'text-green-400'
                 : 'text-white'
             } text-sm`}
           >
-            {title}
+            {playlist.title}
           </h4>
 
           <span className="text-xs text-gray-400">{artistsString}</span>

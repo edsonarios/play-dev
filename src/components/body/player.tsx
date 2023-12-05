@@ -3,6 +3,7 @@
 import { useRef, useEffect } from 'react'
 import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { type Song } from '@/lib/data'
 
 export default function PlayerComponent () {
   const playerRef = useRef<APITypes>(null)
@@ -324,11 +325,11 @@ export default function PlayerComponent () {
       if (event.dataTransfer.items.length > 0 && event.dataTransfer.items[0].kind === 'file') {
         const file = event.dataTransfer.items[0].getAsFile()
         const folderPath = file.path.split(file.name)[0]
-        const defaultSongs = songs.filter((song) => song.albumId === 1)
+        const defaultSongs = songs.filter((song) => song.albumId === '1')
         const newSongs = songs
-        const newSong = {
-          id: defaultSongs.length + 1,
-          albumId: 1,
+        const newSong: Song = {
+          id: window.crypto.randomUUID(),
+          albumId: '1',
           title: file.name,
           directoryPath: folderPath,
           image: 'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353',

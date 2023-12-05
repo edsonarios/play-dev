@@ -36,3 +36,4 @@
 * Bug open folder, is mandatory choise any song, to select the actual folder, should be select the actual folder or just select a folder 
 * Made responsive plyr
 * Bug when charge the playlist the first time, the time not advance, the rest of songs its works
+* Add new song by drag and drop in aside menu, not get the metadata, to specific the duration song

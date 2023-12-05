@@ -52,8 +52,8 @@ export interface StoreType {
   copyCurrentMusic: CurrentMusicType
   setCopyCurrentMusic: (copyCurrentMusic: CurrentMusicType) => void
 
-  playlistView: number
-  setPlaylistView: (playlistView: number) => void
+  playlistView: string
+  setPlaylistView: (playlistView: string) => void
 }
 export const usePlayerStore = create<StoreType>((set) => ({
   playerOptions: {
@@ -115,6 +115,6 @@ export const usePlayerStore = create<StoreType>((set) => ({
   },
   setCopyCurrentMusic: (copyCurrentMusic) => { set({ copyCurrentMusic }) },
 
-  playlistView: 0,
+  playlistView: '0',
   setPlaylistView: (playlistView) => { set({ playlistView }) }
 }))

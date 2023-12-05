@@ -1,8 +1,8 @@
 import { colors } from './colors'
 
 export interface Playlist {
-  id: number
-  albumId: number
+  id: string
+  albumId: string
   title: string
   color: (typeof colors)[keyof typeof colors]
   cover: string
@@ -11,8 +11,8 @@ export interface Playlist {
 
 export const playlists: Playlist[] = [
   {
-    id: 1,
-    albumId: 1,
+    id: '1',
+    albumId: '1',
     title: 'All Songs',
     color: colors.purple,
     cover:
@@ -22,8 +22,8 @@ export const playlists: Playlist[] = [
 ]
 
 export interface Song {
-  id: number
-  albumId: number
+  id: string
+  albumId: string
   title: string
   directoryPath: string
   image: string

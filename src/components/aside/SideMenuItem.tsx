@@ -1,6 +1,5 @@
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { getRandomColor, getRandomImage } from '@/utils/random'
-
 interface SideMenuType {
   Icon: any
   text: string
@@ -16,9 +15,10 @@ export default function SideMenuItem ({ Icon, text, href }: SideMenuType) {
       const titleFolder = nameFolder[nameFolder.length - 1]
       const Newplaylists = playlists
       const randomImage = getRandomImage()
+      const newPlaylistUUID = window.crypto.randomUUID()
       Newplaylists.push({
-        id: playlists.length + 1,
-        albumId: playlists.length + 1,
+        id: newPlaylistUUID,
+        albumId: newPlaylistUUID,
         title: titleFolder,
         color: getRandomColor(),
         cover: randomImage,
@@ -26,10 +26,10 @@ export default function SideMenuItem ({ Icon, text, href }: SideMenuType) {
       })
       setPlaylists(Newplaylists)
       const newSongs = songs
-      folder.files.forEach((file, index: number) => {
+      folder.files.forEach((file) => {
         newSongs.push({
-          id: index + 1,
-          albumId: playlists.length,
+          id: file.id,
+          albumId: newPlaylistUUID,
           title: file.name,
           directoryPath: folder.directoryPath,
           image: randomImage,

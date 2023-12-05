@@ -46,7 +46,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   }
 
   const deleteSong = (toDeleteSong: Song) => {
-    const newPlaylistSongs = songs.filter(song => song.id !== toDeleteSong.id && song.albumId === toDeleteSong.albumId)
+    const newPlaylistSongs = songs.filter(song => song.id !== toDeleteSong.id)
     setSongs(newPlaylistSongs)
   }
 

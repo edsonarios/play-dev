@@ -3,7 +3,7 @@ import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { formatTotalDuration } from '@/utils/time'
 import { PlaylistTable } from './PlaylistTable'
 
-export function PlaylistDetail ({ id }: { id: number }) {
+export function PlaylistDetail ({ id }: { id: string }) {
   const { playlists, songs } = usePlayerStore<StoreType>((state) => state)
   const playlist = playlists.find((playlist) => playlist.id === id)
   const playListSongs = songs.filter((song) => song.albumId === id)

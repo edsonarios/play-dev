@@ -10,7 +10,7 @@ export const IconButton: React.FC<IconButtonProps> = ({ Icon, className = '' }) 
   const { setPlaylistView } = usePlayerStore<StoreType>((state) => state)
 
   const handleSetPlaylist = () => {
-    setPlaylistView(0)
+    setPlaylistView('0')
   }
   return (
     <button

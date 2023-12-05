@@ -2,7 +2,7 @@ import { colors } from '@/lib/colors'
 import { covers, type Song } from '../lib/data'
 
 // Function to shuffle the array but the current song is always the first
-export const shuffleSongsWithCurrentSong = (songs: Song[], currentSongId: number) => {
+export const shuffleSongsWithCurrentSong = (songs: Song[], currentSongId: string) => {
   const shuffled = [...songs]
 
   // Find the index of the current song
