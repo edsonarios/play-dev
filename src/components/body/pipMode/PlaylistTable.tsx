@@ -73,7 +73,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
           >
             {/* Id or equaliser icon */}
             <td
-              className={'relative px-4 py-2 rounded-tl-lg rounded-bl-lg w-5'}
+              className={'relative px-4 py-2 rounded-tl-lg rounded-bl-lg w-5 hover:opacity-0'}
             >
               {currentMusic.song?.id === song.id &&
               currentMusic.song?.albumId === song.albumId
@@ -82,14 +82,14 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
                   src="/equaliser-animated-green.gif"
                   alt="equaliser"
                   width={16}
-                  className="hover:opacity-0"
+                  className=""
                 />
                   )
                 : (
-                <div className="hover:opacity-0">{index + 1}</div>
+                <div className="">{index + 1}</div>
                   )}
               <button
-                className="absolute p-1 right-3 bottom-6 opacity-0 hover:opacity-100 bg-zinc-700 "
+                className="absolute p-1 right-3 bottom-6 opacity-0 hover:opacity-100 bg-zinc-700 z-10 "
                 onClick={() => {
                   playSong(song)
                 }}
@@ -124,7 +124,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
             <td className="px-4 py-2">{formatTime(song.duration)}</td>
             {/* Delete Song Button */}
             <td className="text-zinc-400 px-4 py-2 rounded-tr-lg rounded-br-lg">
-              <button className='opacity-0 hover:opacity-100'
+              <button className='opacity-10 hover:opacity-100'
               onClick={() => { deleteSong(song) }}
               >
                 <DeleteOptionsIcon />

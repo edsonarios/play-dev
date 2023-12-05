@@ -105,24 +105,31 @@ ipcMain.handle('open-directory-dialog', async () => {
     directoryPath = path.dirname(result.filePaths[0])
   }
 
+  const allowedExtensions = new Set(['.mp3', '.wav', '.flac', '.mp4', '.flv', '.mkv', '.avi', '.ts'])
+
   try {
     const files = fs.readdirSync(directoryPath)
     const parseDirectoryPath = directoryPath.replaceAll('\\', '/')
 
-    const songsWithMetadata = await Promise.all(files.map(async (file) => {
-      const filePath = path.join(directoryPath, file)
-      try {
-        const metadata = await musicMetadata.parseFile(filePath)
-        return {
-          id: crypto.randomUUID(),
-          name: file,
-          duration: metadata.format.duration
-        }
-      } catch (error) {
-        console.error(`Error to read the metadata to file: ${file}`, error)
-        return null
-      }
-    }))
+    const songsWithMetadata = await Promise.all(
+      files
+        .filter(file => allowedExtensions.has(path.extname(file).toLowerCase()))
+        .map(async (file) => {
+          const filePath = path.join(directoryPath, file)
+          try {
+            const metadata = await musicMetadata.parseFile(filePath)
+            return {
+              id: crypto.randomUUID(),
+              name: file,
+              duration: metadata.format.duration
+            }
+          } catch (error) {
+            console.error(`Error to read the metadata to file: ${file}`, error)
+            return null
+          }
+        })
+    )
+
     return {
       directoryPath: parseDirectoryPath,
       files: songsWithMetadata
