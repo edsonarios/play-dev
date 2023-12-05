@@ -12,7 +12,7 @@ export function PlaylistDetail ({ id }: { id: number }) {
     0
   )
   return (
-    <div className="absolute top-24 w-[95%] flex flex-col bg-zinc-900 overflow-y-disable rounded-lg">
+    <div className="absolute top-14 w-[95%] flex flex-col overflow-y-disable rounded-lg">
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
         <picture className="aspect-square w-52 h-52 flex-none">
           <img
@@ -46,7 +46,7 @@ export function PlaylistDetail ({ id }: { id: number }) {
           </div>
         </div>
       </header>
-      <section className="bg-zinc-800 bg-opacity-80">
+      <section className="bg-zinc-950 bg-opacity-50">
         <div className="pl-6 pt-4">
           <CardPlayButton playlist={playlist} size="large" />
         </div>

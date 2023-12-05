@@ -83,7 +83,7 @@ export function ControlsRight () {
         </button>
 
         {showSpeedOptions && (
-          <div className="absolute bottom-full mb-1 bg-white border border-gray-300 rounded shadow-lg transform -translate-x-1/2 left-1/2 text-slate-900 opacity-70">
+          <div className="absolute bottom-full mb-1 bg-white border border-gray-300 rounded shadow-lg transform -translate-x-1/2 left-1/2 text-slate-900 opacity-90">
             {speedOptions.map((speed) => (
               <div
                 key={speed}

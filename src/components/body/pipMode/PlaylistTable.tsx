@@ -44,7 +44,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   }
 
   return (
-    <table className="table-auto text-left min-w-full divide-y divide-gray-500/20">
+    <table className="table-auto text-left w-[95%] divide-y divide-gray-500/20 ml-6 mr-2 mt-4">
       <thead className="">
         <tr className="text-zinc-400 text-sm">
           <th className="px-4 py-2 font-light">#</th>
