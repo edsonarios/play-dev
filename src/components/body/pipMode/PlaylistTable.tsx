@@ -1,4 +1,5 @@
 import { TimeIcon } from '@/icons/Time'
+import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 import { PlayTableIcon } from '@/icons/playlist/PlayPause'
 import { type Playlist, type Song } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
@@ -17,7 +18,8 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     setCopyCurrentMusic,
     randomPlaylist,
     setIsPlaying,
-    songs
+    songs,
+    setSongs
   } = usePlayerStore<StoreType>((state) => state)
 
   const playSong = (toPlaySong: Song) => {
@@ -43,6 +45,11 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     setIsPlaying(true)
   }
 
+  const deleteSong = (toDeleteSong: Song) => {
+    const newPlaylistSongs = songs.filter(song => song.id !== toDeleteSong.id && song.albumId === toDeleteSong.albumId)
+    setSongs(newPlaylistSongs)
+  }
+
   return (
     <table className="table-auto text-left w-[95%] divide-y divide-gray-500/20 ml-6 mr-2 mt-4">
       <thead className="">
@@ -53,12 +60,13 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
           <th className="px-4 py-2 font-light">
             <TimeIcon />
           </th>
+          <th className=""></th>
         </tr>
       </thead>
 
       <tbody>
         <tr className="h-[16px]"></tr>
-        {playlistSongs.map((song) => (
+        {playlistSongs.map((song, index) => (
           <tr
             key={song.id}
             className="border-spacing-0 text-gray-300 text-sm font-light hover:bg-white/10 overflow-hidden transition duration-300"
@@ -77,7 +85,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
                 />
                   )
                 : (
-                <div className="hover:opacity-0">{song.id}</div>
+                <div className="hover:opacity-0">{index + 1}</div>
                   )}
               <button
                 className="absolute p-1 right-3 bottom-6 opacity-0 hover:opacity-100 bg-zinc-700 "
@@ -109,8 +117,13 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
               </div>
             </td>
             <td className="px-4 py-2">{song.album}</td>
-            <td className="px-4 py-2 rounded-tr-lg rounded-br-lg">
-              {formatTime(song.duration)}
+            <td className="px-4 py-2">{formatTime(song.duration)}</td>
+            <td className="text-zinc-400 px-4 py-2 rounded-tr-lg rounded-br-lg">
+              <button className='opacity-0 hover:opacity-100'
+              onClick={() => { deleteSong(song) }}
+              >
+                <DeleteOptionsIcon />
+              </button>
             </td>
           </tr>
         ))}

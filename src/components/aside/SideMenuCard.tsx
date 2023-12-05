@@ -201,7 +201,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
       {currentPlaylist.length > 0 && (
         <div className="bg-zinc-800 rounded-md">
           <ul className="flex flex-col ">
-            {currentPlaylist.map((song) => (
+            {currentPlaylist.map((song, index) => (
               <li
                 key={song.id}
                 className={`${isDragOver ? 'bg-zinc-700' : ''} hover:bg-zinc-900 rounded-md p-2 pl-0 flex flex-row justify-between`}
@@ -230,7 +230,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                       />
                         )
                       : (
-                          song.id
+                          index + 1
                         )}
                   </div>
 
