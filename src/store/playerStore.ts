@@ -55,7 +55,7 @@ export interface StoreType {
   playlistView: string
   setPlaylistView: (playlistView: string) => void
 }
-export const usePlayerStore = create<StoreType>((set) => ({
+export const usePlayerStore = create<StoreType>((set, get) => ({
   playerOptions: {
     loop: { active: false },
     autoplay: false,
@@ -72,7 +72,16 @@ export const usePlayerStore = create<StoreType>((set) => ({
   setPlaylists: (playlists) => { set({ playlists }) },
 
   songs: [],
-  setSongs: (songs) => { set({ songs }) },
+  setSongs: (songs) => {
+    const { currentMusic, setCurrentMusic } = get()
+
+    if (currentMusic?.song !== undefined) {
+      const updateCurrentSongs = songs.filter(song => song.albumId === currentMusic.playlist?.id)
+      setCurrentMusic({ ...currentMusic, songs: updateCurrentSongs })
+    }
+
+    set({ songs })
+  },
 
   isPlaying: false,
   setIsPlaying: (isPlaying) => { set({ isPlaying }) },

@@ -4,7 +4,7 @@ import { type StoreType, usePlayerStore } from '@/store/playerStore'
 export function PlaylistPipMode () {
   const { playlists, setPlaylistView, songs, setSongs, setPlaylists } = usePlayerStore<StoreType>((state) => state)
 
-  const handleSetPlaylist = (id: string) => {
+  const handleSetPlaylistView = (id: string) => {
     setPlaylistView(id)
   }
 
@@ -42,7 +42,7 @@ export function PlaylistPipMode () {
               </div>
               <button
                 className="transition-all duration-300 flex p-2 overflow-hidden gap-2 pb-6 rounded-md w-44 flex-col"
-                onClick={() => { handleSetPlaylist(playlist.id) }}
+                onClick={() => { handleSetPlaylistView(playlist.id) }}
               >
                 <picture className="aspect-square">
                   <img

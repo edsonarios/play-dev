@@ -45,7 +45,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
       )
       setCurrentPlaylist(playListSongs)
     }
-  }, [songs.length])
+  }, [songs])
 
   const playSong = (song: Song) => {
     let playListSongs = songs.filter((song) => song.albumId === playlist.id)

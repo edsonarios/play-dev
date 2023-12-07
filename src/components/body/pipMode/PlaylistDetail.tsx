@@ -4,12 +4,12 @@ import { formatTotalDuration } from '@/utils/time'
 import { PlaylistTable } from './PlaylistTable'
 import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 
-export function PlaylistDetail ({ id }: { id: string }) {
+export function PlaylistDetail ({ playlistID }: { playlistID: string }) {
   const { playlists, songs, setSongs, setPlaylists, setPlaylistView } = usePlayerStore<StoreType>(
     (state) => state
   )
-  const playlist = playlists.find((playlist) => playlist.id === id)
-  const playListSongs = songs.filter((song) => song.albumId === id)
+  const playlist = playlists.find((playlist) => playlist.id === playlistID)
+  const playListSongs = songs.filter((song) => song.albumId === playlistID)
   const totalDurationSongs = playListSongs.reduce(
     (acc, song) => acc + song.duration,
     0

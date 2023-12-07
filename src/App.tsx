@@ -51,7 +51,7 @@ export default function App () {
 
   const setPlaylist = () => {
     if (pictureInPicture && playlistView !== '0') {
-      return <PlaylistDetail id={playlistView} />
+      return <PlaylistDetail playlistID={playlistView} />
     }
     return <PlaylistPipMode />
   }

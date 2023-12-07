@@ -28,8 +28,9 @@ function createWindow () {
       contextIsolation: true,
       webSecurity: false
     },
-    width: 1500,
-    height: 900,
+    // fullscreen: true,
+    width: 1920,
+    height: 1080,
     x: 1925,
     y: 60
     // alwaysOnTop: true

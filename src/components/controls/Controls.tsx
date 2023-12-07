@@ -27,10 +27,11 @@ export default function Controls () {
     isPlaying,
     setRandomPlaylist,
     randomPlaylist,
-    copyCurrentMusic
+    copyCurrentMusic,
+    songs
   } = usePlayerStore<StoreType>((state) => state)
 
-  const handleButtonClick = (): void => {
+  const handleRandomPlaylist = (): void => {
     if (currentMusic.song === undefined) return
 
     if (!randomPlaylist) {
@@ -55,6 +56,7 @@ export default function Controls () {
   }
 
   function NextSong () {
+    console.log('next song', currentMusic.songs)
     const actualSong = currentMusic.songs.findIndex(
       (song) => song.id === currentMusic.song?.id
     )
@@ -153,7 +155,7 @@ export default function Controls () {
       default:
         break
     }
-  }, [currentMusic.song, repeatPlaylist, randomPlaylist, isPlaying])
+  }, [currentMusic.song, repeatPlaylist, randomPlaylist, isPlaying, songs])
 
   useEffect(() => {
     window.electronAPI.receive('media-action', handleMediaAction)
@@ -172,7 +174,7 @@ export default function Controls () {
       <div className='grid place-content-center gap-4 flex-1 -ml-48'>
         <div className='flex justify-center flex-col items-center'>
           <div className='flex flex-row'>
-            <button className='mr-6' onClick={handleButtonClick}>
+            <button className='mr-6' onClick={handleRandomPlaylist}>
               <IconControls
                 Icon={randomPlaylist ? RandomOffIcon : RandomOnIcon}
                 className={`${
