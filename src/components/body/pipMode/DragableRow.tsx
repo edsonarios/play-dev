@@ -18,7 +18,7 @@ export function DragableRow ({
   playSong,
   deleteSong
 }: IDragableRow) {
-  const { currentMusic } = usePlayerStore<StoreType>((state) => state)
+  const { currentMusic, songs, songsIdSelected, setSongsIdSelected, lastSongIdSelected, setLastSongIdSelected } = usePlayerStore<StoreType>((state) => state)
   const {
     isDragging,
     attributes,
@@ -40,16 +40,51 @@ export function DragableRow ({
     transition
   }
 
+  const handleRowClick = (event: any) => {
+    const ctrl = event.ctrlKey as boolean
+    const shift = event.shiftKey as boolean
+    const alt = event.altKey as boolean
+
+    if (!ctrl && !shift && !alt) {
+      const isSelected = songsIdSelected.includes(song.id)
+      setSongsIdSelected(isSelected ? [] : [song.id])
+      setLastSongIdSelected(isSelected ? '' : song.id)
+    }
+    if (ctrl) {
+      const isSelected = songsIdSelected.includes(song.id)
+      setSongsIdSelected(isSelected ? songsIdSelected.filter(id => id !== song.id) : [...songsIdSelected, song.id])
+    }
+    if (shift && lastSongIdSelected !== '') {
+      const currentSongs = songs.filter(allSong => allSong.albumId === song?.albumId)
+      const lasSongIdSelectedIndex = currentSongs.findIndex(song => song.id === lastSongIdSelected)
+      const range = [lasSongIdSelectedIndex, index].sort((a, b) => a - b)
+      const rangeSelected = currentSongs.slice(range[0], range[1] + 1).map(song => song.id)
+      setSongsIdSelected(rangeSelected)
+    }
+    if (shift && lastSongIdSelected === '') {
+      const currentSongs = songs.filter(allSong => allSong.albumId === song?.albumId)
+      const range = [0, index].sort((a, b) => a - b)
+      const rangeSelected = currentSongs.slice(range[0], range[1] + 1).map(song => song.id)
+      setSongsIdSelected(rangeSelected)
+    }
+  }
+
+  const isSongSelected = songsIdSelected.includes(song.id)
+
   return (
     <tr
       ref={setNodeRef}
       {...listeners}
       {...attributes}
       key={song.id}
-      className={`border-spacing-0 text-gray-300 text-sm font-light hover:bg-white/10 overflow-hidden transition duration-300 ${
-        isDragging ? 'opacity-30' : ''
-      } ${overIndex === index ? 'border-2 border-green-500 ' : ''}`}
+      className={`border-spacing-0 text-gray-300 text-sm font-light overflow-hidden transition duration-300 select-none
+      ${isDragging ? 'opacity-30' : ''}
+      ${overIndex === index ? 'border-2 border-green-500 ' : ''}
+      ${!isSongSelected ? 'hover:bg-white/5' : ''}
+      ${isSongSelected ? 'bg-white/10' : ''}`
+    }
       style={style}
+      onClick={handleRowClick}
     >
       {/* Id or equaliser icon */}
       <td

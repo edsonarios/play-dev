@@ -54,6 +54,12 @@ export interface StoreType {
 
   playlistView: string
   setPlaylistView: (playlistView: string) => void
+
+  songsIdSelected: string[]
+  setSongsIdSelected: (songsSelected: string[]) => void
+
+  lastSongIdSelected: string
+  setLastSongIdSelected: (lastSongSelected: string) => void
 }
 export const usePlayerStore = create<StoreType>((set, get) => ({
   playerOptions: {
@@ -125,5 +131,11 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   setCopyCurrentMusic: (copyCurrentMusic) => { set({ copyCurrentMusic }) },
 
   playlistView: '0',
-  setPlaylistView: (playlistView) => { set({ playlistView }) }
+  setPlaylistView: (playlistView) => { set({ playlistView }) },
+
+  songsIdSelected: [],
+  setSongsIdSelected: (songsIdSelected) => { set({ songsIdSelected }) },
+
+  lastSongIdSelected: '',
+  setLastSongIdSelected: (lastSongIdSelected) => { set({ lastSongIdSelected }) }
 }))

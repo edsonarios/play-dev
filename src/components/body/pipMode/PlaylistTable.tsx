@@ -7,10 +7,8 @@ import {
   useSensors,
   type DragEndEvent,
   useSensor,
-  PointerSensor,
   MouseSensor,
-  TouchSensor,
-  KeyboardSensor
+  TouchSensor
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
