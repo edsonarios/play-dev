@@ -36,15 +36,13 @@ export default function App () {
   const [currentColor, setCurrentColor] = useState(colors.gray.dark)
   useEffect(() => {
     let newColor = colors.gray.dark
-    if (currentMusic.playlist !== undefined) {
-      if (playlistView !== '0' && pictureInPicture) {
-        const viewPlaylist = playlists.find(playlist => playlist.id === playlistView)
-        if (viewPlaylist !== undefined) {
-          newColor = viewPlaylist.color.dark
-        }
-      } else {
-        newColor = currentMusic.playlist.color.dark
+    if (playlistView !== '0' && pictureInPicture) {
+      const viewPlaylist = playlists.find(playlist => playlist.id === playlistView)
+      if (viewPlaylist !== undefined) {
+        newColor = viewPlaylist.color.dark
       }
+    } else {
+      newColor = currentMusic.playlist?.color.dark ?? colors.gray.dark
     }
     setCurrentColor(newColor)
   }, [playlistView, pictureInPicture, currentMusic.playlist])

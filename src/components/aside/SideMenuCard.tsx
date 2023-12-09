@@ -21,7 +21,8 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     songs,
     setSongs,
     playlists,
-    setPlaylists
+    setPlaylists,
+    setPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
   const [currentPlaylist, setCurrentPlaylist] = useState<Song[]>([])
 
@@ -45,7 +46,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
       )
       setCurrentPlaylist(playListSongs)
     }
-  }, [songs])
+  }, [songs, songs.length])
 
   const playSong = (song: Song) => {
     let playListSongs = songs.filter((song) => song.albumId === playlist.id)
@@ -73,6 +74,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setSongs(newSongs)
     const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
     setPlaylists(newPlaylists)
+    setPlaylistView('0')
   }
 
   // Drag and drop events and control blinking with useRef

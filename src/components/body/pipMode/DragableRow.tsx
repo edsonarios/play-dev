@@ -87,6 +87,9 @@ export function DragableRow ({
     }
       style={style}
       onClick={handleRowClick}
+      onDoubleClick={(event) => {
+        playSong(event, song)
+      }}
     >
       {/* Id or equaliser icon */}
       <td

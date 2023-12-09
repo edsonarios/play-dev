@@ -1,18 +1,15 @@
 * Button picture in picture ✅
 * When Picture in picture is enable, show a detail list of the playlists, with advanced options:
-  - Show Playlist
-  - Play Playlist
+  - Show Playlist [x]
+  - Play Playlist [x]
   - Create New Playlist
   - Edit Playlist
   - Delete Playlist
-  - Show Songs
-  - Play Songs
-  - Create New Playlist
-  - Delete Playlist
-  - Rename Playlist
+  - Show Songs [x]
+  - Play Songs [x]
   - Add Songs to Playlist (from open dialog and drag and drop)
-  - Remove Songs from Playlist
-  - Move Songs in Playlist
+  - Remove Songs from Playlist [x]
+  - Move Songs in Playlist [x]
   - Sort Songs in Playlist
 
   - Show two sections showing the playlist, to move songs between them
@@ -22,7 +19,7 @@
 
   - Edit song and apply changes in the original file (only if the file is in the local machine e.g. rename, delete, move, etc)
 
-* Sort playlist by drag and drop
+* Sort playlist by drag and drop [x]
 * Click y song name in controls, in aside menu focus in the song name
 * Actually the plyr not reproduce any format song (works in .mp4 .mp3), maybe find a codecs to add o new player
 * Add Search in the playlist
@@ -30,6 +27,7 @@
 * Rezisable aside menu
 * AsideMenu in sections
   - New section
+* Press key "p" to enter in pip mode
 
 * Integrate with Spotify and Youtube
 
