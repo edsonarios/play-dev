@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import musicMetadata from 'music-metadata'
 import crypto from 'crypto'
+import { naturalSort } from './utils'
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -115,6 +116,7 @@ ipcMain.handle('open-directory-dialog', async () => {
     const songsWithMetadata = await Promise.all(
       files
         .filter(file => allowedExtensions.has(path.extname(file).toLowerCase()))
+        .sort(naturalSort)
         .map(async (file) => {
           const filePath = path.join(directoryPath, file)
           try {

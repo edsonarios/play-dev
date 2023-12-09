@@ -6,3 +6,10 @@ export const formatTime = (time: number | undefined) => {
 
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
+
+export function naturalSort (a: string, b: string) {
+  return a.localeCompare(b, undefined, {
+    numeric: true,
+    sensitivity: 'base'
+  })
+}

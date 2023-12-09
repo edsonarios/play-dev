@@ -31,7 +31,7 @@ export function DragableRow ({
     id: song.id,
     transition: {
       duration: 300,
-      easing: 'cubic-bezier(.17,.67,.83,.67)'
+      easing: 'cubic-bezier(1,1,0,0)'
     }
   })
 
