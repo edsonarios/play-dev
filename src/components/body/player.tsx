@@ -336,7 +336,8 @@ export default function PlayerComponent () {
           artists: ['artists'],
           album: 'All Songs',
           duration: 90,
-          format: ''
+          format: '',
+          isDragging: false
         }
         newSongs.push(newSong)
         defaultSongs.push(newSong)

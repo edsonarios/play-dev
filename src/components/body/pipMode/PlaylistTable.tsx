@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { TimeIcon } from '@/icons/Time'
 import { type Playlist, type Song } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
@@ -13,7 +14,6 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
-import { useState } from 'react'
 
 interface PlayListTable {
   playlist: Playlist | undefined
@@ -34,8 +34,6 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     setSongs,
     songsIdSelected
   } = usePlayerStore<StoreType>((state) => state)
-
-  const [temporalSelectedSongs, setTemporalSelectedSongs] = useState<Song[]>(playlistSongs)
 
   const playSong = (event: any, toPlaySong: Song) => {
     event.stopPropagation()
@@ -86,7 +84,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         (song) => song.id === activeId
       )?.albumId
 
-      const newSongs = [...playlistSongs]
+      const newSongs = playlistSongs.filter((song) => !song.isDragging)
       // Remove the song that is being dragged
       const removedSong = newSongs.splice(
         newSongs.findIndex((song) => song.id === activeId),
@@ -98,9 +96,21 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         newIndex++
       }
 
+      // disable songs invisible
+      const songsDragged = playlistSongs.filter((song) => {
+        if (songsIdSelected.includes(song.id) && song.id !== activeId) {
+          song.isDragging = false
+          return song
+        }
+      })
+
       // Insert song dragged and temporalSelectedSongs in the newSongs array
-      const allSongsSelected = removedSong.concat(temporalSelectedSongs)
-      newSongs.splice(newIndex, 0, ...allSongsSelected)
+      const allSongsSelected = removedSong.concat(songsDragged)
+      if (songsIdSelected.length > 1) {
+        newSongs.splice(newIndex, 0, ...allSongsSelected)
+      } else {
+        newSongs.splice(newIndex, 0, ...removedSong)
+      }
       const songsWithoutCurrentAlbum = songs.filter(
         (song) => song.albumId !== albumId
       )
@@ -111,7 +121,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       setSongs(newSongsWithCurrentAlbum)
     }
     if (activeId === overId && songsIdSelected.length > 1) {
-      const newSongs = [...playlistSongs]
+      const newSongs = playlistSongs.filter((song) => !song.isDragging)
       // Find the albumId of the song that is being dragged
       const albumId = playlistSongs.find(
         (song) => song.id === activeId
@@ -119,8 +129,17 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
 
       // Find the index of the song that is being dragged over
       const findIndex = newSongs.findIndex((song) => song.id === activeId)
+
+      // disable songs invisible
+      const songsDragged = playlistSongs.filter((song) => {
+        if (song.isDragging) {
+          song.isDragging = false
+          return song
+        }
+      })
+
       // Restore the songs that were removed temporarily
-      newSongs.splice(findIndex + 1, 0, ...temporalSelectedSongs)
+      newSongs.splice(findIndex + 1, 0, ...songsDragged)
       const songsWithoutCurrentAlbum = songs.filter(
         (song) => song.albumId !== albumId
       )
@@ -134,17 +153,19 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
 
   const handleDragStart = (event: DragStartEvent) => {
     if (songsIdSelected.length > 1) {
-      console.log('drag start')
       const activeId = event.active.id as string
       const playlistWithouActiveId = songsIdSelected.filter(song => song !== activeId)
       const playlistWithoutSelectedSongs = songs.filter(
         (song) => !playlistWithouActiveId.includes(song.id)
       )
-      const temporalSongs = songs.filter(
-        (song) => playlistWithouActiveId.includes(song.id)
-      )
-      setTemporalSelectedSongs(temporalSongs)
-      setSongs(playlistWithoutSelectedSongs)
+
+      const temporalSongs = songs.filter((song) => {
+        if (playlistWithouActiveId.includes(song.id)) {
+          song.isDragging = true
+          return song
+        }
+      })
+      setSongs(playlistWithoutSelectedSongs.concat(temporalSongs))
     }
   }
 

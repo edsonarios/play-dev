@@ -31,6 +31,7 @@ export interface Song {
   album: string
   duration: number
   format: string
+  isDragging: boolean
 }
 
 export const songs: Song[] = []

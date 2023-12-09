@@ -130,7 +130,8 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
               artists: ['artists'],
               album: 'All Songs',
               duration: 90,
-              format: ''
+              format: '',
+              isDragging: false
             }
             newSongs.push(newSong)
             setSongs(newSongs)

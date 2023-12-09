@@ -80,8 +80,10 @@ export function DragableRow ({
       className={`border-spacing-0 text-gray-300 text-sm font-light overflow-hidden transition duration-300 select-none
       ${isDragging ? 'opacity-30' : ''}
       ${overIndex === index ? 'border-2 border-green-500 ' : ''}
+      ${overIndex === index && song.isDragging ? 'border-2 border-red-500 ' : ''}
       ${!isSongSelected ? 'hover:bg-white/5' : ''}
-      ${isSongSelected ? 'bg-white/10' : ''}`
+      ${isSongSelected ? 'bg-white/10' : ''}
+      ${song.isDragging ? 'opacity-0' : ''}`
     }
       style={style}
       onClick={handleRowClick}
@@ -103,10 +105,10 @@ export function DragableRow ({
           />
             )
           : (
-          <div className="">{index + 1}</div>
+          <div>{index + 1}</div>
             )}
         <button
-          className="absolute p-1 right-3 bottom-6 opacity-0 hover:opacity-100 bg-zinc-700 z-10 "
+          className="absolute p-2 right-3 bottom-6 opacity-0 hover:opacity-50 bg-zinc-700 z-20 "
           onClick={(event) => {
             playSong(event, song)
           }}

@@ -36,7 +36,8 @@ export default function SideMenuItem ({ Icon, text, href }: SideMenuType) {
           artists: [titleFolder],
           album: titleFolder,
           duration: file.duration,
-          format: ''
+          format: '',
+          isDragging: false
         })
       })
       setSongs(newSongs)

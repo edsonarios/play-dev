@@ -60,10 +60,8 @@ export interface StoreType {
 
   lastSongIdSelected: string
   setLastSongIdSelected: (lastSongSelected: string) => void
-
-  isDraggingStore: boolean
-  setIsDraggingStore: (isDraggingStore: boolean) => void
 }
+
 export const usePlayerStore = create<StoreType>((set, get) => ({
   playerOptions: {
     loop: { active: false },
@@ -140,8 +138,5 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   setSongsIdSelected: (songsIdSelected) => { set({ songsIdSelected }) },
 
   lastSongIdSelected: '',
-  setLastSongIdSelected: (lastSongIdSelected) => { set({ lastSongIdSelected }) },
-
-  isDraggingStore: false,
-  setIsDraggingStore: (isDraggingStore) => { set({ isDraggingStore }) }
+  setLastSongIdSelected: (lastSongIdSelected) => { set({ lastSongIdSelected }) }
 }))
