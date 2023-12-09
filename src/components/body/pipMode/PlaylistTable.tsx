@@ -8,10 +8,12 @@ import {
   type DragEndEvent,
   useSensor,
   MouseSensor,
-  TouchSensor
+  TouchSensor,
+  type DragStartEvent
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
+import { useState } from 'react'
 
 interface PlayListTable {
   playlist: Playlist | undefined
@@ -29,8 +31,11 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     randomPlaylist,
     setIsPlaying,
     songs,
-    setSongs
+    setSongs,
+    songsIdSelected
   } = usePlayerStore<StoreType>((state) => state)
+
+  const [temporalSelectedSongs, setTemporalSelectedSongs] = useState<Song[]>(playlistSongs)
 
   const playSong = (event: any, toPlaySong: Song) => {
     event.stopPropagation()
@@ -64,32 +69,38 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     )
     setSongs(newPlaylistSongs)
   }
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     const activatorEvent = event.activatorEvent as unknown as ActivatorEvent
     const activeId = active.id as string
     const overId = over?.id as string
+    const activeIndex = active.data.current?.sortable.index as number
+    const overIndex = over?.data.current?.sortable.index as number
+
     if (activeId !== overId) {
-      console.log(
-        activatorEvent.shiftKey,
-        activatorEvent.ctrlKey,
-        activatorEvent.altKey
-      )
-      const activeIndex = active.data.current?.sortable.index as number
-      const overIndex = over?.data.current?.sortable.index as number
+      console.log(activatorEvent.altKey)
+
+      // Find the albumId of the song that is being dragged
       const albumId = playlistSongs.find(
         (song) => song.id === activeId
       )?.albumId
+
       const newSongs = [...playlistSongs]
+      // Remove the song that is being dragged
       const removedSong = newSongs.splice(
         newSongs.findIndex((song) => song.id === activeId),
         1
       )
+      // Find the index of the song that is being dragged over
       let newIndex = newSongs.findIndex((song) => song.id === overId)
       if (activeIndex < overIndex) {
         newIndex++
       }
-      newSongs.splice(newIndex, 0, removedSong[0])
+
+      // Insert song dragged and temporalSelectedSongs in the newSongs array
+      const allSongsSelected = removedSong.concat(temporalSelectedSongs)
+      newSongs.splice(newIndex, 0, ...allSongsSelected)
       const songsWithoutCurrentAlbum = songs.filter(
         (song) => song.albumId !== albumId
       )
@@ -98,6 +109,42 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         ...newSongs
       ]
       setSongs(newSongsWithCurrentAlbum)
+    }
+    if (activeId === overId && songsIdSelected.length > 1) {
+      const newSongs = [...playlistSongs]
+      // Find the albumId of the song that is being dragged
+      const albumId = playlistSongs.find(
+        (song) => song.id === activeId
+      )?.albumId
+
+      // Find the index of the song that is being dragged over
+      const findIndex = newSongs.findIndex((song) => song.id === activeId)
+      // Restore the songs that were removed temporarily
+      newSongs.splice(findIndex + 1, 0, ...temporalSelectedSongs)
+      const songsWithoutCurrentAlbum = songs.filter(
+        (song) => song.albumId !== albumId
+      )
+      const newSongsWithCurrentAlbum = [
+        ...songsWithoutCurrentAlbum,
+        ...newSongs
+      ]
+      setSongs(newSongsWithCurrentAlbum)
+    }
+  }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    if (songsIdSelected.length > 1) {
+      console.log('drag start')
+      const activeId = event.active.id as string
+      const playlistWithouActiveId = songsIdSelected.filter(song => song !== activeId)
+      const playlistWithoutSelectedSongs = songs.filter(
+        (song) => !playlistWithouActiveId.includes(song.id)
+      )
+      const temporalSongs = songs.filter(
+        (song) => playlistWithouActiveId.includes(song.id)
+      )
+      setTemporalSelectedSongs(temporalSongs)
+      setSongs(playlistWithoutSelectedSongs)
     }
   }
 
@@ -115,7 +162,11 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     })
   )
   return (
-    <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+    <DndContext
+      onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
+      sensors={sensors}
+    >
       <table className="table-auto text-left w-[95%] divide-y divide-gray-500/20 ml-6 mr-2 mt-4">
         <thead className="">
           <tr className="text-zinc-400 text-sm">

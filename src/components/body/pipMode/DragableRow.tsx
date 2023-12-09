@@ -140,13 +140,16 @@ export function DragableRow ({
       {/* Time duration */}
       <td className="px-4 py-2">{formatTime(song.duration)}</td>
       {/* Delete Song Button */}
-      <td className="text-zinc-400 px-4 py-2 rounded-tr-lg rounded-br-lg">
+      <td className="relative text-zinc-400 px-4 py-2 rounded-tr-lg rounded-br-lg">
         <button
           className="opacity-10 hover:opacity-100"
           onClick={(event) => { deleteSong(event, song) }}
         >
           <DeleteOptionsIcon />
         </button>
+        <div className={`absolute flex items-center justify-center rounded-full bg-blue-600 text-white p-1 w-6 h-6 opacity-0 top-4 right-4 ${isDragging && songsIdSelected.length > 0 ? 'opacity-100' : ''}`}>
+          {songsIdSelected.length}
+        </div>
       </td>
     </tr>
   )
