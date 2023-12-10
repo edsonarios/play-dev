@@ -64,6 +64,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string }) {
           <div className='relative ml-8'>
             <button
               className="absolute bottom-2 opacity-20 hover:opacity-100 hover:text-red-400"
+              title='Delete playlist'
               onClick={() => {
                 deletePlaylist()
               }}

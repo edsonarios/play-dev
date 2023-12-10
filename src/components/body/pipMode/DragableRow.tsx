@@ -147,8 +147,9 @@ export function DragableRow ({
       {/* Delete Song Button */}
       <td className="relative text-zinc-400 px-4 py-2 rounded-tr-lg rounded-br-lg">
         <button
-          className="opacity-10 hover:opacity-100"
+          className="opacity-10 hover:opacity-100 p-1"
           onClick={(event) => { deleteSong(event, song) }}
+          title='Delete song'
         >
           <DeleteOptionsIcon />
         </button>
