@@ -17,6 +17,7 @@
     "plyr-react": "^5.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-split": "^2.0.14",
     "vite-tsconfig-paths": "^4.2.1",
     "zustand": "^4.4.7"
   },
