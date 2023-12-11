@@ -1,3 +1,5 @@
+import { colors, covers } from './entities/playlist.entity'
+
 export const formatTime = (time: number | undefined) => {
   if (time === undefined) return '0:00'
 
@@ -12,4 +14,16 @@ export function naturalSort (a: string, b: string) {
     numeric: true,
     sensitivity: 'base'
   })
+}
+
+export const getRandomColor = () => {
+  const colorKeys = Object.keys(colors)
+  const randomIndex = Math.floor(Math.random() * colorKeys.length)
+  const randomColorKey = colorKeys[randomIndex]
+  return colors[randomColorKey]
+}
+
+export const getRandomImage = () => {
+  const randomIndex = Math.floor(Math.random() * covers.length)
+  return covers[randomIndex]
 }

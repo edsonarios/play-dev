@@ -35,3 +35,4 @@
 * Made responsive plyr
 * Bug when charge the playlist the first time, the time not advance, the rest of songs its works
 * Add new song by drag and drop in aside menu, not get the metadata, to specific the duration song
+* Bug: In Drag and drop in aside menu, permit drop folder, an thats should'nt be possible

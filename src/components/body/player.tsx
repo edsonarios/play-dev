@@ -3,7 +3,8 @@
 import { useRef, useEffect } from 'react'
 import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
-import { type Song } from '@/lib/data'
+import { Song } from '@/lib/entities/song.entity'
+import { type ISong } from '@/lib/data'
 
 export default function PlayerComponent () {
   const playerRef = useRef<APITypes>(null)
@@ -31,6 +32,7 @@ export default function PlayerComponent () {
   useEffect(() => {
     if (currentMusic.song !== undefined) {
       const newVideoSrc = `file://${currentMusic.song.directoryPath}/${currentMusic.song.title}`
+      console.log(newVideoSrc)
 
       if (playerRef.current !== undefined && playerRef.current?.plyr !== undefined) {
         playerRef.current.plyr.source = {
@@ -318,35 +320,29 @@ export default function PlayerComponent () {
   }
 
   // drang and drop main process
-  const handleDropElectron = (event: any) => {
+  const handleDropElectron = async (event: any) => {
     event.preventDefault()
     // Use DataTransferItemList interface to access the file(s)
-    if (event.dataTransfer.items !== undefined) {
-      if (event.dataTransfer.items.length > 0 && event.dataTransfer.items[0].kind === 'file') {
-        const file = event.dataTransfer.items[0].getAsFile()
-        const folderPath = file.path.split(file.name)[0]
-        const defaultSongs = songs.filter((song) => song.albumId === '1')
-        const newSongs = songs
-        const newSong: Song = {
-          id: window.crypto.randomUUID(),
-          albumId: '1',
-          title: file.name,
-          directoryPath: folderPath,
-          image: 'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353',
-          artists: ['artists'],
-          album: 'All Songs',
-          duration: 90,
-          format: '',
-          isDragging: false
+    const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
+    const filesWithMetadata = await window.electronAPI.getMusicMetadata(dataFiles.map(file => file.path))
+    if (dataFiles !== undefined) {
+      if (dataFiles.length > 0) {
+        const defaultSongsToAdd: ISong[] = []
+        for (const item of filesWithMetadata) {
+          const newSong = new Song({
+            ...item,
+            albumId: '1',
+            image: 'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353'
+          })
+          defaultSongsToAdd.push(newSong)
         }
-        newSongs.push(newSong)
-        defaultSongs.push(newSong)
-        setSongs(newSongs)
+        const songsFromDefaultPlaylist = songs.filter((song) => song.albumId === playlists[0].id)
         setCurrentMusic({
           playlist: playlists[0],
-          song: defaultSongs[defaultSongs.length - 1],
-          songs: defaultSongs
+          song: defaultSongsToAdd[0],
+          songs: songsFromDefaultPlaylist.concat(defaultSongsToAdd)
         })
+        setSongs(songs.concat(defaultSongsToAdd))
       }
     }
   }

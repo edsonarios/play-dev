@@ -1,16 +1,18 @@
 import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 import { PlayTableIcon } from '@/icons/playlist/PlayPause'
-import { type Song } from '@/lib/data'
+import { type ISong } from '@/lib/data'
+import { Song } from '@/lib/entities/song.entity'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { formatTime } from 'electron/utils'
+import { useState, useRef } from 'react'
 
 interface IDragableRow {
-  song: Song
+  song: ISong
   index: number
-  playSong: (event: any, song: Song) => void
-  deleteSong: (event: any, song: Song) => void
+  playSong: (event: any, song: ISong) => void
+  deleteSong: (event: any, song: ISong) => void
 }
 export function DragableRow ({
   song,
@@ -18,7 +20,7 @@ export function DragableRow ({
   playSong,
   deleteSong
 }: IDragableRow) {
-  const { currentMusic, songs, songsIdSelected, setSongsIdSelected, lastSongIdSelected, setLastSongIdSelected } = usePlayerStore<StoreType>((state) => state)
+  const { currentMusic, songs, setSongs, songsIdSelected, setSongsIdSelected, lastSongIdSelected, setLastSongIdSelected } = usePlayerStore<StoreType>((state) => state)
   const {
     isDragging,
     attributes,
@@ -71,6 +73,64 @@ export function DragableRow ({
 
   const isSongSelected = songsIdSelected.includes(song.id)
 
+  // Drag and drop events and control blinking with useRef
+  const [isDragOver, setIsDragOver] = useState(false)
+  const dragCounter = useRef(0)
+
+  const handleDragEnter = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    dragCounter.current++
+    if (dragCounter.current === 1) {
+      setIsDragOver(true)
+    }
+  }
+
+  const handleDragLeave = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    dragCounter.current--
+    if (dragCounter.current === 0) {
+      setIsDragOver(false)
+    }
+  }
+
+  const handleDragOver = (event: any) => {
+    event.preventDefault()
+    event.stopPropagation()
+    if (dragCounter.current === 1) {
+      setIsDragOver(true)
+    }
+  }
+
+  const handleDrop = async (event: any, songIndex: ISong) => {
+    event.preventDefault()
+    event.stopPropagation()
+    setIsDragOver(false)
+    dragCounter.current = 0
+
+    const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
+    const filesWithMetadata = await window.electronAPI.getMusicMetadata(dataFiles.map(file => file.path))
+    // Use DataTransferItemList interface to access the file(s)
+    if (dataFiles !== undefined) {
+      if (dataFiles.length > 0) {
+        const songsToAdd: ISong[] = []
+        const newSongs = songs
+        for (const item of filesWithMetadata) {
+          const newSong = new Song({
+            ...item,
+            albumId: song.albumId,
+            image: song.image
+          })
+          songsToAdd.push(newSong)
+        }
+        const indexSong = newSongs.findIndex((song) => song.id === songIndex.id)
+        newSongs.splice(indexSong, 0, ...songsToAdd)
+        setSongs(newSongs)
+      }
+    }
+  }
+
   return (
     <tr
       ref={setNodeRef}
@@ -83,13 +143,18 @@ export function DragableRow ({
       ${overIndex === index && song.isDragging ? 'border-2 border-red-500 ' : ''}
       ${!isSongSelected ? 'hover:bg-white/5' : ''}
       ${isSongSelected ? 'bg-white/10' : ''}
-      ${song.isDragging ? 'opacity-0' : ''}`
+      ${song.isDragging ? 'opacity-0' : ''}
+      ${isDragOver ? 'border-t-4 border-blue-600 border-opacity-60' : ''}`
     }
       style={style}
       onClick={handleRowClick}
       onDoubleClick={(event) => {
         playSong(event, song)
       }}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={(event) => { void handleDrop(event, song) }}
     >
       {/* Id or equaliser icon */}
       <td
@@ -137,7 +202,7 @@ export function DragableRow ({
           >
             {song.title}
           </h3>
-          <span>{song.artists.join(', ')}</span>
+          <span>{song.artists !== undefined && song.artists.length > 0 ? song.artists.join(', ') : ''}</span>
         </div>
       </td>
       {/* Album name */}

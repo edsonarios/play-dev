@@ -1,11 +1,11 @@
 import { create } from 'zustand'
-import { type Playlist, type Song } from '../lib/data'
+import { type IPlaylist, type ISong } from '../lib/data'
 import { type PlyrOptions } from 'plyr-react'
 
 export interface CurrentMusicType {
-  playlist: Playlist | undefined
-  song: Song | undefined
-  songs: Song[]
+  playlist: IPlaylist | undefined
+  song: ISong | undefined
+  songs: ISong[]
 }
 export type RepeatPlaylistOptions = 'off' | 'on' | 'one'
 
@@ -13,11 +13,11 @@ export interface StoreType {
   playerOptions: PlyrOptions
   setPlayerOptions: (playerOptions: PlyrOptions) => void
 
-  playlists: Playlist[]
-  setPlaylists: (playlists: Playlist[]) => void
+  playlists: IPlaylist[]
+  setPlaylists: (playlists: IPlaylist[]) => void
 
-  songs: Song[]
-  setSongs: (songs: Song[]) => void
+  songs: ISong[]
+  setSongs: (songs: ISong[]) => void
 
   isPlaying: boolean
   setIsPlaying: (isPlaying: boolean) => void

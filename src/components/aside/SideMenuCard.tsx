@@ -1,14 +1,15 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { type Playlist, type Song } from '@/lib/data'
+import { type IPlaylist, type ISong } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { CardPlayButton } from '../CardPlay'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { VolumeAsideIcon } from '@/icons/aside/Volume'
 import { formatTime } from '@/utils/time'
+import { Song } from '@/lib/entities/song.entity'
 
 interface CardPlaylist {
-  playlist: Playlist
+  playlist: IPlaylist
 }
 
 export default function SideMenuCard ({ playlist }: CardPlaylist) {
@@ -24,7 +25,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setPlaylists,
     setPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
-  const [currentPlaylist, setCurrentPlaylist] = useState<Song[]>([])
+  const [currentPlaylist, setCurrentPlaylist] = useState<ISong[]>([])
 
   // const { id, title, artists, cover } = playlist
   const artistsString = playlist.artists.join(', ')
@@ -48,7 +49,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     }
   }, [songs, songs.length])
 
-  const playSong = (song: Song) => {
+  const playSong = (song: ISong) => {
     let playListSongs = songs.filter((song) => song.albumId === playlist.id)
     setCopyCurrentMusic({
       playlist,
@@ -107,38 +108,27 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     }
   }
 
-  const handleDrop = (event: any) => {
+  const handleDrop = async (event: any) => {
     event.preventDefault()
     event.stopPropagation()
     setIsDragOver(false)
     dragCounter.current = 0
 
+    const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
+    const filesWithMetadata = await window.electronAPI.getMusicMetadata(dataFiles.map(file => file.path))
     // Use DataTransferItemList interface to access the file(s)
-    if (event.dataTransfer.items !== undefined) {
-      if (event.dataTransfer.items.length > 0 && event.dataTransfer.items[0].kind === 'file') {
-        for (const item of event.dataTransfer.items) {
-          // If dropped items aren't files, reject them
-          if (item.kind === 'file') {
-            const file = item.getAsFile()
-            console.log(file)
-            const folderPath = file.path.split(file.name)[0].replace(/\\/g, '/')
-            const newSongs = songs
-            const newSong: Song = {
-              id: window.crypto.randomUUID(),
-              albumId: playlist.id,
-              title: file.name,
-              directoryPath: folderPath,
-              image: playlist.cover,
-              artists: ['artists'],
-              album: 'All Songs',
-              duration: 90,
-              format: '',
-              isDragging: false
-            }
-            newSongs.push(newSong)
-            setSongs(newSongs)
-          }
+    if (dataFiles !== undefined) {
+      if (dataFiles.length > 0) {
+        const newSongs = songs
+        for (const item of filesWithMetadata) {
+          const newSong = new Song({
+            ...item,
+            albumId: playlist.id,
+            image: playlist.cover
+          })
+          newSongs.push(newSong)
         }
+        setSongs(newSongs)
       }
     }
   }

@@ -1,6 +1,6 @@
 import { colors } from './colors'
 
-export interface Playlist {
+export interface IPlaylist {
   id: string
   albumId: string
   title: string
@@ -9,7 +9,7 @@ export interface Playlist {
   artists: string[]
 }
 
-export const playlists: Playlist[] = [
+export const playlists: IPlaylist[] = [
   {
     id: '1',
     albumId: '1',
@@ -21,7 +21,7 @@ export const playlists: Playlist[] = [
   }
 ]
 
-export interface Song {
+export interface ISong {
   id: string
   albumId: string
   title: string
@@ -34,7 +34,7 @@ export interface Song {
   isDragging: boolean
 }
 
-export const songs: Song[] = []
+export const songs: ISong[] = []
 export const covers: string[] = [
   'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353',
   'https://vinyl.lofirecords.com/cdn/shop/files/2amsynth-vinyl.png?v=1693312187',

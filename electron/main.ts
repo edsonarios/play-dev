@@ -3,7 +3,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import musicMetadata from 'music-metadata'
 import crypto from 'crypto'
-import { naturalSort } from './utils'
+import { getRandomColor, getRandomImage, naturalSort } from './utils'
+import { allowedExtensions } from './constants'
+import { Song } from './entities/song.entity'
+import { Playlist } from './entities/playlist.entity'
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -99,46 +102,114 @@ ipcMain.handle('open-directory-dialog', async () => {
   const result = await dialog.showOpenDialog({ properties: ['openFile'] })
   if (result.canceled || result.filePaths.length === 0) return []
 
-  let directoryPath: string
+  let originalDirectoryPath: string
 
   if (fs.lstatSync(result.filePaths[0]).isDirectory()) {
-    directoryPath = result.filePaths[0]
+    originalDirectoryPath = result.filePaths[0]
   } else {
-    directoryPath = path.dirname(result.filePaths[0])
+    originalDirectoryPath = path.dirname(result.filePaths[0])
   }
 
-  const allowedExtensions = new Set(['.mp3', '.wav', '.flac', '.mp4', '.flv', '.mkv', '.avi', '.ts'])
-
   try {
-    const files = fs.readdirSync(directoryPath)
-    const parseDirectoryPath = directoryPath.replaceAll('\\', '/')
+    const files = fs.readdirSync(originalDirectoryPath)
+
+    const randomImage = getRandomImage()
+    const newPlaylistUUID = crypto.randomUUID()
+    const titlePlaylist = path.basename(originalDirectoryPath)
+    const newPlaylist = new Playlist({
+      id: newPlaylistUUID,
+      albumId: newPlaylistUUID,
+      title: titlePlaylist,
+      color: getRandomColor(),
+      cover: randomImage,
+      artists: ['artist']
+    })
 
     const songsWithMetadata = await Promise.all(
       files
         .filter(file => allowedExtensions.has(path.extname(file).toLowerCase()))
         .sort(naturalSort)
         .map(async (file) => {
-          const filePath = path.join(directoryPath, file)
+          const filePath = path.join(originalDirectoryPath, file)
+          const fileName = path.basename(filePath)
+          const format = path.extname(filePath)
+
           try {
             const metadata = await musicMetadata.parseFile(filePath)
-            return {
-              id: crypto.randomUUID(),
-              name: file,
-              duration: metadata.format.duration
+            let duration = 0
+            if (metadata.format.duration !== undefined) {
+              duration = metadata.format.duration
             }
+            const newSong = new Song({
+              id: crypto.randomUUID(),
+              albumId: newPlaylistUUID,
+              title: fileName,
+              directoryPath: originalDirectoryPath,
+              image: randomImage,
+              artists: ['artist'],
+              album: titlePlaylist,
+              duration,
+              format,
+              isDragging: false
+            })
+            return newSong
           } catch (error) {
             console.error(`Error to read the metadata to file: ${file}`, error)
             return null
           }
         })
     )
-
     return {
-      directoryPath: parseDirectoryPath,
-      files: songsWithMetadata
+      playlist: newPlaylist,
+      songs: songsWithMetadata
     }
   } catch (err) {
     console.error('Error in read the directory', err)
     return {}
+  }
+})
+
+// Get music metadata
+ipcMain.handle('get-music-metadata', async (event, filePath: string[]) => {
+  try {
+    const songsWithMetadata = await Promise.all(
+      filePath
+        .filter(file => allowedExtensions.has(path.extname(file).toLowerCase()))
+        .map(async (file) => {
+          const folderPathParsed = file.replaceAll('\\', '/')
+          const fileName = path.basename(file)
+          const directoryPath = path.dirname(file)
+          const nameFolder = folderPathParsed.split('/')[folderPathParsed.split('/').length - 2]
+          const format = path.extname(file)
+          try {
+            const metadata = await musicMetadata.parseFile(file)
+
+            let duration = 0
+            if (metadata.format.duration !== undefined) {
+              duration = metadata.format.duration
+            }
+            const newSong = new Song({
+              id: crypto.randomUUID(),
+              albumId: '',
+              title: fileName,
+              directoryPath,
+              image: '',
+              artists: ['artist'],
+              album: nameFolder,
+              duration,
+              format,
+              isDragging: false
+            })
+            return newSong
+          } catch (error) {
+            console.error(`Error to read the metadata to file: ${file}`, error)
+            return null
+          }
+        })
+    )
+    return songsWithMetadata
+  } catch (error) {
+    console.error('Error to get metada', error)
+    throw error
   }
 })

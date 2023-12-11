@@ -9,15 +9,11 @@ import { PlaylistPipMode } from './components/body/pipMode/Playlist'
 import { PlaylistDetail } from './components/body/pipMode/PlaylistDetail'
 import { useEffect, useState } from 'react'
 import Split from 'react-split'
+import { type IPlaylist, type ISong } from './lib/data'
 
-interface fileWithMedata {
-  id: string
-  name: string
-  duration: number
-}
 interface OpenDirectoryDialog {
-  directoryPath: string
-  files: fileWithMedata[]
+  playlist: IPlaylist
+  songs: ISong[]
 }
 
 interface ElectronAPI {
@@ -27,6 +23,7 @@ interface ElectronAPI {
     func: (event: any, ...args: any[]) => void
   ) => void
   removeListener: (channel: string, func: (...args: any[]) => void) => void
+  getMusicMetadata: (filePath: string[]) => Promise<ISong[]>
 }
 
 declare global {
@@ -68,7 +65,7 @@ export default function App () {
         <Split
           className="flex flex-row h-full"
           sizes={[15, 85]}
-          minSize={[300, 900]}
+          minSize={[300, 800]}
           gutterSize={10}
           cursor="col-resize"
         >

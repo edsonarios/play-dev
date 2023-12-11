@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
 import { TimeIcon } from '@/icons/Time'
-import { type Playlist, type Song } from '@/lib/data'
+import { type IPlaylist, type ISong } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import {
@@ -16,8 +16,8 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
 
 interface PlayListTable {
-  playlist: Playlist | undefined
-  playlistSongs: Song[]
+  playlist: IPlaylist | undefined
+  playlistSongs: ISong[]
 }
 interface ActivatorEvent {
   shiftKey: boolean
@@ -35,7 +35,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     songsIdSelected
   } = usePlayerStore<StoreType>((state) => state)
 
-  const playSong = (event: any, toPlaySong: Song) => {
+  const playSong = (event: any, toPlaySong: ISong) => {
     event.stopPropagation()
     if (toPlaySong === undefined) return
     let playListSongs = songs.filter(
@@ -59,7 +59,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     setIsPlaying(true)
   }
 
-  const deleteSong = (event: any, toDeleteSong: Song) => {
+  const deleteSong = (event: any, toDeleteSong: ISong) => {
     event.stopPropagation()
     event.preventDefault()
     const newPlaylistSongs = songs.filter(

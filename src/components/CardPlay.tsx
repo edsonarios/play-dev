@@ -1,14 +1,14 @@
 import { CardPauseIcon } from '../icons/card/Pause'
 import { CardPlayIcon } from '../icons/card/Play'
 import { usePlayerStore } from '../store/playerStore'
-import { type Playlist, songs } from '@/lib/data'
+import { type IPlaylist } from '@/lib/data'
 import { shuffleSongs } from '../utils/random'
 interface CardPlayButtonType {
-  playlist: Playlist | undefined
+  playlist: IPlaylist | undefined
   size?: string
 }
 export function CardPlayButton ({ playlist, size = 'small' }: CardPlayButtonType) {
-  const { setCurrentMusic, currentMusic, setIsPlaying, isPlaying, setCopyCurrentMusic, randomPlaylist } = usePlayerStore((state) => state)
+  const { setCurrentMusic, currentMusic, setIsPlaying, isPlaying, setCopyCurrentMusic, randomPlaylist, songs } = usePlayerStore((state) => state)
 
   const handleCardPlayPauseButton = (event: any) => {
     event.stopPropagation()
