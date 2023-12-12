@@ -13,6 +13,7 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@radix-ui/react-slider": "^1.1.2",
     "clsx": "^2.0.0",
+    "lodash.debounce": "^4.0.8",
     "music-metadata": "^7.14.0",
     "music-metadata-browser": "^2.5.10",
     "plyr-react": "^5.3.0",
@@ -23,6 +24,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.13.1",
