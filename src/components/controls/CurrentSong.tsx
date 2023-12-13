@@ -19,7 +19,7 @@ export default function CurrentSong () {
       </picture>
 
       <div className='flex flex-col'>
-        <h3 className='font-semibold text-sm block'>{song !== undefined ? (findIndexSong + 1 + ' ' + song?.title) : message}</h3>
+        <h3 className='font-semibold text-sm block'>{song !== undefined ? ((findIndexSong + 1) + '. ' + song?.title) : message}</h3>
         <span className='text-xs opacity-80'>{song?.artists?.join(', ')}</span>
       </div>
     </div>

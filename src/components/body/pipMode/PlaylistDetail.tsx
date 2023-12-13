@@ -5,7 +5,7 @@ import { formatTotalDuration } from '@/utils/time'
 import { PlaylistTable } from './PlaylistTable'
 import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 import { useCallback, useEffect, useState } from 'react'
-import { SearchLittleIcon } from '@/icons/Search'
+import { SearchLittleIcon } from '@/icons/aside/Search'
 import { type Song } from '@/lib/entities/song.entity'
 import debounce from 'lodash.debounce'
 
@@ -116,7 +116,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string }) {
           </div>
           <div className="relative ml-16">
             <label
-              className={`flex bg-zinc-950 p-1 rounded-3xl opacity-60 border-2
+              className={`flex bg-zinc-950 rounded-3xl opacity-60 border-2
             ${isSearching ? ' border-white' : 'border-transparent'}
             ${inputValue !== '' ? 'opacity-100' : ''}`}
             >

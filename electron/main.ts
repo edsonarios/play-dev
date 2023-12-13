@@ -33,8 +33,8 @@ function createWindow () {
       webSecurity: false
     },
     // fullscreen: true,
-    width: 1920,
-    height: 1080,
+    width: 1850,
+    height: 1000,
     x: 1925,
     y: 60
     // alwaysOnTop: true
@@ -100,7 +100,7 @@ app.on('will-quit', () => {
 // Open directory dialog
 ipcMain.handle('open-directory-dialog', async () => {
   const result = await dialog.showOpenDialog({ properties: ['openFile'] })
-  if (result.canceled || result.filePaths.length === 0) return []
+  if (result.canceled || result.filePaths.length === 0) return {}
 
   let originalDirectoryPath: string
 
