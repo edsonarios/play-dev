@@ -7,6 +7,8 @@ import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { VolumeAsideIcon } from '@/icons/aside/Volume'
 import { formatTime } from '@/utils/time'
 import { Song } from '@/lib/entities/song.entity'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 interface CardPlaylist {
   playlist: IPlaylist
@@ -25,12 +27,35 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setPlaylists,
     setPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
+
+  const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
+  const {
+    isDragging,
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition
+  } = useSortable({
+    id: playlist.id,
+    transition: {
+      duration: 300,
+      easing: 'cubic-bezier(1,1,0,0)'
+    },
+    disabled: isPlaylistExpanded
+  })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  }
+
   const [currentPlaylist, setCurrentPlaylist] = useState<ISong[]>([])
 
-  // const { id, title, artists, cover } = playlist
   const artistsString = playlist.artists.join(', ')
 
   const getPlaylist = () => {
+    setIsPlaylistExpanded(!isPlaylistExpanded)
     if (currentPlaylist.length > 0) {
       setCurrentPlaylist([])
       return
@@ -116,7 +141,6 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
 
     const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
     const filesWithMetadata = await window.electronAPI.getMusicMetadata(dataFiles.map(file => file.path))
-    // Use DataTransferItemList interface to access the file(s)
     if (dataFiles !== undefined) {
       if (dataFiles.length > 0) {
         const newSongs = songs
@@ -139,7 +163,13 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      className={`${isDragOver ? 'bg-zinc-700' : ''} overflow-auto relative`}
+      className={`${isDragOver ? 'bg-zinc-700' : ''} overflow-auto relative
+      ${isDragging ? 'opacity-50' : ''}`}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      key={playlist.id}
+      style={style}
     >
       {/* Delte Playlist button */}
       <button
