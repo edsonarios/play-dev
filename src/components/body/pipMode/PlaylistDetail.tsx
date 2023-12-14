@@ -8,15 +8,20 @@ import { useCallback, useEffect, useState } from 'react'
 import { SearchLittleIcon } from '@/icons/aside/Search'
 import { type Song } from '@/lib/entities/song.entity'
 import debounce from 'lodash.debounce'
+import ModalEditPlaylist from './ModalEditPlaylist'
+import { type Playlist } from '@/lib/entities/playlist.entity'
 
-export function PlaylistDetail ({ playlistID }: { playlistID: string }) {
+export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrentColor: (color: string) => void }) {
   const {
     playlists,
     songs,
     setSongs,
     setPlaylists,
     setPlaylistView,
-    playlistView
+    playlistView,
+    editTemporallyTitle,
+    setEditTemporallyTitle,
+    setEditTemporallyColor
   } = usePlayerStore<StoreType>((state) => state)
   const playlist = playlists.find((playlist) => playlist.id === playlistID)
   const playListSongs = songs.filter((song) => song.albumId === playlistID)
@@ -30,6 +35,12 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string }) {
     const thisSongs = songs.filter((song) => song.albumId === playlistID)
     setCurrentPlaylistSongs(thisSongs)
   }, [playlistView, songs, songs.length])
+
+  const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | undefined>(undefined)
+  useEffect(() => {
+    const thisPlaylist = playlists.find((playlist) => playlist.id === playlistID)
+    setCurrentPlaylist(thisPlaylist)
+  }, [playlistView, playlists])
 
   const deletePlaylist = () => {
     if (playlist === undefined) return
@@ -67,25 +78,58 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string }) {
     setInputValue('')
     setCurrentPlaylistSongs(playListSongs)
   }
+
+  const [isOpen, setIsOpen] = useState(false)
+  const handledEditPlaylist = () => {
+    if (playlist === undefined) return
+    setEditTemporallyTitle(playlist.title)
+    setEditTemporallyColor(playlist.color)
+    setIsOpen(true)
+  }
+
+  // Event key escape to close edit playlist
+  useEffect(() => {
+    const handleKeyPress = (event: any) => {
+      if (event.key === 'Escape') {
+        setEditTemporallyTitle('')
+        setEditTemporallyColor(playlist?.color ?? 'gray')
+        setIsOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
+
+  const handledCloseModal = () => {
+    const currentPlaylist = playlists.find(ply => ply.id === playlist?.id)
+    if (currentPlaylist === undefined) return
+    setEditTemporallyTitle('')
+    setEditTemporallyColor(playlist?.color ?? 'gray')
+    setIsOpen(false)
+  }
+
   return (
     <div className="absolute top-14 w-[95%] flex flex-col overflow-y-disable rounded-lg">
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
         <picture className="aspect-square w-52 h-52 flex-none">
           <img
-            src={playlist?.cover}
-            alt={`Cover of ${playlist?.title}`}
+            src={currentPlaylist?.cover}
+            alt={`Cover of ${currentPlaylist?.title}`}
             className="object-cover w-full h-full shadow-lg rounded-md"
           />
         </picture>
 
         <div className="flex flex-col justify-between">
           <h2 className="flex flex-1 items-end">Playlist</h2>
-          <div>
+          <button onClick={handledEditPlaylist}
+          title='Edit Playlist'>
             <h1 className="text-5xl font-bold block text-white">
-              {playlist?.title}
+              {editTemporallyTitle !== '' ? editTemporallyTitle : currentPlaylist?.title}
               <span></span>
             </h1>
-          </div>
+          </button>
 
           <div className="flex-1 flex items-end">
             <div className="text-sm text-gray-300 font-normal">
@@ -94,7 +138,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string }) {
               </div>
               <p className="mt-1">
                 <span className="text-white">{playListSongs.length} songs</span>
-                , {formatTotalDuration(totalDurationSongs)} approximately
+                {`${playListSongs.length > 0 ? ' ' + formatTotalDuration(totalDurationSongs) + ', approximately' : ''}`}
               </p>
             </div>
           </div>
@@ -153,6 +197,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string }) {
           playlist={playlist}
           playlistSongs={currentPlaylistSongs}
         />
+        <ModalEditPlaylist playlist={currentPlaylist} isOpen={isOpen} setIsOpen={setIsOpen} handledCloseModal={handledCloseModal} />
       </section>
     </div>
   )

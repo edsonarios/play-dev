@@ -1,10 +1,10 @@
-import { colors } from './colors'
+import { getRandomColor } from 'electron/utils'
 
 export interface IPlaylist {
   id: string
   albumId: string
   title: string
-  color: (typeof colors)[keyof typeof colors]
+  color: string
   cover: string
   artists: string[]
 }
@@ -14,7 +14,7 @@ export const playlists: IPlaylist[] = [
     id: '1',
     albumId: '1',
     title: 'All Songs',
-    color: colors.purple,
+    color: getRandomColor(),
     cover:
       'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353',
     artists: []

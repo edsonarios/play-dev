@@ -33,28 +33,42 @@ declare global {
 }
 
 export default function App () {
-  const { currentMusic, pictureInPicture, playlistView, playlists } =
+  const { currentMusic, pictureInPicture, playlistView, playlists, editTemporallyColor, modeColor } =
     usePlayerStore<StoreType>((state) => state)
 
   const [currentColor, setCurrentColor] = useState(colors.gray.dark)
   useEffect(() => {
     let newColor = colors.gray.dark
+    let codeColor = colors.gray
     if (playlistView !== '0' && pictureInPicture) {
+      // Take color in pip mode from current view playlist
       const viewPlaylist = playlists.find(
         (playlist) => playlist.id === playlistView
       )
-      if (viewPlaylist !== undefined) {
-        newColor = viewPlaylist.color.dark
+      if (viewPlaylist?.color !== undefined) {
+        codeColor = colors[viewPlaylist.color]
       }
     } else {
-      newColor = currentMusic.playlist?.color.dark ?? colors.gray.dark
+      // Take color in normal mode from current music
+      if (currentMusic.playlist?.color !== undefined) {
+        codeColor = colors[currentMusic.playlist.color]
+      }
     }
+    newColor = codeColor[modeColor as keyof typeof codeColor]
     setCurrentColor(newColor)
-  }, [playlistView, pictureInPicture, currentMusic.playlist])
+  }, [playlistView, pictureInPicture, currentMusic.playlist, playlists])
+
+  useEffect(() => {
+    if (editTemporallyColor !== '') {
+      const codeColor = colors[editTemporallyColor]
+      const newColor = codeColor[modeColor as keyof typeof codeColor]
+      setCurrentColor(newColor)
+    }
+  }, [editTemporallyColor])
 
   const setPlaylist = () => {
     if (pictureInPicture && playlistView !== '0') {
-      return <PlaylistDetail playlistID={playlistView} />
+      return <PlaylistDetail playlistID={playlistView} setCurrentColor={setCurrentColor} />
     }
     return <PlaylistPipMode />
   }

@@ -1,11 +1,10 @@
-import { type colors } from '../colors'
 import { type IPlaylist } from '../data'
 
 export class Playlist {
   id: string
   albumId: string
   title: string
-  color: (typeof colors)[keyof typeof colors]
+  color: string
   cover: string
   artists: string[]
 

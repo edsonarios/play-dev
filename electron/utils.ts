@@ -19,8 +19,7 @@ export function naturalSort (a: string, b: string) {
 export const getRandomColor = () => {
   const colorKeys = Object.keys(colors)
   const randomIndex = Math.floor(Math.random() * colorKeys.length)
-  const randomColorKey = colorKeys[randomIndex]
-  return colors[randomColorKey]
+  return colorKeys[randomIndex]
 }
 
 export const getRandomImage = () => {

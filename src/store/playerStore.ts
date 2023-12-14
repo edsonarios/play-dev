@@ -10,6 +10,9 @@ export interface CurrentMusicType {
 export type RepeatPlaylistOptions = 'off' | 'on' | 'one'
 
 export interface StoreType {
+  modeColor: string
+  setModeColor: (modeColor: string) => void
+
   playerOptions: PlyrOptions
   setPlayerOptions: (playerOptions: PlyrOptions) => void
 
@@ -60,9 +63,18 @@ export interface StoreType {
 
   lastSongIdSelected: string
   setLastSongIdSelected: (lastSongSelected: string) => void
+
+  editTemporallyTitle: string
+  setEditTemporallyTitle: (editTemporallyTitle: string) => void
+
+  editTemporallyColor: string
+  setEditTemporallyColor: (temporallyColor: string) => void
 }
 
 export const usePlayerStore = create<StoreType>((set, get) => ({
+  modeColor: 'dark',
+  setModeColor: (modeColor) => { set({ modeColor }) },
+
   playerOptions: {
     loop: { active: false },
     autoplay: false,
@@ -138,5 +150,11 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   setSongsIdSelected: (songsIdSelected) => { set({ songsIdSelected }) },
 
   lastSongIdSelected: '',
-  setLastSongIdSelected: (lastSongIdSelected) => { set({ lastSongIdSelected }) }
+  setLastSongIdSelected: (lastSongIdSelected) => { set({ lastSongIdSelected }) },
+
+  editTemporallyTitle: '',
+  setEditTemporallyTitle: (editTemporallyTitle) => { set({ editTemporallyTitle }) },
+
+  editTemporallyColor: '',
+  setEditTemporallyColor: (editTemporallyColor) => { set({ editTemporallyColor }) }
 }))

@@ -24,7 +24,7 @@ export interface IPlaylist {
   id: string
   albumId: string
   title: string
-  color: (typeof colors)[keyof typeof colors]
+  color: string
   cover: string
   artists: string[]
 }
@@ -33,7 +33,7 @@ export class Playlist {
   id: string
   albumId: string
   title: string
-  color: (typeof colors)[keyof typeof colors]
+  color: string
   cover: string
   artists: string[]
 
