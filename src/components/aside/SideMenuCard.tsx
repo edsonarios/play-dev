@@ -267,6 +267,10 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
           </ul>
         </div>
       )}
+      {isPlaylistExpanded && currentPlaylist.length === 0 &&
+      <h3 className="ml-4 mt-1 text-xs">
+        Not Found Songs in this playlist
+      </h3>}
     </div>
   )
 }

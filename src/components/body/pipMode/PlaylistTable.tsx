@@ -154,7 +154,9 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   const handleDragStart = (event: DragStartEvent) => {
     if (songsIdSelected.length > 1) {
       const activeId = event.active.id as string
-      const playlistWithouActiveId = songsIdSelected.filter(song => song !== activeId)
+      const playlistWithouActiveId = songsIdSelected.filter(
+        (song) => song !== activeId
+      )
       const playlistWithoutSelectedSongs = songs.filter(
         (song) => !playlistWithouActiveId.includes(song.id)
       )
@@ -204,17 +206,26 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         <SortableContext items={playlistSongs.map((song) => song.id)}>
           <tbody>
             {playlistSongs.map((song, index) => (
-              <DragableRow
-                key={song.id}
-                song={song}
-                index={index}
-                playSong={playSong}
-                deleteSong={deleteSong}
-              />
+                <DragableRow
+                  key={song.id}
+                  song={song}
+                  index={index}
+                  playSong={playSong}
+                  deleteSong={deleteSong}
+                />
             ))}
           </tbody>
         </SortableContext>
       </table>
+      {playlistSongs.length === 0
+        ? (
+        <h1 className="flex justify-center self-center w-full h-36 mt-20">
+          Not Found Songs in this playlist
+        </h1>
+          )
+        : (
+            ''
+          )}
     </DndContext>
   )
 }
