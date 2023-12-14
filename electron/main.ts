@@ -155,7 +155,6 @@ ipcMain.handle('open-directory-dialog', async () => {
             return newSong
           } catch (error) {
             console.error(`Error to read the metadata to file: ${file}`, error)
-            return null
           }
         })
     )
@@ -212,4 +211,11 @@ ipcMain.handle('get-music-metadata', async (event, filePath: string[]) => {
     console.error('Error to get metada', error)
     throw error
   }
+})
+
+// Get image to cover in playlist
+ipcMain.handle('get-image-to-cover', async (event) => {
+  const result = await dialog.showOpenDialog({ properties: ['openFile'] })
+  if (result.canceled || result.filePaths.length === 0) return ''
+  return 'file://' + result.filePaths[0].replaceAll('\\', '/')
 })

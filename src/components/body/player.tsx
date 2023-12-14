@@ -332,7 +332,7 @@ export default function PlayerComponent () {
           const newSong = new Song({
             ...item,
             albumId: '1',
-            image: 'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353'
+            image: playlists[0].cover
           })
           defaultSongsToAdd.push(newSong)
         }

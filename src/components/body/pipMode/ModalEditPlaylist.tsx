@@ -1,4 +1,5 @@
-import { CloseIcon } from '@/icons/aside/Library'
+import { CloseIcon } from '@/icons/edit/Close'
+import { PencilIcon } from '@/icons/edit/Pencil'
 import { colors } from '@/lib/colors'
 import { type Playlist } from '@/lib/entities/playlist.entity'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
@@ -14,8 +15,18 @@ export default function ModalEditPlaylist ({
   setIsOpen: (isOpen: boolean) => void
   handledCloseModal: () => void
 }) {
-  const { playlists, setPlaylists, editTemporallyColor, setEditTemporallyColor, editTemporallyTitle, setEditTemporallyTitle, currentMusic, setCurrentMusic } =
-    usePlayerStore<StoreType>((state) => state)
+  const {
+    playlists,
+    setPlaylists,
+    editTemporallyColor,
+    setEditTemporallyColor,
+    editTemporallyTitle,
+    setEditTemporallyTitle,
+    currentMusic,
+    setCurrentMusic,
+    editTemporallyCover,
+    setEditTemporallyCover
+  } = usePlayerStore<StoreType>((state) => state)
 
   const handledEditPlaylist = (event: any) => {
     if (event.target.value === undefined) return
@@ -36,7 +47,8 @@ export default function ModalEditPlaylist ({
         const newItem: Playlist = {
           ...item,
           title: editTemporallyTitle,
-          color: editTemporallyColor
+          color: editTemporallyColor,
+          cover: editTemporallyCover
         }
         if (currentMusic.playlist?.id === playlist.id) {
           setCurrentMusic({ ...currentMusic, playlist: newItem })
@@ -47,7 +59,14 @@ export default function ModalEditPlaylist ({
     })
     setPlaylists(newPlaylists)
     setEditTemporallyTitle('')
+    setEditTemporallyCover('')
     setIsOpen(false)
+  }
+
+  const handledUploadImage = async () => {
+    const image = await window.electronAPI.getImageToCover()
+    if (image === '') return
+    setEditTemporallyCover(image)
   }
 
   return (
@@ -57,8 +76,11 @@ export default function ModalEditPlaylist ({
       ${isOpen ? '' : 'hidden'}`}
     >
       <section
-        onClick={(event) => { event.stopPropagation() }}
-        className="relative flex flex-col bg-zinc-900 rounded-md p-6 gap-8 px-6 mt-12 mb-8">
+        onClick={(event) => {
+          event.stopPropagation()
+        }}
+        className="relative flex flex-col bg-zinc-900 rounded-md p-6 gap-8 px-6 mt-12 mb-8"
+      >
         <div className="flex justify-between">
           <h1>Edit Playlist</h1>
           <button
@@ -69,12 +91,19 @@ export default function ModalEditPlaylist ({
           </button>
         </div>
         <form onSubmit={handleSavePlaylist} className="flex flex-row">
-          <picture className="aspect-square w-52 h-52 flex-none mr-4">
+          <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
             <img
-              src={playlist?.cover}
+              src={editTemporallyCover}
               alt={`Cover of ${playlist?.title}`}
               className="object-cover w-full h-full shadow-lg rounded-md"
             />
+            <div
+              onClick={handledUploadImage}
+              className="absolute bg-black opacity-0 hover:opacity-80 w-full h-full top-0 flex justify-center items-center flex-col"
+            >
+              <PencilIcon />
+              <h1 className="mt-6">Chooise image</h1>
+            </div>
           </picture>
 
           <div className="flex flex-col">

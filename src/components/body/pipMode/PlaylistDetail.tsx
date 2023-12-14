@@ -21,7 +21,9 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
     playlistView,
     editTemporallyTitle,
     setEditTemporallyTitle,
-    setEditTemporallyColor
+    setEditTemporallyColor,
+    editTemporallyCover,
+    setEditTemporallyCover
   } = usePlayerStore<StoreType>((state) => state)
   const playlist = playlists.find((playlist) => playlist.id === playlistID)
   const playListSongs = songs.filter((song) => song.albumId === playlistID)
@@ -84,6 +86,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
     if (playlist === undefined) return
     setEditTemporallyTitle(playlist.title)
     setEditTemporallyColor(playlist.color)
+    setEditTemporallyCover(playlist?.cover)
     setIsOpen(true)
   }
 
@@ -103,10 +106,11 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
   }, [])
 
   const handledCloseModal = () => {
-    const currentPlaylist = playlists.find(ply => ply.id === playlist?.id)
-    if (currentPlaylist === undefined) return
+    // const currentPlaylist = playlists.find(ply => ply.id === playlist?.id)
+    if (playlist === undefined) return
     setEditTemporallyTitle('')
-    setEditTemporallyColor(playlist?.color ?? 'gray')
+    setEditTemporallyColor(playlist.color)
+    setEditTemporallyCover(playlist.cover)
     setIsOpen(false)
   }
 
@@ -115,7 +119,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
         <picture className="aspect-square w-52 h-52 flex-none">
           <img
-            src={currentPlaylist?.cover}
+            src={isOpen ? editTemporallyCover : currentPlaylist?.cover}
             alt={`Cover of ${currentPlaylist?.title}`}
             className="object-cover w-full h-full shadow-lg rounded-md"
           />

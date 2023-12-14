@@ -24,6 +24,7 @@ interface ElectronAPI {
   ) => void
   removeListener: (channel: string, func: (...args: any[]) => void) => void
   getMusicMetadata: (filePath: string[]) => Promise<ISong[]>
+  getImageToCover: () => Promise<string>
 }
 
 declare global {

@@ -4,9 +4,9 @@ import { contextBridge, ipcRenderer } from 'electron'
 contextBridge.exposeInMainWorld('electronAPI', {
   openDirectoryDialog: async () => await ipcRenderer.invoke('open-directory-dialog'),
   receive: (channel: any, func: any) => ipcRenderer.on(channel, func),
-  // removeListener: (channel: any, func: any) => ipcRenderer.removeListener(channel, func)
   removeListener: (channel: any) => ipcRenderer.removeAllListeners(channel),
-  getMusicMetadata: async (filePath: string[]) => await ipcRenderer.invoke('get-music-metadata', filePath)
+  getMusicMetadata: async (filePath: string[]) => await ipcRenderer.invoke('get-music-metadata', filePath),
+  getImageToCover: async () => await ipcRenderer.invoke('get-image-to-cover')
 })
 
 // --------- Preload scripts loading ---------

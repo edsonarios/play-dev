@@ -69,6 +69,9 @@ export interface StoreType {
 
   editTemporallyColor: string
   setEditTemporallyColor: (temporallyColor: string) => void
+
+  editTemporallyCover: string
+  setEditTemporallyCover: (temporallyCover: string) => void
 }
 
 export const usePlayerStore = create<StoreType>((set, get) => ({
@@ -156,5 +159,8 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   setEditTemporallyTitle: (editTemporallyTitle) => { set({ editTemporallyTitle }) },
 
   editTemporallyColor: '',
-  setEditTemporallyColor: (editTemporallyColor) => { set({ editTemporallyColor }) }
+  setEditTemporallyColor: (editTemporallyColor) => { set({ editTemporallyColor }) },
+
+  editTemporallyCover: '',
+  setEditTemporallyCover: (editTemporallyCover) => { set({ editTemporallyCover }) }
 }))
