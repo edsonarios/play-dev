@@ -72,6 +72,9 @@ export interface StoreType {
 
   editTemporallyCover: string
   setEditTemporallyCover: (temporallyCover: string) => void
+
+  songRefToScroll: ISong | undefined
+  setSongRefToScroll: (songRefToScroll: ISong | undefined) => void
 }
 
 export const usePlayerStore = create<StoreType>((set, get) => ({
@@ -162,5 +165,8 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   setEditTemporallyColor: (editTemporallyColor) => { set({ editTemporallyColor }) },
 
   editTemporallyCover: '',
-  setEditTemporallyCover: (editTemporallyCover) => { set({ editTemporallyCover }) }
+  setEditTemporallyCover: (editTemporallyCover) => { set({ editTemporallyCover }) },
+
+  songRefToScroll: undefined,
+  setSongRefToScroll: (songRefToScroll: ISong | undefined) => { set({ songRefToScroll }) }
 }))

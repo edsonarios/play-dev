@@ -25,7 +25,9 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setSongs,
     playlists,
     setPlaylists,
-    setPlaylistView
+    setPlaylistView,
+    songRefToScroll,
+    setSongRefToScroll
   } = usePlayerStore<StoreType>((state) => state)
 
   const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
@@ -55,7 +57,11 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   const artistsString = playlist.artists.join(', ')
 
   const getPlaylist = () => {
-    setIsPlaylistExpanded(!isPlaylistExpanded)
+    if (isPlaylistExpanded) {
+      setIsPlaylistExpanded(false)
+    } else {
+      setIsPlaylistExpanded(true)
+    }
     if (currentPlaylist.length > 0) {
       setCurrentPlaylist([])
       return
@@ -157,6 +163,23 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     }
   }
 
+  // Focus in current song
+  const songRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (songRefToScroll === undefined || currentPlaylist === undefined) return
+    if (currentPlaylist !== undefined && playlist.id === songRefToScroll.albumId && !isPlaylistExpanded) {
+      setIsPlaylistExpanded(true)
+      const playListSongs = songs.filter((song) => song.albumId === playlist.id)
+      setCurrentPlaylist(playListSongs)
+      setSongRefToScroll(undefined)
+    }
+    const currentSong = currentPlaylist.find(song => song.id === currentMusic.song?.id)
+    if (songRefToScroll.id === currentSong?.id) {
+      songRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      setSongRefToScroll(undefined)
+    }
+  }, [songRefToScroll])
+
   return (
     <div
       onDragEnter={handleDragEnter}
@@ -241,7 +264,8 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                   } text-sm ml-4 truncate flex flex-row mr-4`}
                 >
                   {/* id or equaliser gif */}
-                  <div className="mr-3">
+                  {/* ref just to current song */}
+                  <div ref={currentMusic.song?.id === song.id ? songRef : null} className="mr-3">
                     {currentMusic.song?.id === song.id &&
                     currentMusic.song?.albumId === song.albumId
                       ? (
