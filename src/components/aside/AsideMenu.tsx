@@ -71,7 +71,7 @@ export default function AsideMenu () {
   )
 
   return (
-    <nav className="flex flex-col flex-1 gap-2">
+    <nav className="flex flex-col flex-1 gap-2 overflow-y-auto">
       <div className="bg-zinc-900 rounded-lg p-2">
         <ul>
           <SideMenuItem Icon={HomeIcon} text="Home" href="#" />
@@ -84,7 +84,7 @@ export default function AsideMenu () {
         </ul>
       </div>
 
-      <div className="bg-zinc-900 rounded-lg p-2 flex-1">
+      <div className="bg-zinc-900 rounded-lg p-2 flex-1 overflow-y-auto">
         <ul>
           <div className="flex justify-between">
             <SideMenuItem Icon={LibraryIcon} text="Your Library" href="#" />

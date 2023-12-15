@@ -17,5 +17,6 @@ export const colors: IColorRecord = {
   pink: { accent: '#f33b73', dark: '#831843' },
   emerald: { accent: '#0c6e54', dark: '#064e3b' },
   rose: { accent: '#ed2377', dark: '#871b48' },
-  gray: { accent: '#7F7F7F', dark: '#535353' }
+  gray: { accent: '#7F7F7F', dark: '#535353' },
+  dark: { accent: '#1F1F1F', dark: '#18181b' }
 }

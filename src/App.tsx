@@ -58,8 +58,11 @@ export default function App () {
       }
     } else {
       // Take color in normal mode from current music
-      if (currentMusic.playlist?.color !== undefined) {
+      if (currentMusic.playlist?.color !== undefined && !pictureInPicture) {
         codeColor = colors[currentMusic.playlist.color]
+      } else {
+        // Take color in pip mode and playlist view is 0
+        codeColor = colors.dark
       }
     }
     newColor = codeColor[modeColor as keyof typeof codeColor]
@@ -106,7 +109,7 @@ export default function App () {
             <div
               className="absolute top-0 left-0 w-full h-full"
               style={{
-                background: 'linear-gradient(to bottom, #2c2c2c, #18181b)',
+                background: 'linear-gradient(to bottom, #27272a, #18181b)',
                 transition: 'opacity 0.7s ease',
                 opacity: pictureInPicture && playlistView === '0' ? 1 : 0
               }}

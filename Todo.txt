@@ -9,8 +9,7 @@
 
   - Edit song and apply changes in the original file (only if the file is in the local machine e.g. rename, delete, move, etc)
 
-* Click in song name in controls, in aside menu focus in the song name [...]
-* Fixed playlist in asideMenu [...]
+* Create button in aside menu, nexto to Library to show all songs on/off [...]
 * Actually the plyr not reproduce any format song (works in .mp4 .mp3), maybe find a codecs to add o new player
 * AsideMenu separate in sections [...]
   - New section
