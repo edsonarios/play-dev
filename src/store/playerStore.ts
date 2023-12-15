@@ -75,6 +75,9 @@ export interface StoreType {
 
   songRefToScroll: ISong | undefined
   setSongRefToScroll: (songRefToScroll: ISong | undefined) => void
+
+  homeHideSongs: boolean
+  setHomeHideSongs: (homeHideSongs: boolean) => void
 }
 
 export const usePlayerStore = create<StoreType>((set, get) => ({
@@ -168,5 +171,8 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   setEditTemporallyCover: (editTemporallyCover) => { set({ editTemporallyCover }) },
 
   songRefToScroll: undefined,
-  setSongRefToScroll: (songRefToScroll: ISong | undefined) => { set({ songRefToScroll }) }
+  setSongRefToScroll: (songRefToScroll: ISong | undefined) => { set({ songRefToScroll }) },
+
+  homeHideSongs: false,
+  setHomeHideSongs: (homeHideSongs) => { set({ homeHideSongs }) }
 }))

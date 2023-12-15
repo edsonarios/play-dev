@@ -18,7 +18,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
 
 export default function AsideMenu () {
-  const { playlists, setPlaylists, setSongs, songs } =
+  const { playlists, setPlaylists, setSongs, songs, homeHideSongs, setHomeHideSongs } =
     usePlayerStore<StoreType>((state) => state)
 
   const handleSelectFolder = async () => {
@@ -70,11 +70,20 @@ export default function AsideMenu () {
     })
   )
 
+  const handledHome = () => {
+    setHomeHideSongs(!homeHideSongs)
+  }
+
   return (
     <nav className="flex flex-col flex-1 gap-2 overflow-y-auto">
       <div className="bg-zinc-900 rounded-lg p-2">
         <ul>
-          <SideMenuItem Icon={HomeIcon} text="Home" href="#" />
+          <SideMenuItem
+          Icon={HomeIcon}
+          text="Home"
+          href="#"
+          handledFunction={handledHome}
+          />
           <SideMenuItem
             Icon={FolderIcon}
             text="Open Folder"

@@ -27,7 +27,8 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setPlaylists,
     setPlaylistView,
     songRefToScroll,
-    setSongRefToScroll
+    setSongRefToScroll,
+    homeHideSongs
   } = usePlayerStore<StoreType>((state) => state)
 
   const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
@@ -179,6 +180,13 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
       setSongRefToScroll(undefined)
     }
   }, [songRefToScroll])
+
+  // Hiden all songs from playlists
+  useEffect(() => {
+    if (currentPlaylist === undefined || currentPlaylist.length === 0) return
+    setIsPlaylistExpanded(false)
+    setCurrentPlaylist([])
+  }, [homeHideSongs])
 
   return (
     <div
