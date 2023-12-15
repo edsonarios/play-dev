@@ -1,9 +1,7 @@
 import { HomeIcon } from '@/icons/aside/Home'
 import { LibraryIcon, PlusIcon } from '@/icons/aside/Library'
-import { playlists as libPlaylist, songs as libSongs } from '../../lib/data'
 import SideMenuCard from './SideMenuCard'
 import SideMenuItem from './SideMenuItem'
-import { useEffect } from 'react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { FolderIcon } from '@/icons/aside/Folder'
 import { Playlist } from '@/lib/entities/playlist.entity'
@@ -17,25 +15,14 @@ import {
   TouchSensor
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
+import { OpenFolder } from '../services/ElectronUtils'
 
 export default function AsideMenu () {
   const { playlists, setPlaylists, setSongs, songs } =
     usePlayerStore<StoreType>((state) => state)
 
-  useEffect(() => {
-    setPlaylists(libPlaylist)
-    setSongs(libSongs)
-  }, [])
-
   const handleSelectFolder = async () => {
-    const folder = await window.electronAPI.openDirectoryDialog()
-    if (folder?.playlist !== undefined) {
-      const Newplaylists = playlists
-      Newplaylists.push(folder.playlist)
-      setPlaylists(Newplaylists)
-      const newSongs = songs
-      setSongs(newSongs.concat(folder.songs))
-    }
+    await OpenFolder(playlists, setPlaylists, setSongs, songs)
   }
 
   const handledNewPlaylist = () => {

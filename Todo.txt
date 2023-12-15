@@ -1,15 +1,5 @@
-* Button picture in picture ✅
-* When Picture in picture is enable, show a detail list of the playlists, with advanced options:
-  - Show Playlist [x]
-  - Play Playlist [x]
-  - Create New Playlist
-  - Edit Playlist
-  - Delete Playlist
-  - Show Songs [x]
-  - Play Songs [x]
-  - Add Songs to Playlist (from open dialog and drag and drop)
-  - Remove Songs from Playlist [x]
-  - Move Songs in Playlist [x]
+  - Add Songs to Playlist by open dialog and drag and drop "?"
+
   - Sort Songs in Playlist
 
   - Show two sections showing the playlist, to move songs between them
@@ -19,20 +9,25 @@
 
   - Edit song and apply changes in the original file (only if the file is in the local machine e.g. rename, delete, move, etc)
 
-* Sort playlist by drag and drop [x]
-* Click y song name in controls, in aside menu focus in the song name
+* Click in song name in controls, in aside menu focus in the song name [...]
 * Actually the plyr not reproduce any format song (works in .mp4 .mp3), maybe find a codecs to add o new player
-* Add Search in the playlist
-* Add a new playlist from the aside menu
-* Rezisable aside menu
-* AsideMenu in sections
+* AsideMenu separate in sections [...]
   - New section
-* Press key "p" to enter in pip mode
 
 * Integrate with Spotify and Youtube
 
 * Bug open folder, is mandatory choise any song, to select the actual folder, should be select the actual folder or just select a folder 
 * Made responsive plyr
-* Bug when charge the playlist the first time, the time not advance, the rest of songs its works
-* Add new song by drag and drop in aside menu, not get the metadata, to specific the duration song
-* Bug: In Drag and drop in aside menu, permit drop folder, an thats should'nt be possible
+* Bug when charge the playlist the first time, the time not advance, the rest of songs its works[...]
+
+Persistencia al store [...]
+
+Publish
+- Packaging
+  * Windows
+  * Mac
+  * Linux
+- Create a page to show the app
+- Made code to update the app
+- Features premium
+- Pay methods

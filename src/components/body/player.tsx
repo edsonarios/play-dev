@@ -5,6 +5,7 @@ import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { Song } from '@/lib/entities/song.entity'
 import { type ISong } from '@/lib/data'
+import { OpenFolder } from '../services/ElectronUtils'
 
 export default function PlayerComponent () {
   const playerRef = useRef<APITypes>(null)
@@ -25,6 +26,7 @@ export default function PlayerComponent () {
     songs,
     setSongs,
     playlists,
+    setPlaylists,
     pictureInPicture,
     setPictureInPicture
   } = usePlayerStore<StoreType>((state) => state)
@@ -220,20 +222,27 @@ export default function PlayerComponent () {
     }
   }
 
-  // Event change playback speed
+  // Event keys press
   useEffect(() => {
-    const handleKeyPress = (event: any) => {
+    const handleKeyPress = async (event: any) => {
       if (event.key === '+') {
         changePlaybackSpeed(true)
-      } else if (event.key === '-') {
+      }
+      if (event.key === '-') {
         changePlaybackSpeed(false)
+      }
+      if (event.key === 'p') {
+        setPictureInPicture(!pictureInPicture)
+      }
+      if (event.key === 'o') {
+        await OpenFolder(playlists, setPlaylists, setSongs, songs)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
+  }, [playlists, songs, pictureInPicture])
 
   // Set speed from right control
   useEffect(() => {
