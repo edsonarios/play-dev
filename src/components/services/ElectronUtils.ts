@@ -1,4 +1,5 @@
 import { type IPlaylist, type ISong } from '@/lib/data'
+import { withViewTransition } from '@/utils/transition'
 
 export const OpenFolder = async (
   playlists: IPlaylist[],
@@ -7,10 +8,12 @@ export const OpenFolder = async (
   songs: ISong[]
 ) => {
   const folder = await window.electronAPI.openDirectoryDialog()
-  if (folder?.playlist !== undefined) {
-    const Newplaylists = [...playlists, folder.playlist]
-    setPlaylists(Newplaylists)
-    const newSongs = [...songs, ...folder.songs]
-    setSongs(newSongs)
-  }
+  withViewTransition(async () => {
+    if (folder?.playlist !== undefined) {
+      const Newplaylists = [...playlists, folder.playlist]
+      setPlaylists(Newplaylists)
+      const newSongs = [...songs, ...folder.songs]
+      setSongs(newSongs)
+    }
+  })
 }

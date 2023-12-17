@@ -6,6 +6,7 @@ import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { Song } from '@/lib/entities/song.entity'
 import { type ISong } from '@/lib/data'
 import { OpenFolder } from '../services/ElectronUtils'
+import { withViewTransition } from '@/utils/transition'
 
 export default function PlayerComponent () {
   const playerRef = useRef<APITypes>(null)
@@ -346,12 +347,14 @@ export default function PlayerComponent () {
           defaultSongsToAdd.push(newSong)
         }
         const songsFromDefaultPlaylist = songs.filter((song) => song.albumId === playlists[0].id)
-        setCurrentMusic({
-          playlist: playlists[0],
-          song: defaultSongsToAdd[0],
-          songs: songsFromDefaultPlaylist.concat(defaultSongsToAdd)
+        withViewTransition(() => {
+          setCurrentMusic({
+            playlist: playlists[0],
+            song: defaultSongsToAdd[0],
+            songs: songsFromDefaultPlaylist.concat(defaultSongsToAdd)
+          })
+          setSongs(songs.concat(defaultSongsToAdd))
         })
-        setSongs(songs.concat(defaultSongsToAdd))
       }
     }
   }

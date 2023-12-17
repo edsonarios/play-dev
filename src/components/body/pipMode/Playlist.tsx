@@ -1,5 +1,6 @@
 import { CardPlayButton } from '@/components/CardPlay'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { withViewTransition } from '@/utils/transition'
 
 export function PlaylistPipMode () {
   const { playlists, setPlaylistView, songs, setSongs, setPlaylists } = usePlayerStore<StoreType>((state) => state)
@@ -9,13 +10,15 @@ export function PlaylistPipMode () {
   }
 
   const delPlaylist = (id: string) => {
-    const playlist = playlists.find((playlist) => playlist.id === id)
-    if (playlist === undefined) return
-    if (playlist.title === 'All Songs') return
-    const newSongs = songs.filter((song) => song.albumId !== playlist.id)
-    setSongs(newSongs)
-    const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
-    setPlaylists(newPlaylists)
+    withViewTransition(() => {
+      const playlist = playlists.find((playlist) => playlist.id === id)
+      if (playlist === undefined) return
+      if (playlist.title === 'All Songs') return
+      const newSongs = songs.filter((song) => song.albumId !== playlist.id)
+      setSongs(newSongs)
+      const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
+      setPlaylists(newPlaylists)
+    })
   }
 
   return (

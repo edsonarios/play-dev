@@ -10,6 +10,7 @@ import { type Song } from '@/lib/entities/song.entity'
 import debounce from 'lodash.debounce'
 import ModalEditPlaylist from './ModalEditPlaylist'
 import { type Playlist } from '@/lib/entities/playlist.entity'
+import { withViewTransition } from '@/utils/transition'
 
 export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrentColor: (color: string) => void }) {
   const {
@@ -45,13 +46,15 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
   }, [playlistView, playlists])
 
   const deletePlaylist = () => {
-    if (playlist === undefined) return
-    if (playlist.title === 'All Songs') return
-    const newSongs = songs.filter((song) => song.albumId !== playlist.id)
-    setSongs(newSongs)
-    const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
-    setPlaylists(newPlaylists)
-    setPlaylistView('0')
+    withViewTransition(() => {
+      if (playlist === undefined) return
+      if (playlist.title === 'All Songs') return
+      const newSongs = songs.filter((song) => song.albumId !== playlist.id)
+      setSongs(newSongs)
+      const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
+      setPlaylists(newPlaylists)
+      setPlaylistView('0')
+    })
   }
 
   // Search song in playlist with debounce
@@ -83,35 +86,41 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
 
   const [isOpen, setIsOpen] = useState(false)
   const handledEditPlaylist = () => {
-    if (playlist === undefined) return
-    setEditTemporallyTitle(playlist.title)
-    setEditTemporallyColor(playlist.color)
-    setEditTemporallyCover(playlist?.cover)
-    setIsOpen(true)
+    withViewTransition(() => {
+      if (playlist === undefined) return
+      setEditTemporallyTitle(playlist.title)
+      setEditTemporallyColor(playlist.color)
+      setEditTemporallyCover(playlist?.cover)
+      setIsOpen(true)
+    })
   }
 
   // Event key escape to close edit playlist
   useEffect(() => {
     const handleKeyPress = (event: any) => {
-      if (event.key === 'Escape') {
-        setEditTemporallyTitle('')
-        setEditTemporallyColor(playlist?.color ?? 'gray')
-        setIsOpen(false)
+      if (event.key === 'Escape' && playlist !== undefined) {
+        withViewTransition(() => {
+          setEditTemporallyTitle('')
+          setEditTemporallyColor(playlist.color)
+          setEditTemporallyCover(playlist.cover)
+          setIsOpen(false)
+        })
       }
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
+  }, [playlist])
 
   const handledCloseModal = () => {
-    // const currentPlaylist = playlists.find(ply => ply.id === playlist?.id)
-    if (playlist === undefined) return
-    setEditTemporallyTitle('')
-    setEditTemporallyColor(playlist.color)
-    setEditTemporallyCover(playlist.cover)
-    setIsOpen(false)
+    withViewTransition(() => {
+      if (playlist === undefined) return
+      setEditTemporallyTitle('')
+      setEditTemporallyColor(playlist.color)
+      setEditTemporallyCover(playlist.cover)
+      setIsOpen(false)
+    })
   }
 
   return (

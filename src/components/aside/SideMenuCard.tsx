@@ -9,6 +9,7 @@ import { formatTime } from '@/utils/time'
 import { Song } from '@/lib/entities/song.entity'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { withViewTransition } from '@/utils/transition'
 
 interface CardPlaylist {
   playlist: IPlaylist
@@ -58,17 +59,19 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   const artistsString = playlist.artists.join(', ')
 
   const getPlaylist = () => {
-    if (isPlaylistExpanded) {
-      setIsPlaylistExpanded(false)
-    } else {
-      setIsPlaylistExpanded(true)
-    }
-    if (currentPlaylist.length > 0) {
-      setCurrentPlaylist([])
-      return
-    }
-    const playListSongs = songs.filter((song) => song.albumId === playlist.id)
-    setCurrentPlaylist(playListSongs)
+    withViewTransition(() => {
+      if (isPlaylistExpanded) {
+        setIsPlaylistExpanded(false)
+      } else {
+        setIsPlaylistExpanded(true)
+      }
+      if (currentPlaylist.length > 0) {
+        setCurrentPlaylist([])
+        return
+      }
+      const playListSongs = songs.filter((song) => song.albumId === playlist.id)
+      setCurrentPlaylist(playListSongs)
+    })
   }
 
   // Reload playlist songs
@@ -102,12 +105,14 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   }
 
   const delPlaylist = () => {
-    if (playlist.title === 'All Songs') return
-    const newSongs = songs.filter((song) => song.albumId !== playlist.id)
-    setSongs(newSongs)
-    const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
-    setPlaylists(newPlaylists)
-    setPlaylistView('0')
+    withViewTransition(() => {
+      if (playlist.title === 'All Songs') return
+      const newSongs = songs.filter((song) => song.albumId !== playlist.id)
+      setSongs(newSongs)
+      const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
+      setPlaylists(newPlaylists)
+      setPlaylistView('0')
+    })
   }
 
   // Drag and drop events and control blinking with useRef
@@ -159,7 +164,9 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
           })
           newSongs.push(newSong)
         }
-        setSongs(newSongs)
+        withViewTransition(() => {
+          setSongs(newSongs)
+        })
       }
     }
   }

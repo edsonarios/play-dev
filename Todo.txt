@@ -9,7 +9,6 @@
 
   - Edit song and apply changes in the original file (only if the file is in the local machine e.g. rename, delete, move, etc)
 
-* Create button in aside menu, nexto to Library to show all songs on/off [...]
 * Actually the plyr not reproduce any format song (works in .mp4 .mp3), maybe find a codecs to add o new player
 * AsideMenu separate in sections [...]
   - New section
@@ -19,8 +18,6 @@
 * Bug open folder, is mandatory choise any song, to select the actual folder, should be select the actual folder or just select a folder 
 * Made responsive plyr
 * Bug when charge the playlist the first time, the time not advance, the rest of songs its works[...]
-
-Add transitions to the app [...]
 
 Persistencia al store [...]
 

@@ -16,6 +16,7 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
+import { withViewTransition } from '@/utils/transition'
 
 export default function AsideMenu () {
   const { playlists, setPlaylists, setSongs, songs, homeHideSongs, setHomeHideSongs } =
@@ -26,17 +27,19 @@ export default function AsideMenu () {
   }
 
   const handledNewPlaylist = () => {
-    const newPlaylist = new Playlist({
-      id: window.crypto.randomUUID(),
-      albumId: '',
-      title: 'New Playlist',
-      color: getRandomColor(),
-      cover: getRandomImage(),
-      artists: []
+    withViewTransition(() => {
+      const newPlaylist = new Playlist({
+        id: window.crypto.randomUUID(),
+        albumId: '',
+        title: 'New Playlist',
+        color: getRandomColor(),
+        cover: getRandomImage(),
+        artists: []
+      })
+      const currentPlaylists = playlists
+      currentPlaylists.push(newPlaylist)
+      setPlaylists(currentPlaylists)
     })
-    const currentPlaylists = playlists
-    currentPlaylists.push(newPlaylist)
-    setPlaylists(currentPlaylists)
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
