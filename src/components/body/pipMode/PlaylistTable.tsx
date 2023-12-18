@@ -30,7 +30,6 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   const {
     currentMusic,
     setCurrentMusic,
-    setCopyCurrentMusic,
     randomPlaylist,
     setIsPlaying,
     songs,
@@ -44,11 +43,6 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     let playListSongs = songs.filter(
       (song) => song.albumId === toPlaySong.albumId
     )
-    setCopyCurrentMusic({
-      playlist,
-      song: toPlaySong,
-      songs: playListSongs
-    })
 
     if (randomPlaylist) {
       playListSongs = shuffleSongsWithCurrentSong(playListSongs, toPlaySong.id)

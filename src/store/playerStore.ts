@@ -53,9 +53,6 @@ export interface StoreType {
   pictureInPicture: boolean
   setPictureInPicture: (pictureInPicture: boolean) => void
 
-  copyCurrentMusic: CurrentMusicType
-  setCopyCurrentMusic: (copyCurrentMusic: CurrentMusicType) => void
-
   playlistView: string
   setPlaylistView: (playlistView: string) => void
 
@@ -136,13 +133,6 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
 
   pictureInPicture: false,
   setPictureInPicture: (pictureInPicture) => { set({ pictureInPicture }) },
-
-  copyCurrentMusic: {
-    playlist: undefined,
-    song: undefined,
-    songs: []
-  },
-  setCopyCurrentMusic: (copyCurrentMusic) => { set({ copyCurrentMusic }) },
 
   playlistView: '0',
   setPlaylistView: (playlistView) => { set({ playlistView }) },

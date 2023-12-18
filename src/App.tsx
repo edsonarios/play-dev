@@ -39,7 +39,6 @@ export default function App () {
     usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
-    console.log('App.tsx: useEffect')
     setPlaylists(libPlaylist)
     setSongs(libSongs)
   }, [])

@@ -8,7 +8,7 @@ interface CardPlayButtonType {
   size?: string
 }
 export function CardPlayButton ({ playlist, size = 'small' }: CardPlayButtonType) {
-  const { setCurrentMusic, currentMusic, setIsPlaying, isPlaying, setCopyCurrentMusic, randomPlaylist, songs } = usePlayerStore((state) => state)
+  const { setCurrentMusic, currentMusic, setIsPlaying, isPlaying, randomPlaylist, songs } = usePlayerStore((state) => state)
 
   const handleCardPlayPauseButton = (event: any) => {
     event.stopPropagation()
@@ -18,11 +18,6 @@ export function CardPlayButton ({ playlist, size = 'small' }: CardPlayButtonType
       setIsPlaying(!isPlaying)
       return
     }
-    setCopyCurrentMusic({
-      playlist,
-      song: playListSongs[0],
-      songs: playListSongs
-    })
 
     if (randomPlaylist) {
       playListSongs = shuffleSongs(playListSongs)

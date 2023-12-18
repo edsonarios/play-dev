@@ -21,7 +21,6 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     setCurrentMusic,
     currentMusic,
     setIsPlaying,
-    setCopyCurrentMusic,
     randomPlaylist,
     songs,
     setSongs,
@@ -90,11 +89,6 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
 
   const playSong = (song: ISong) => {
     let playListSongs = songs.filter((song) => song.albumId === playlist.id)
-    setCopyCurrentMusic({
-      playlist,
-      song,
-      songs: playListSongs
-    })
 
     if (randomPlaylist) {
       playListSongs = shuffleSongsWithCurrentSong(playListSongs, song.id)
