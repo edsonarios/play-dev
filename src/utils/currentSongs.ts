@@ -56,3 +56,17 @@ export function deleteSongInCurrentSongsIfNeeded ({
     setCurrentMusic({ ...currentMusic, songs: newSongsInCurrentSong })
   }
 }
+
+export function deletePlaylistInCurrentSongsIfNeeded ({
+  playlistID,
+  currentMusic,
+  setCurrentMusic
+}: {
+  playlistID: string
+  currentMusic: CurrentMusicType
+  setCurrentMusic: (setCurrentMusic: CurrentMusicType) => void
+}) {
+  if (playlistID === currentMusic.playlist?.id) {
+    setCurrentMusic({ ...currentMusic, songs: [], playlist: undefined })
+  }
+}

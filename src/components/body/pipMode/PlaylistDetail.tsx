@@ -11,6 +11,7 @@ import debounce from 'lodash.debounce'
 import ModalEditPlaylist from './ModalEditPlaylist'
 import { type Playlist } from '@/lib/entities/playlist.entity'
 import { withViewTransition } from '@/utils/transition'
+import { deletePlaylistInCurrentSongsIfNeeded } from '@/utils/currentSongs'
 
 export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrentColor: (color: string) => void }) {
   const {
@@ -24,7 +25,9 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
     setEditTemporallyTitle,
     setEditTemporallyColor,
     editTemporallyCover,
-    setEditTemporallyCover
+    setEditTemporallyCover,
+    currentMusic,
+    setCurrentMusic
   } = usePlayerStore<StoreType>((state) => state)
   const playlist = playlists.find((playlist) => playlist.id === playlistID)
   const playListSongs = songs.filter((song) => song.albumId === playlistID)
@@ -49,6 +52,11 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
     withViewTransition(() => {
       if (playlist === undefined) return
       if (playlist.title === 'All Songs') return
+      deletePlaylistInCurrentSongsIfNeeded({
+        playlistID: playlist.id,
+        currentMusic,
+        setCurrentMusic
+      })
       const newSongs = songs.filter((song) => song.albumId !== playlist.id)
       setSongs(newSongs)
       const newPlaylists = playlists.filter((item) => item.id !== playlist.id)

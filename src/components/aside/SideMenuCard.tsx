@@ -10,7 +10,10 @@ import { Song } from '@/lib/entities/song.entity'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { withViewTransition } from '@/utils/transition'
-import { updateCurrentSongsIfNeeded } from '@/utils/currentSongs'
+import {
+  deletePlaylistInCurrentSongsIfNeeded,
+  updateCurrentSongsIfNeeded
+} from '@/utils/currentSongs'
 
 interface CardPlaylist {
   playlist: IPlaylist
@@ -104,6 +107,11 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
 
   const delPlaylist = () => {
     withViewTransition(() => {
+      deletePlaylistInCurrentSongsIfNeeded({
+        playlistID: playlist.id,
+        currentMusic,
+        setCurrentMusic
+      })
       if (playlist.title === 'All Songs') {
         const newSongs = songs.filter((song) => song.albumId !== '1')
         setSongs(newSongs)
