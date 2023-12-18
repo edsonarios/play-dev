@@ -27,12 +27,12 @@ export default function Controls () {
     isPlaying,
     setRandomPlaylist,
     randomPlaylist,
-    copyCurrentMusic,
     songs
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleRandomPlaylist = (): void => {
-    if (currentMusic.song === undefined) return
+    setRandomPlaylist(!randomPlaylist)
+    if (currentMusic.song === undefined || currentMusic.songs.length === 0) return
 
     if (!randomPlaylist) {
       const shufflededSongs = shuffleSongsWithCurrentSong(currentMusic.songs, currentMusic.song.id)
@@ -42,12 +42,12 @@ export default function Controls () {
         songs: shufflededSongs
       })
     } else {
+      const songsOrdered = songs.filter(song => song.albumId === currentMusic.playlist?.id)
       setCurrentMusic({
         ...currentMusic,
-        songs: copyCurrentMusic.songs
+        songs: songsOrdered
       })
     }
-    setRandomPlaylist(!randomPlaylist)
   }
 
   function PlayPause () {

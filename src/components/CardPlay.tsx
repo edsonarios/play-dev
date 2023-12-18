@@ -33,7 +33,7 @@ export function CardPlayButton ({ playlist, size = 'small' }: CardPlayButtonType
       songs: playListSongs
     })
 
-    setIsPlaying(true)
+    // setIsPlaying(true)
   }
 
   const iconClassName = size === 'small' ? 'w-3 h-3' : 'w-5 h-5'

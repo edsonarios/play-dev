@@ -7,6 +7,7 @@ import { Song } from '@/lib/entities/song.entity'
 import { type ISong } from '@/lib/data'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
+import { shuffleSongsWithCurrentSong } from '@/utils/random'
 
 export default function PlayerComponent () {
   const playerRef = useRef<APITypes>(null)
@@ -29,7 +30,8 @@ export default function PlayerComponent () {
     playlists,
     setPlaylists,
     pictureInPicture,
-    setPictureInPicture
+    setPictureInPicture,
+    randomPlaylist
   } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
@@ -59,7 +61,9 @@ export default function PlayerComponent () {
   // Event ended
   useEffect(() => {
     const handleVideoEnd = (event: any) => {
+      console.log('video ended')
       if (event.target !== undefined) {
+        console.log(currentMusic.songs)
         const currentVideoIndex = currentMusic.songs.findIndex(
           (song) => song.id === currentMusic.song?.id
         )
@@ -79,14 +83,14 @@ export default function PlayerComponent () {
         })
       }
     }
-    if (typeof window !== 'undefined') {
-      window.addEventListener('ended', handleVideoEnd)
+    // if (typeof window !== 'undefined') {
+    window.addEventListener('ended', handleVideoEnd)
 
-      return () => {
-        window.removeEventListener('ended', handleVideoEnd)
-      }
+    return () => {
+      window.removeEventListener('ended', handleVideoEnd)
     }
-  }, [currentMusic, repeatPlaylist])
+    // }
+  }, [currentMusic, songs.length, repeatPlaylist, randomPlaylist])
 
   // Event play
   useEffect(() => {
@@ -346,14 +350,26 @@ export default function PlayerComponent () {
           })
           defaultSongsToAdd.push(newSong)
         }
-        const songsFromDefaultPlaylist = songs.filter((song) => song.albumId === playlists[0].id)
+
+        // Find songs from default playlist and add new songs from the drag and drop
+        let songsFromDefaultPlaylist = songs.filter((song) => song.albumId === playlists[0].id)
+        songsFromDefaultPlaylist = [...songsFromDefaultPlaylist, ...defaultSongsToAdd]
+
+        // If random playlist is active, shuffle the songs
+        if (randomPlaylist) {
+          songsFromDefaultPlaylist = shuffleSongsWithCurrentSong(songsFromDefaultPlaylist, defaultSongsToAdd[0].id)
+          console.log(songsFromDefaultPlaylist)
+        }
+
+        // Put the new songs in the current music and reproduce it the first song from the drag and drop
         withViewTransition(() => {
           setCurrentMusic({
             playlist: playlists[0],
             song: defaultSongsToAdd[0],
-            songs: songsFromDefaultPlaylist.concat(defaultSongsToAdd)
+            songs: songsFromDefaultPlaylist
           })
-          setSongs(songs.concat(defaultSongsToAdd))
+          const newSongs = [...songs, ...defaultSongsToAdd]
+          setSongs(newSongs)
         })
       }
     }

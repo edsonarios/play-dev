@@ -14,6 +14,8 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
+import { withViewTransition } from '@/utils/transition'
+import { deleteSongInCurrentSongsIfNeeded, updateCurrentSongsByDragDropIfNeeded } from '@/utils/currentSongs'
 
 interface PlayListTable {
   playlist: IPlaylist | undefined
@@ -26,6 +28,7 @@ interface ActivatorEvent {
 }
 export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   const {
+    currentMusic,
     setCurrentMusic,
     setCopyCurrentMusic,
     randomPlaylist,
@@ -65,7 +68,14 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     const newPlaylistSongs = songs.filter(
       (song) => song.id !== toDeleteSong.id
     )
-    setSongs(newPlaylistSongs)
+    withViewTransition(() => {
+      deleteSongInCurrentSongsIfNeeded({
+        song: toDeleteSong,
+        currentMusic,
+        setCurrentMusic
+      })
+      setSongs(newPlaylistSongs)
+    })
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -84,8 +94,9 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         (song) => song.id === activeId
       )?.albumId
 
+      // Find the the song that is not being dragged
       const newSongs = playlistSongs.filter((song) => !song.isDragging)
-      // Remove the song that is being dragged
+      // Remove the first song that is being dragged
       const removedSong = newSongs.splice(
         newSongs.findIndex((song) => song.id === activeId),
         1
@@ -118,8 +129,15 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         ...songsWithoutCurrentAlbum,
         ...newSongs
       ]
+      updateCurrentSongsByDragDropIfNeeded({
+        newSongs,
+        currentMusic,
+        setCurrentMusic,
+        randomPlaylist
+      })
       setSongs(newSongsWithCurrentAlbum)
     }
+    // If the song is dragged over itself, do nothing, but returned the songs was removed temporarily
     if (activeId === overId && songsIdSelected.length > 1) {
       const newSongs = playlistSongs.filter((song) => !song.isDragging)
       // Find the albumId of the song that is being dragged

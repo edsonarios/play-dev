@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { type IPlaylist, type ISong } from '../lib/data'
 import { type PlyrOptions } from 'plyr-react'
+// import { shuffleSongs } from '@/utils/random'
 
 export interface CurrentMusicType {
   playlist: IPlaylist | undefined
@@ -100,16 +101,7 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   setPlaylists: (playlists) => { set({ playlists }) },
 
   songs: [],
-  setSongs: (songs) => {
-    const { currentMusic, setCurrentMusic } = get()
-
-    if (currentMusic?.song !== undefined) {
-      const updateCurrentSongs = songs.filter(song => song.albumId === currentMusic.playlist?.id)
-      setCurrentMusic({ ...currentMusic, songs: updateCurrentSongs })
-    }
-
-    set({ songs })
-  },
+  setSongs: (songs) => { set({ songs }) },
 
   isPlaying: false,
   setIsPlaying: (isPlaying) => { set({ isPlaying }) },

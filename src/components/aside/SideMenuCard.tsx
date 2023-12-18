@@ -10,6 +10,7 @@ import { Song } from '@/lib/entities/song.entity'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { withViewTransition } from '@/utils/transition'
+import { updateCurrentSongsIfNeeded } from '@/utils/currentSongs'
 
 interface CardPlaylist {
   playlist: IPlaylist
@@ -65,19 +66,22 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
       } else {
         setIsPlaylistExpanded(true)
       }
-      if (currentPlaylist.length > 0) {
+      if (isPlaylistExpanded && currentPlaylist.length > 0) {
         setCurrentPlaylist([])
         return
       }
-      const playListSongs = songs.filter((song) => song.albumId === playlist.id)
+      const playListSongs = songs.filter(
+        (song) => song.albumId === playlist.id
+      )
       setCurrentPlaylist(playListSongs)
     })
   }
 
   // Reload playlist songs
   useEffect(() => {
-    if (currentPlaylist.length !== 0) {
-      const playListSongs = songs.filter(
+    if (currentPlaylist.length !== 0 || isPlaylistExpanded) {
+      console.log(songs)
+      const playListSongs = songs?.filter(
         (song) => song.albumId === playlist.id
       )
       setCurrentPlaylist(playListSongs)
@@ -106,7 +110,11 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
 
   const delPlaylist = () => {
     withViewTransition(() => {
-      if (playlist.title === 'All Songs') return
+      if (playlist.title === 'All Songs') {
+        const newSongs = songs.filter((song) => song.albumId !== '1')
+        setSongs(newSongs)
+        return
+      }
       const newSongs = songs.filter((song) => song.albumId !== playlist.id)
       setSongs(newSongs)
       const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
@@ -152,20 +160,29 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     dragCounter.current = 0
 
     const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
-    const filesWithMetadata = await window.electronAPI.getMusicMetadata(dataFiles.map(file => file.path))
+    const filesWithMetadata = await window.electronAPI.getMusicMetadata(
+      dataFiles.map((file) => file.path)
+    )
     if (dataFiles !== undefined) {
       if (dataFiles.length > 0) {
-        const newSongs = songs
+        const songsToAdd: ISong[] = []
         for (const item of filesWithMetadata) {
           const newSong = new Song({
             ...item,
             albumId: playlist.id,
             image: playlist.cover
           })
-          newSongs.push(newSong)
+          songsToAdd.push(newSong)
         }
         withViewTransition(() => {
-          setSongs(newSongs)
+          updateCurrentSongsIfNeeded({
+            songsToAdd,
+            playlistID: playlist.id,
+            currentMusic,
+            randomPlaylist,
+            setCurrentMusic
+          })
+          setSongs([...songs, ...songsToAdd])
         })
       }
     }
@@ -175,13 +192,21 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   const songRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (songRefToScroll === undefined || currentPlaylist === undefined) return
-    if (currentPlaylist !== undefined && playlist.id === songRefToScroll.albumId && !isPlaylistExpanded) {
+    if (
+      currentPlaylist !== undefined &&
+      playlist.id === songRefToScroll.albumId &&
+      !isPlaylistExpanded
+    ) {
       setIsPlaylistExpanded(true)
-      const playListSongs = songs.filter((song) => song.albumId === playlist.id)
+      const playListSongs = songs.filter(
+        (song) => song.albumId === playlist.id
+      )
       setCurrentPlaylist(playListSongs)
       setSongRefToScroll(undefined)
     }
-    const currentSong = currentPlaylist.find(song => song.id === currentMusic.song?.id)
+    const currentSong = currentPlaylist.find(
+      (song) => song.id === currentMusic.song?.id
+    )
     if (songRefToScroll.id === currentSong?.id) {
       songRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
       setSongRefToScroll(undefined)
@@ -264,7 +289,9 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
             {currentPlaylist.map((song, index) => (
               <li
                 key={song.id}
-                className={`${isDragOver ? 'bg-zinc-700' : ''} hover:bg-zinc-900 rounded-md p-2 pl-0 flex flex-row justify-between`}
+                className={`${
+                  isDragOver ? 'bg-zinc-700' : ''
+                } hover:bg-zinc-900 rounded-md p-2 pl-0 flex flex-row justify-between`}
                 onClick={() => {
                   playSong(song)
                 }}
@@ -280,7 +307,10 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                 >
                   {/* id or equaliser gif */}
                   {/* ref just to current song */}
-                  <div ref={currentMusic.song?.id === song.id ? songRef : null} className="mr-3">
+                  <div
+                    ref={currentMusic.song?.id === song.id ? songRef : null}
+                    className="mr-3"
+                  >
                     {currentMusic.song?.id === song.id &&
                     currentMusic.song?.albumId === song.albumId
                       ? (
@@ -300,16 +330,17 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                 </a>
 
                 {/* Song duration */}
-                <div className="text-xs text-zinc-500">{formatTime(song.duration)}</div>
+                <div className="text-xs text-zinc-500">
+                  {formatTime(song.duration)}
+                </div>
               </li>
             ))}
           </ul>
         </div>
       )}
-      {isPlaylistExpanded && currentPlaylist.length === 0 &&
-      <h3 className="ml-4 mt-1 text-xs">
-        Not Found Songs in this playlist
-      </h3>}
+      {isPlaylistExpanded && currentPlaylist.length === 0 && (
+        <h3 className="ml-4 mt-1 text-xs">Not Found Songs in this playlist</h3>
+      )}
     </div>
   )
 }

@@ -3,6 +3,8 @@ import { PlayTableIcon } from '@/icons/playlist/PlayPause'
 import { type ISong } from '@/lib/data'
 import { Song } from '@/lib/entities/song.entity'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { updateCurrentSongsIfNeeded } from '@/utils/currentSongs'
+import { withViewTransition } from '@/utils/transition'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { formatTime } from 'electron/utils'
@@ -20,7 +22,17 @@ export function DragableRow ({
   playSong,
   deleteSong
 }: IDragableRow) {
-  const { currentMusic, songs, setSongs, songsIdSelected, setSongsIdSelected, lastSongIdSelected, setLastSongIdSelected } = usePlayerStore<StoreType>((state) => state)
+  const {
+    currentMusic,
+    setCurrentMusic,
+    songs,
+    setSongs,
+    songsIdSelected,
+    setSongsIdSelected,
+    lastSongIdSelected,
+    setLastSongIdSelected,
+    randomPlaylist
+  } = usePlayerStore<StoreType>((state) => state)
   const {
     isDragging,
     attributes,
@@ -54,19 +66,33 @@ export function DragableRow ({
     }
     if (ctrl) {
       const isSelected = songsIdSelected.includes(song.id)
-      setSongsIdSelected(isSelected ? songsIdSelected.filter(id => id !== song.id) : [...songsIdSelected, song.id])
+      setSongsIdSelected(
+        isSelected
+          ? songsIdSelected.filter((id) => id !== song.id)
+          : [...songsIdSelected, song.id]
+      )
     }
     if (shift && lastSongIdSelected !== '') {
-      const currentSongs = songs.filter(allSong => allSong.albumId === song?.albumId)
-      const lasSongIdSelectedIndex = currentSongs.findIndex(song => song.id === lastSongIdSelected)
+      const currentSongs = songs.filter(
+        (allSong) => allSong.albumId === song?.albumId
+      )
+      const lasSongIdSelectedIndex = currentSongs.findIndex(
+        (song) => song.id === lastSongIdSelected
+      )
       const range = [lasSongIdSelectedIndex, index].sort((a, b) => a - b)
-      const rangeSelected = currentSongs.slice(range[0], range[1] + 1).map(song => song.id)
+      const rangeSelected = currentSongs
+        .slice(range[0], range[1] + 1)
+        .map((song) => song.id)
       setSongsIdSelected(rangeSelected)
     }
     if (shift && lastSongIdSelected === '') {
-      const currentSongs = songs.filter(allSong => allSong.albumId === song?.albumId)
+      const currentSongs = songs.filter(
+        (allSong) => allSong.albumId === song?.albumId
+      )
       const range = [0, index].sort((a, b) => a - b)
-      const rangeSelected = currentSongs.slice(range[0], range[1] + 1).map(song => song.id)
+      const rangeSelected = currentSongs
+        .slice(range[0], range[1] + 1)
+        .map((song) => song.id)
       setSongsIdSelected(rangeSelected)
     }
   }
@@ -110,12 +136,13 @@ export function DragableRow ({
     dragCounter.current = 0
 
     const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
-    const filesWithMetadata = await window.electronAPI.getMusicMetadata(dataFiles.map(file => file.path))
+    const filesWithMetadata = await window.electronAPI.getMusicMetadata(
+      dataFiles.map((file) => file.path)
+    )
     // Use DataTransferItemList interface to access the file(s)
     if (dataFiles !== undefined) {
       if (dataFiles.length > 0) {
         const songsToAdd: ISong[] = []
-        const newSongs = songs
         for (const item of filesWithMetadata) {
           const newSong = new Song({
             ...item,
@@ -124,9 +151,22 @@ export function DragableRow ({
           })
           songsToAdd.push(newSong)
         }
-        const indexSong = newSongs.findIndex((song) => song.id === songIndex.id)
+        const newSongs = songs
+        const indexSong = newSongs.findIndex(
+          (song) => song.id === songIndex.id
+        )
         newSongs.splice(indexSong, 0, ...songsToAdd)
-        setSongs(newSongs)
+        withViewTransition(() => {
+          // Not work, but in another place is used the same function and work (SideMenuCard.tsx)
+          updateCurrentSongsIfNeeded({
+            songsToAdd,
+            playlistID: song.albumId,
+            currentMusic,
+            randomPlaylist,
+            setCurrentMusic
+          })
+          setSongs(newSongs)
+        })
       }
     }
   }
@@ -140,12 +180,13 @@ export function DragableRow ({
       className={`border-spacing-0 text-gray-300 text-sm font-light overflow-hidden transition duration-300 select-none
       ${isDragging ? 'opacity-30' : ''}
       ${overIndex === index ? 'border-2 border-green-500 ' : ''}
-      ${overIndex === index && song.isDragging ? 'border-2 border-red-500 ' : ''}
+      ${
+        overIndex === index && song.isDragging ? 'border-2 border-red-500 ' : ''
+      }
       ${!isSongSelected ? 'hover:bg-white/5' : ''}
       ${isSongSelected ? 'bg-white/10' : ''}
       ${song.isDragging ? 'opacity-0' : ''}
-      ${isDragOver ? 'border-t-4 border-blue-600 border-opacity-60' : ''}`
-    }
+      ${isDragOver ? 'border-t-4 border-blue-600 border-opacity-60' : ''}`}
       style={style}
       onClick={handleRowClick}
       onDoubleClick={(event) => {
@@ -154,7 +195,9 @@ export function DragableRow ({
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
-      onDrop={(event) => { void handleDrop(event, song) }}
+      onDrop={(event) => {
+        void handleDrop(event, song)
+      }}
     >
       {/* Id or equaliser icon */}
       <td
@@ -202,7 +245,11 @@ export function DragableRow ({
           >
             {song.title}
           </h3>
-          <span>{song.artists !== undefined && song.artists.length > 0 ? song.artists.join(', ') : ''}</span>
+          <span>
+            {song.artists !== undefined && song.artists.length > 0
+              ? song.artists.join(', ')
+              : ''}
+          </span>
         </div>
       </td>
       {/* Album name */}
@@ -213,12 +260,18 @@ export function DragableRow ({
       <td className="relative text-zinc-400 px-4 py-2 rounded-tr-lg rounded-br-lg">
         <button
           className="opacity-10 hover:opacity-100 p-1"
-          onClick={(event) => { deleteSong(event, song) }}
-          title='Delete song'
+          onClick={(event) => {
+            deleteSong(event, song)
+          }}
+          title="Delete song"
         >
           <DeleteOptionsIcon />
         </button>
-        <div className={`absolute flex items-center justify-center rounded-full bg-blue-600 text-white p-1 w-6 h-6 opacity-0 top-4 right-4 ${isDragging && songsIdSelected.length > 0 ? 'opacity-100' : ''}`}>
+        <div
+          className={`absolute flex items-center justify-center rounded-full bg-blue-600 text-white p-1 w-6 h-6 opacity-0 top-4 right-4 ${
+            isDragging && songsIdSelected.length > 0 ? 'opacity-100' : ''
+          }`}
+        >
           {songsIdSelected.length}
         </div>
       </td>
