@@ -121,3 +121,7 @@ html {
   background-color: rgba(189, 189, 189, 0.1);
   cursor: col-resize;
 }
+
+.text-css {
+  text-wrap: balance;
+}

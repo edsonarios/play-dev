@@ -3,7 +3,6 @@ import AsideMenu from './components/aside/AsideMenu'
 import Header from './components/body/Header'
 import PlayerComponent from './components/body/player'
 import Controls from './components/controls/Controls'
-import { playlists as libPlaylist, songs as libSongs } from './lib/data'
 import { colors } from './lib/colors'
 import { type StoreType, usePlayerStore } from './store/playerStore'
 import { PlaylistPipMode } from './components/body/pipMode/Playlist'
@@ -35,13 +34,8 @@ declare global {
 }
 
 export default function App () {
-  const { currentMusic, pictureInPicture, playlistView, playlists, setPlaylists, setSongs, editTemporallyColor, modeColor } =
+  const { currentMusic, pictureInPicture, playlistView, playlists, editTemporallyColor, modeColor } =
     usePlayerStore<StoreType>((state) => state)
-
-  useEffect(() => {
-    setPlaylists(libPlaylist)
-    setSongs(libSongs)
-  }, [])
 
   const [currentColor, setCurrentColor] = useState(colors.gray.dark)
   useEffect(() => {

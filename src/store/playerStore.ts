@@ -1,7 +1,8 @@
-import { create } from 'zustand'
+import { type StateCreator, create } from 'zustand'
 import { type IPlaylist, type ISong } from '../lib/data'
 import { type PlyrOptions } from 'plyr-react'
-// import { shuffleSongs } from '@/utils/random'
+import { persist } from 'zustand/middleware'
+import { getRandomColor } from '@/utils/random'
 
 export interface CurrentMusicType {
   playlist: IPlaylist | undefined
@@ -76,9 +77,11 @@ export interface StoreType {
 
   homeHideSongs: boolean
   setHomeHideSongs: (homeHideSongs: boolean) => void
-}
 
-export const usePlayerStore = create<StoreType>((set, get) => ({
+  isTheFirstTime: boolean
+  setIsTheFirstTime: (isTheFirstTime: boolean) => void
+}
+const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
   setModeColor: (modeColor) => { set({ modeColor }) },
 
@@ -94,7 +97,14 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   },
   setPlayerOptions: (playerOptions) => { set({ playerOptions }) },
 
-  playlists: [],
+  playlists: [{
+    id: '1',
+    albumId: '1',
+    title: 'All Songs',
+    color: getRandomColor(),
+    cover: 'file://C:/Users/edson/Pictures/Covers/cover1.jpg',
+    artists: []
+  }],
   setPlaylists: (playlists) => { set({ playlists }) },
 
   songs: [],
@@ -156,5 +166,28 @@ export const usePlayerStore = create<StoreType>((set, get) => ({
   setSongRefToScroll: (songRefToScroll: ISong | undefined) => { set({ songRefToScroll }) },
 
   homeHideSongs: false,
-  setHomeHideSongs: (homeHideSongs) => { set({ homeHideSongs }) }
-}))
+  setHomeHideSongs: (homeHideSongs) => { set({ homeHideSongs }) },
+
+  // Now is persist the currentMusic, so the first time to recovery the store is needed to be true to reproduce the actual song
+  isTheFirstTime: true,
+  setIsTheFirstTime: (isTheFirstTime) => { set({ isTheFirstTime }) }
+})
+
+export const usePlayerStore = create<StoreType>()(
+  persist(
+    storePlyr,
+    {
+      name: 'player-storage',
+      partialize: (state) => ({
+        modeColor: state.modeColor,
+        playerOptions: state.playerOptions,
+        playlists: state.playlists,
+        songs: state.songs,
+        currentMusic: state.currentMusic,
+        randomPlaylist: state.randomPlaylist,
+        repeatPlaylist: state.repeatPlaylist,
+        volume: state.volume
+      })
+    }
+  )
+)

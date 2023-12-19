@@ -56,7 +56,6 @@ export default function Controls () {
   }
 
   function NextSong () {
-    console.log('next song', currentMusic.songs)
     const actualSong = currentMusic.songs.findIndex(
       (song) => song.id === currentMusic.song?.id
     )
@@ -167,7 +166,7 @@ export default function Controls () {
 
   return (
     <div className='flex flex-row justify-between w-full pr-1 z-10'>
-      <div className='w-[600px]'>
+      <div className='w-[550px]'>
         <CurrentSong />
       </div>
 

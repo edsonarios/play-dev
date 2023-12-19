@@ -31,15 +31,16 @@ export default function PlayerComponent () {
     setPlaylists,
     pictureInPicture,
     setPictureInPicture,
-    randomPlaylist
+    randomPlaylist,
+    isTheFirstTime,
+    setIsTheFirstTime
   } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
     if (currentMusic.song !== undefined) {
       const newVideoSrc = `file://${currentMusic.song.directoryPath}/${currentMusic.song.title}`
       console.log(newVideoSrc)
-
-      if (playerRef.current !== undefined && playerRef.current?.plyr !== undefined) {
+      if (playerRef !== undefined && playerRef.current !== undefined && playerRef.current?.plyr !== undefined && currentMusic.song !== undefined && playerRef.current?.plyr.source !== null) {
         playerRef.current.plyr.source = {
           type: 'video',
           sources: [
@@ -63,12 +64,15 @@ export default function PlayerComponent () {
     const handleVideoEnd = (event: any) => {
       console.log('video ended')
       if (event.target !== undefined) {
-        console.log(currentMusic.songs)
         const currentVideoIndex = currentMusic.songs.findIndex(
           (song) => song.id === currentMusic.song?.id
         )
         const { songs } = currentMusic
         let nextSong = songs[currentVideoIndex + 1]
+        if (isTheFirstTime) {
+          nextSong = songs[currentVideoIndex]
+          setIsTheFirstTime(false)
+        }
 
         if (nextSong === undefined && repeatPlaylist === 'on') { nextSong = songs[0] }
         if (nextSong === undefined && repeatPlaylist === 'off') return
@@ -140,8 +144,10 @@ export default function PlayerComponent () {
       playerRef.current !== null &&
       currentMusic.song !== undefined
     ) {
-      // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-      void playerRef.current.plyr.pause()
+      if (playerRef.current?.plyr.source !== null) {
+        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+        void playerRef.current.plyr.pause()
+      }
     }
   }, [isPlaying])
 

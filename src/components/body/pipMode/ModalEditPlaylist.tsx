@@ -99,7 +99,7 @@ export default function ModalEditPlaylist ({
             <form onSubmit={handleSavePlaylist} className="flex flex-row">
               <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
                 <img
-                  src={playlist?.cover}
+                  src={editTemporallyCover !== '' ? editTemporallyCover : playlist?.cover}
                   alt={`Cover of ${playlist?.title}`}
                   className={`object-cover w-full h-full shadow-lg rounded-md image-${playlist?.id}`}
                 />

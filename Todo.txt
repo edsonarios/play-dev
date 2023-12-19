@@ -15,13 +15,15 @@
 
 * Integrate with Spotify and Youtube
 
-* Bug open folder, is mandatory choise any song, to select the actual folder, should be select the actual folder or just select a folder 
 * Made responsive plyr
-* Bug when charge the playlist the first time, the time not advance, the rest of songs its works[...]
 
-* Bug in DragableRow, when added new song, the if the current playlist is the currentMusic, the currentMusic is not updated, is needed to play manually the new playlist with double click in the song or any song in the AsideMenu "updateCurrentSongsIfNeeded"
+* [Bug] open folder, is mandatory choise any song, to select the actual folder, should be select the actual folder or just select a folder 
+* [Bug] in DragableRow, when added new song, the if the current playlist is the currentMusic, the currentMusic is not updated, is needed to play manually the new playlist with double click in the song or any song in the AsideMenu "updateCurrentSongsIfNeeded"
+* [Bug] When pip mode is active and clicked in the center of the screen, touch the current plyr putting pla/pause, but the plyr is not visible, is needed to expand the background in the view playlists
 
-Persistencia al store [...]
+ Export store from zustand [...]
+
+Find icon and Logo [...]
 
 Publish
 - Packaging

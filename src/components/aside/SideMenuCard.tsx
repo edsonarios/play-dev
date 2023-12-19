@@ -82,7 +82,6 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   // Reload playlist songs
   useEffect(() => {
     if (currentPlaylist.length !== 0 || isPlaylistExpanded) {
-      console.log(songs)
       const playListSongs = songs?.filter(
         (song) => song.albumId === playlist.id
       )

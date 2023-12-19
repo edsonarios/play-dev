@@ -29,7 +29,7 @@ export default function CurrentSong () {
       </picture>
 
       <button onClick={handledSongFocus} className="flex flex-col">
-        <h3 className="font-semibold text-sm block">
+        <h3 className="font-semibold text-sm text-left text-css">
           {song !== undefined
             ? findIndexSong + 1 + '. ' + song?.title
             : message}
