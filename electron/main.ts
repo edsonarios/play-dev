@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, globalShortcut, ipcMain } from 'electron'
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, MenuItem } from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 import musicMetadata from 'music-metadata'
@@ -39,7 +39,7 @@ function createWindow () {
     y: 60
     // alwaysOnTop: true
   })
-
+  win.maximize()
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date()).toLocaleString())
@@ -51,6 +51,8 @@ function createWindow () {
     // win.loadFile('dist/index.html')
     void win.loadFile(path.join(process.env.DIST, 'index.html'))
   }
+  createMenu()
+  win.webContents.openDevTools()
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -218,4 +220,50 @@ ipcMain.handle('get-image-to-cover', async (event) => {
   const result = await dialog.showOpenDialog({ properties: ['openFile'] })
   if (result.canceled || result.filePaths.length === 0) return ''
   return 'file://' + result.filePaths[0].replaceAll('\\', '/')
+})
+
+function createMenu () {
+  const menu = Menu.getApplicationMenu()
+  if (menu !== null) {
+    menu.items.forEach(item => {
+      if (item.label === 'File' && item.submenu !== undefined) {
+        item.submenu.insert(0, new MenuItem({
+          label: 'Export Configuration',
+          click: () => {
+            console.log('Export configuration')
+            // win?.webContents.send('trigger-export-config')
+            win?.webContents.send('trigger-export-config', 'play-pause')
+          }
+        }))
+        item.submenu.insert(1, new MenuItem({
+          label: 'Import Configuration',
+          click: () => {
+            console.log('Import configuration')
+            win?.webContents.send('trigger-import-config')
+          }
+        }))
+        item.submenu.insert(2, new MenuItem({ type: 'separator' }))
+      }
+    })
+
+    Menu.setApplicationMenu(menu)
+  }
+}
+
+// Get image to cover in playlist
+ipcMain.handle('export-config', async (event, config) => {
+  console.log('export-config', config)
+  console.log(event)
+  if (win === null) return
+  const response = dialog.showSaveDialogSync(win, {
+    title: 'Export Configuration',
+    defaultPath: 'config.json',
+    filters: [{ name: 'JSON', extensions: ['json'] }]
+  })
+  // if (result.canceled || result.filePaths.length === 0) return ''
+  console.log('response', response)
+  if (response !== undefined) {
+    fs.writeFileSync(response, config)
+    return true
+  }
 })

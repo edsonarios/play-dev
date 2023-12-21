@@ -180,7 +180,6 @@ export const usePlayerStore = create<StoreType>()(
       name: 'player-storage',
       partialize: (state) => ({
         modeColor: state.modeColor,
-        playerOptions: state.playerOptions,
         playlists: state.playlists,
         songs: state.songs,
         currentMusic: state.currentMusic,

@@ -17,10 +17,17 @@ import {
 import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
+import { useEffect } from 'react'
 
 export default function AsideMenu () {
-  const { playlists, setPlaylists, setSongs, songs, homeHideSongs, setHomeHideSongs } =
-    usePlayerStore<StoreType>((state) => state)
+  const {
+    playlists,
+    setPlaylists,
+    setSongs,
+    songs,
+    homeHideSongs,
+    setHomeHideSongs
+  } = usePlayerStore<StoreType>((state) => state)
 
   const handleSelectFolder = async () => {
     await OpenFolder(playlists, setPlaylists, setSongs, songs)
@@ -77,15 +84,62 @@ export default function AsideMenu () {
     setHomeHideSongs(!homeHideSongs)
   }
 
+  const handledExportStore = () => {
+    console.log('Export store')
+    const state = usePlayerStore.getState()
+    const exportState = {
+      modeColor: state.modeColor,
+      playerOptions: state.playerOptions,
+      playlists: state.playlists,
+      songs: state.songs,
+      currentMusic: state.currentMusic,
+      randomPlaylist: state.randomPlaylist,
+      repeatPlaylist: state.repeatPlaylist,
+      volume: state.volume
+    }
+    const json = JSON.stringify(exportState, null, 2)
+    console.log(exportState)
+    console.log(json)
+  }
+
+  useEffect(() => {
+    const handleExport = async () => {
+      console.log('Export store')
+      const state = usePlayerStore.getState()
+      const exportState = {
+        modeColor: state.modeColor,
+        playlists: state.playlists,
+        songs: state.songs,
+        currentMusic: state.currentMusic,
+        randomPlaylist: state.randomPlaylist,
+        repeatPlaylist: state.repeatPlaylist,
+        volume: state.volume
+      }
+      const json = JSON.stringify(exportState, null, 2)
+      console.log(exportState)
+      console.log(json)
+      const response = await window.electronAPI.exportConfig(json)
+      console.log(response)
+    }
+
+    // window.addEventListener('trigger-export-config', handleExport)
+    window.electronAPI.receive('trigger-export-config', handleExport)
+
+    return () => {
+      // window.removeEventListener('trigger-export-config', handleExport)
+      window.electronAPI.removeListener('trigger-export-config', handleExport)
+    }
+  }, [])
+
   return (
     <nav className="flex flex-col flex-1 gap-2 overflow-y-auto">
       <div className="bg-zinc-900 rounded-lg p-2">
         <ul>
           <SideMenuItem
-          Icon={HomeIcon}
-          text="Home"
-          href="#"
-          handledFunction={handledHome}
+            Icon={HomeIcon}
+            text="Home"
+            href="#"
+            handledFunction={handledHome}
           />
           <SideMenuItem
             Icon={FolderIcon}
@@ -99,7 +153,12 @@ export default function AsideMenu () {
       <div className="bg-zinc-900 rounded-lg p-2 flex-1 overflow-y-auto">
         <ul>
           <div className="flex justify-between">
-            <SideMenuItem Icon={LibraryIcon} text="Your Library" href="#" />
+            <SideMenuItem
+              Icon={LibraryIcon}
+              text="Your Library"
+              href="#"
+              handledFunction={handledExportStore}
+            />
             <button
               className="self-center mt-2 p-2 rounded-full opacity-70 hover:bg-zinc-800 hover:opacity-100"
               onClick={handledNewPlaylist}
