@@ -230,16 +230,13 @@ function createMenu () {
         item.submenu.insert(0, new MenuItem({
           label: 'Export Configuration',
           click: () => {
-            console.log('Export configuration')
-            // win?.webContents.send('trigger-export-config')
             win?.webContents.send('trigger-export-config', 'play-pause')
           }
         }))
         item.submenu.insert(1, new MenuItem({
           label: 'Import Configuration',
           click: () => {
-            console.log('Import configuration')
-            win?.webContents.send('trigger-import-config')
+            importConfig()
           }
         }))
         item.submenu.insert(2, new MenuItem({ type: 'separator' }))
@@ -250,20 +247,27 @@ function createMenu () {
   }
 }
 
-// Get image to cover in playlist
+// Export config from store in a file .json
 ipcMain.handle('export-config', async (event, config) => {
-  console.log('export-config', config)
-  console.log(event)
   if (win === null) return
   const response = dialog.showSaveDialogSync(win, {
     title: 'Export Configuration',
     defaultPath: 'config.json',
     filters: [{ name: 'JSON', extensions: ['json'] }]
   })
-  // if (result.canceled || result.filePaths.length === 0) return ''
-  console.log('response', response)
   if (response !== undefined) {
     fs.writeFileSync(response, config)
     return true
   }
 })
+
+// Import config from file .json
+function importConfig () {
+  const result = dialog.showOpenDialogSync({
+    title: 'Import Configuration',
+    filters: [{ name: 'JSON', extensions: ['json'] }]
+  })
+  if (result === undefined || result.length === 0) return
+  const config = fs.readFileSync(result[0], { encoding: 'utf-8' })
+  win?.webContents.send('trigger-import-config', config)
+}

@@ -17,7 +17,7 @@ import {
 import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export default function AsideMenu () {
   const {
@@ -85,26 +85,12 @@ export default function AsideMenu () {
   }
 
   const handledExportStore = () => {
-    console.log('Export store')
-    const state = usePlayerStore.getState()
-    const exportState = {
-      modeColor: state.modeColor,
-      playerOptions: state.playerOptions,
-      playlists: state.playlists,
-      songs: state.songs,
-      currentMusic: state.currentMusic,
-      randomPlaylist: state.randomPlaylist,
-      repeatPlaylist: state.repeatPlaylist,
-      volume: state.volume
-    }
-    const json = JSON.stringify(exportState, null, 2)
-    console.log(exportState)
-    console.log(json)
+    console.log('Your Library')
   }
 
+  // Export config to file from store
   useEffect(() => {
     const handleExport = async () => {
-      console.log('Export store')
       const state = usePlayerStore.getState()
       const exportState = {
         modeColor: state.modeColor,
@@ -116,21 +102,37 @@ export default function AsideMenu () {
         volume: state.volume
       }
       const json = JSON.stringify(exportState, null, 2)
-      console.log(exportState)
-      console.log(json)
       const response = await window.electronAPI.exportConfig(json)
-      console.log(response)
+      console.log(response) // true or false
     }
 
-    // window.addEventListener('trigger-export-config', handleExport)
     window.electronAPI.receive('trigger-export-config', handleExport)
 
     return () => {
-      // window.removeEventListener('trigger-export-config', handleExport)
       window.electronAPI.removeListener('trigger-export-config', handleExport)
     }
   }, [])
 
+  // Import config from file to store
+  const importConfig = useCallback((event: any, action: string) => {
+    const configParsed = JSON.parse(action) as StoreType
+    usePlayerStore.setState({
+      modeColor: configParsed.modeColor,
+      playlists: configParsed.playlists,
+      songs: configParsed.songs,
+      currentMusic: configParsed.currentMusic,
+      randomPlaylist: configParsed.randomPlaylist,
+      repeatPlaylist: configParsed.repeatPlaylist,
+      volume: configParsed.volume
+    })
+  }, [])
+
+  useEffect(() => {
+    window.electronAPI.receive('trigger-import-config', importConfig)
+    return () => {
+      window.electronAPI.removeListener('trigger-import-config', importConfig)
+    }
+  }, [])
   return (
     <nav className="flex flex-col flex-1 gap-2 overflow-y-auto">
       <div className="bg-zinc-900 rounded-lg p-2">
