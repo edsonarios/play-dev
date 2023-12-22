@@ -10,10 +10,11 @@ export interface CurrentMusicType {
   songs: ISong[]
 }
 export type RepeatPlaylistOptions = 'off' | 'on' | 'one'
+// type modeColorValues = 'dark' | 'light'
 
 export interface StoreType {
-  modeColor: string
-  setModeColor: (modeColor: string) => void
+  modeColor: 'dark' | 'light'
+  setModeColor: (modeColor: 'dark' | 'light') => void
 
   playerOptions: PlyrOptions
   setPlayerOptions: (playerOptions: PlyrOptions) => void

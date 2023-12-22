@@ -62,7 +62,7 @@ export default function App () {
     }
     newColor = codeColor[modeColor as keyof typeof codeColor]
     setCurrentColor(newColor)
-  }, [playlistView, pictureInPicture, currentMusic.playlist, playlists])
+  }, [playlistView, pictureInPicture, currentMusic.playlist, playlists, modeColor])
 
   useEffect(() => {
     if (editTemporallyColor !== '') {
