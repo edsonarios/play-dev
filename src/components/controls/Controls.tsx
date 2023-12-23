@@ -36,7 +36,6 @@ export default function Controls () {
 
     if (!randomPlaylist) {
       const shufflededSongs = shuffleSongsWithCurrentSong(currentMusic.songs, currentMusic.song.id)
-      console.log(shufflededSongs)
       setCurrentMusic({
         ...currentMusic,
         songs: shufflededSongs
@@ -140,7 +139,7 @@ export default function Controls () {
     }
   }
 
-  const handleMediaAction = useCallback((event: any, action: string) => {
+  const handleMediaAction = useCallback((_event: any, action: string) => {
     switch (action) {
       case 'play-pause':
         PlayPause()

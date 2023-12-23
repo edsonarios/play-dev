@@ -9,6 +9,7 @@ import { Slider } from './Slider'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { SpeedIcon } from '@/icons/controls/Speed'
 import { PictureInPictureOffIcon } from '@/icons/controls/PictureInPicture'
+import { speedOptions } from '@/utils/constants'
 
 export function ControlsRight () {
   const {
@@ -47,7 +48,6 @@ export function ControlsRight () {
   // Speed Options
   const [showSpeedOptions, setShowSpeedOptions] = useState(false)
 
-  const speedOptions = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4]
   const toggleSpeedOptions = () => {
     setShowSpeedOptions(!showSpeedOptions)
   }

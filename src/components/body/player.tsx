@@ -8,6 +8,7 @@ import { type ISong } from '@/lib/data'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
+import { speedOptions } from '@/utils/constants'
 
 export default function PlayerComponent () {
   const playerRef = useRef<APITypes>(null)
@@ -31,9 +32,7 @@ export default function PlayerComponent () {
     setPlaylists,
     pictureInPicture,
     setPictureInPicture,
-    randomPlaylist,
-    isTheFirstTime,
-    setIsTheFirstTime
+    randomPlaylist
   } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
@@ -62,18 +61,12 @@ export default function PlayerComponent () {
   // Event ended
   useEffect(() => {
     const handleVideoEnd = (event: any) => {
-      console.log('video ended')
       if (event.target !== undefined) {
         const currentVideoIndex = currentMusic.songs.findIndex(
           (song) => song.id === currentMusic.song?.id
         )
         const { songs } = currentMusic
         let nextSong = songs[currentVideoIndex + 1]
-        if (isTheFirstTime) {
-          nextSong = songs[currentVideoIndex]
-          setIsTheFirstTime(false)
-        }
-
         if (nextSong === undefined && repeatPlaylist === 'on') { nextSong = songs[0] }
         if (nextSong === undefined && repeatPlaylist === 'off') return
         if (repeatPlaylist === 'one' && currentMusic.song !== undefined) {
@@ -87,13 +80,11 @@ export default function PlayerComponent () {
         })
       }
     }
-    // if (typeof window !== 'undefined') {
     window.addEventListener('ended', handleVideoEnd)
 
     return () => {
       window.removeEventListener('ended', handleVideoEnd)
     }
-    // }
   }, [currentMusic, songs.length, repeatPlaylist, randomPlaylist])
 
   // Event play
@@ -214,20 +205,19 @@ export default function PlayerComponent () {
   }, [playerRef.current?.plyr?.duration])
 
   // Change playback speed
-  const speeds = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4]
   const changePlaybackSpeed = (increase: boolean) => {
     if (playerRef.current?.plyr !== undefined) {
       const currentSpeed = playerRef.current.plyr.speed
       let newSpeedIndex
 
       if (increase) {
-        newSpeedIndex = speeds.findIndex(speed => speed > currentSpeed)
-        if (newSpeedIndex === -1) newSpeedIndex = speeds.length - 1
+        newSpeedIndex = speedOptions.findIndex(speed => speed > currentSpeed)
+        if (newSpeedIndex === -1) newSpeedIndex = speedOptions.length - 1
       } else {
-        newSpeedIndex = speeds.slice().reverse().findIndex(speed => speed < currentSpeed)
-        newSpeedIndex = newSpeedIndex !== -1 ? speeds.length - 1 - newSpeedIndex : 0
+        newSpeedIndex = speedOptions.slice().reverse().findIndex(speed => speed < currentSpeed)
+        newSpeedIndex = newSpeedIndex !== -1 ? speedOptions.length - 1 - newSpeedIndex : 0
       }
-      const newSpeed = speeds[newSpeedIndex]
+      const newSpeed = speedOptions[newSpeedIndex]
       setSpeed(newSpeed)
       playerRef.current.plyr.speed = newSpeed
     }

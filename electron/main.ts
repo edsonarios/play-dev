@@ -7,6 +7,7 @@ import { getRandomColor, getRandomImage, naturalSort } from './utils'
 import { allowedExtensions } from './constants'
 import { Song } from './entities/song.entity'
 import { Playlist } from './entities/playlist.entity'
+import { type ISize } from './entities/size.entity'
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -23,23 +24,35 @@ let win: BrowserWindow | null
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
+// Path to save the previous window state
+const windowStatePath = path.join(app.getPath('userData'), 'window-state.json')
+
 function createWindow () {
+  // Load the previous state to set the window position and size
+  let windowState: ISize = {}
+  try {
+    windowState = JSON.parse(fs.readFileSync(windowStatePath, 'utf-8'))
+  } catch (err) {
+    windowState = { x: 0, y: 0, width: 800, height: 600 }
+  }
+
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: path.join(process.env.VITE_PUBLIC, 'icon-rep.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
       webSecurity: false
     },
-    // fullscreen: true,
-    width: 1850,
-    height: 1000,
-    x: 1925,
-    y: 60
-    // alwaysOnTop: true
+    x: windowState.x,
+    y: windowState.y
+    // x: 1912,
+    // y: 16,
+    // width: 1898,
+    // height: 1026,
   })
   win.maximize()
+
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date()).toLocaleString())
@@ -48,22 +61,19 @@ function createWindow () {
   if (VITE_DEV_SERVER_URL != null) {
     void win.loadURL(VITE_DEV_SERVER_URL)
   } else {
-    // win.loadFile('dist/index.html')
     void win.loadFile(path.join(process.env.DIST, 'index.html'))
   }
-  createMenu()
-  win.webContents.openDevTools()
-}
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
+  win.on('close', (_event) => {
+    if (win !== null) {
+      const { x, y, width, height } = win.getBounds()
+      fs.writeFileSync(windowStatePath, JSON.stringify({ x, y, width, height }))
+    }
     win = null
-  }
-})
+    app.quit()
+  })
+  createMenu()
+  // win.webContents.openDevTools()
+}
 
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
@@ -171,7 +181,7 @@ ipcMain.handle('open-directory-dialog', async () => {
 })
 
 // Get music metadata
-ipcMain.handle('get-music-metadata', async (event, filePath: string[]) => {
+ipcMain.handle('get-music-metadata', async (_event, filePath: string[]) => {
   try {
     const songsWithMetadata = await Promise.all(
       filePath
@@ -216,7 +226,7 @@ ipcMain.handle('get-music-metadata', async (event, filePath: string[]) => {
 })
 
 // Get image to cover in playlist
-ipcMain.handle('get-image-to-cover', async (event) => {
+ipcMain.handle('get-image-to-cover', async (_event) => {
   const result = await dialog.showOpenDialog({ properties: ['openFile'] })
   if (result.canceled || result.filePaths.length === 0) return ''
   return 'file://' + result.filePaths[0].replaceAll('\\', '/')
@@ -248,7 +258,7 @@ function createMenu () {
 }
 
 // Export config from store in a file .json
-ipcMain.handle('export-config', async (event, config) => {
+ipcMain.handle('export-config', async (_event, config) => {
   if (win === null) return
   const response = dialog.showSaveDialogSync(win, {
     title: 'Export Configuration',

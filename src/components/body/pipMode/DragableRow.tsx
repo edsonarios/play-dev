@@ -209,7 +209,7 @@ export function DragableRow ({
         currentMusic.song?.albumId === song.albumId
           ? (
           <img
-            src="/equaliser-animated-green.gif"
+            src="equaliser-animated-green.gif"
             alt="equaliser"
             width={16}
             className=""

@@ -21,7 +21,7 @@
 * [Bug] in DragableRow, when added new song, the if the current playlist is the currentMusic, the currentMusic is not updated, is needed to play manually the new playlist with double click in the song or any song in the AsideMenu "updateCurrentSongsIfNeeded"
 * [Bug] When pip mode is active and clicked in the center of the screen, touch the current plyr putting pla/pause, but the plyr is not visible, is needed to expand the background in the view playlists
 
-Find icon and Logo [...]
+Press alt in a song and open the folder where is the song
 
 Publish
 - Packaging

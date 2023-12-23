@@ -114,7 +114,7 @@ export default function AsideMenu () {
   }, [])
 
   // Import config from file to store
-  const importConfig = useCallback((event: any, action: string) => {
+  const importConfig = useCallback((_event: any, action: string) => {
     const configParsed = JSON.parse(action) as StoreType
     usePlayerStore.setState({
       modeColor: configParsed.modeColor,

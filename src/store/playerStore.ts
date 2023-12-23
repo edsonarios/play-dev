@@ -78,9 +78,6 @@ export interface StoreType {
 
   homeHideSongs: boolean
   setHomeHideSongs: (homeHideSongs: boolean) => void
-
-  isTheFirstTime: boolean
-  setIsTheFirstTime: (isTheFirstTime: boolean) => void
 }
 const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
@@ -167,11 +164,7 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   setSongRefToScroll: (songRefToScroll: ISong | undefined) => { set({ songRefToScroll }) },
 
   homeHideSongs: false,
-  setHomeHideSongs: (homeHideSongs) => { set({ homeHideSongs }) },
-
-  // Now is persist the currentMusic, so the first time to recovery the store is needed to be true to reproduce the actual song
-  isTheFirstTime: true,
-  setIsTheFirstTime: (isTheFirstTime) => { set({ isTheFirstTime }) }
+  setHomeHideSongs: (homeHideSongs) => { set({ homeHideSongs }) }
 })
 
 export const usePlayerStore = create<StoreType>()(
