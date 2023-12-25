@@ -84,8 +84,8 @@ html {
 
 /* Reproductor player */
 .plyr__video-wrapper {
-  min-width: 1300px;
-  max-width: 1300px;
+  min-width: 1350px;
+  max-width: 1350px;
   margin: auto;
   aspect-ratio: 16 / 9;
 }

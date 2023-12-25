@@ -16,7 +16,7 @@ export const playlists: IPlaylist[] = [
     title: 'All Songs',
     color: getRandomColor(),
     cover:
-      'file://C:/Users/edson/Pictures/Covers/cover1.jpg',
+      'Covers/cover1.jpg',
     artists: []
   }
 ]
@@ -36,16 +36,16 @@ export interface ISong {
 
 export const songs: ISong[] = []
 export const covers: string[] = [
-  'file://C:/Users/edson/Pictures/Covers/cover1.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover2.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover3.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover4.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover5.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover6.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover7.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover8.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover9.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover10.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover11.jpg',
-  'file://C:/Users/edson/Pictures/Covers/cover12.jpg'
+  'Covers/cover1.jpg',
+  'Covers/cover2.jpg',
+  'Covers/cover3.jpg',
+  'Covers/cover4.jpg',
+  'Covers/cover5.jpg',
+  'Covers/cover6.jpg',
+  'Covers/cover7.jpg',
+  'Covers/cover8.jpg',
+  'Covers/cover9.jpg',
+  'Covers/cover10.jpg',
+  'Covers/cover11.jpg',
+  'Covers/cover12.jpg'
 ]

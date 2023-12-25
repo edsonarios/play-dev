@@ -32,3 +32,11 @@ Publish
 - Made code to update the app
 - Features premium
 - Pay methods
+
+In Mac
+- cover image not in local ✅
+- All covers is not find in the data.ts, open folder ✅
+- Icon in mac is icns ✅
+- Export configuration name default - playlist ✅
+- Press o or p, in search song, open the shorcout ✅
+- Mandatory made responsive plyr, the arrow to back to home, not see ✅

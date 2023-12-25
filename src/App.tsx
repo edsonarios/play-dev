@@ -7,7 +7,7 @@ import { colors } from './lib/colors'
 import { type StoreType, usePlayerStore } from './store/playerStore'
 import { PlaylistPipMode } from './components/body/pipMode/Playlist'
 import { PlaylistDetail } from './components/body/pipMode/PlaylistDetail'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Split from 'react-split'
 import { type IPlaylist, type ISong } from './lib/data'
 
@@ -36,8 +36,14 @@ declare global {
 }
 
 export default function App () {
-  const { currentMusic, pictureInPicture, playlistView, playlists, editTemporallyColor, modeColor } =
-    usePlayerStore<StoreType>((state) => state)
+  const {
+    currentMusic,
+    pictureInPicture,
+    playlistView,
+    playlists,
+    editTemporallyColor,
+    modeColor
+  } = usePlayerStore<StoreType>((state) => state)
 
   const [currentColor, setCurrentColor] = useState(colors.gray.dark)
   useEffect(() => {
@@ -62,7 +68,13 @@ export default function App () {
     }
     newColor = codeColor[modeColor as keyof typeof codeColor]
     setCurrentColor(newColor)
-  }, [playlistView, pictureInPicture, currentMusic.playlist, playlists, modeColor])
+  }, [
+    playlistView,
+    pictureInPicture,
+    currentMusic.playlist,
+    playlists,
+    modeColor
+  ])
 
   useEffect(() => {
     if (editTemporallyColor !== '') {
@@ -74,14 +86,46 @@ export default function App () {
 
   const setPlaylist = () => {
     if (pictureInPicture && playlistView !== '0') {
-      return <PlaylistDetail playlistID={playlistView} setCurrentColor={setCurrentColor} />
+      return (
+        <PlaylistDetail
+          playlistID={playlistView}
+          setCurrentColor={setCurrentColor}
+        />
+      )
     }
     return <PlaylistPipMode />
   }
+  const playerContainerRef = useRef<HTMLElement>(null)
+  const updatePlayerSize = () => {
+    if (playerContainerRef.current !== null) {
+      const playerWidth = playerContainerRef.current.offsetWidth
+      if (playerWidth <= 1350) {
+        const playerHeight = (playerWidth / 16) * 9
+        const playerWrapper = document.querySelector('.plyr__video-wrapper') as HTMLElement
 
+        if (playerWrapper !== null) {
+          playerWrapper.style.width = `${playerWidth}px`
+          playerWrapper.style.height = `${playerHeight}px`
+        }
+      }
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', updatePlayerSize)
+
+    // Stablish the first time the initial size
+    updatePlayerSize()
+
+    return () => {
+      window.removeEventListener('resize', updatePlayerSize)
+    }
+  }, [currentMusic.song])
   return (
-    <div id="app" className="h-screen p-2 gap-3">
-      <div className="[grid-area:main] overflow-y-auto">
+    <div id="app" className="h-screen p-2 gap-3 overflow-x-hidden">
+      <div
+        className="[grid-area:main] overflow-y-auto"
+      >
         <Split
           className="flex flex-row h-full"
           sizes={[15, 85]}
@@ -89,12 +133,14 @@ export default function App () {
           gutterSize={10}
           cursor="col-resize"
         >
-          <aside className="flex flex-col overflow-y-auto">
+          <aside
+            className="flex flex-col overflow-y-auto">
             <AsideMenu />
           </aside>
 
           <main
-            className="rounded-lg overflow-y-auto w-full h-full flex justify-center items-center relative flex-col"
+            ref={playerContainerRef}
+            className="rounded-lg overflow-y-auto overflow-x-hidden w-full h-full flex justify-center items-center relative flex-col"
             style={{
               background: `linear-gradient(to bottom, ${currentColor}, #18181b)`,
               transition: 'opacity 0.5s ease'

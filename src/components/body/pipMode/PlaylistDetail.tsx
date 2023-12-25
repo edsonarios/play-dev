@@ -191,8 +191,8 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
               <input
                 type="text"
                 value={inputValue}
-                onChange={(e) => {
-                  handleInputChange(e.target.value)
+                onChange={(event) => {
+                  handleInputChange(event.target.value)
                 }}
                 className="ml-2 rounded-xl p-2 w-96 opacity-60 bg-transparent outline-none"
                 placeholder="Search song"

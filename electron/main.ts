@@ -37,7 +37,7 @@ function createWindow () {
   }
 
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'icon-rep.png'),
+    icon: path.join(process.env.VITE_PUBLIC, 'icon-played.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -262,7 +262,7 @@ ipcMain.handle('export-config', async (_event, config) => {
   if (win === null) return
   const response = dialog.showSaveDialogSync(win, {
     title: 'Export Configuration',
-    defaultPath: 'config.json',
+    defaultPath: 'MyPlaylist.json',
     filters: [{ name: 'JSON', extensions: ['json'] }]
   })
   if (response !== undefined) {

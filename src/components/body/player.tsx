@@ -226,6 +226,7 @@ export default function PlayerComponent () {
   // Event keys press
   useEffect(() => {
     const handleKeyPress = async (event: any) => {
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') return
       if (event.key === '+') {
         changePlaybackSpeed(true)
       }

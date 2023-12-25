@@ -165,7 +165,7 @@ export default function Controls () {
 
   return (
     <div className='flex flex-row justify-between w-full pr-1 z-10'>
-      <div className='w-[550px]'>
+      <div className='w-[550px] max-w-[calc(40vw-100px)]'>
         <CurrentSong />
       </div>
 

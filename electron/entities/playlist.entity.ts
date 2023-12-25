@@ -48,10 +48,16 @@ export class Playlist {
 }
 
 export const covers: string[] = [
-  'https://vinyl.lofirecords.com/cdn/shop/products/VINYL_MORNING_COFFEE_4-min.png?v=1680526353',
-  'https://vinyl.lofirecords.com/cdn/shop/files/2amsynth-vinyl.png?v=1693312187',
-  'https://f4.bcbits.com/img/a1435058381_65.jpg',
-  'https://f4.bcbits.com/img/a1962013209_16.jpg',
-  'https://f4.bcbits.com/img/a2793859494_16.jpg',
-  'https://f4.bcbits.com/img/a0363730459_16.jpg'
+  'Covers/cover1.jpg',
+  'Covers/cover2.jpg',
+  'Covers/cover3.jpg',
+  'Covers/cover4.jpg',
+  'Covers/cover5.jpg',
+  'Covers/cover6.jpg',
+  'Covers/cover7.jpg',
+  'Covers/cover8.jpg',
+  'Covers/cover9.jpg',
+  'Covers/cover10.jpg',
+  'Covers/cover11.jpg',
+  'Covers/cover12.jpg'
 ]

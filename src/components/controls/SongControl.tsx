@@ -25,7 +25,7 @@ export function SongControl () {
         value={[localSongCurrentTime]}
         max={duration}
         min={0}
-        className='w-[600px]'
+        className='w-[600px] max-w-[calc(40vw-100px)]'
         onValueChange={(value) => {
           const [newCurrentTime] = value
           setSongCurrentTime(newCurrentTime)
