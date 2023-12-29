@@ -20,6 +20,8 @@
 
 Press alt in a song and open the folder where is the song
 
+- Language (i18n)
+
 Publish
 - Packaging
   * Windows

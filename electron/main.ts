@@ -102,6 +102,14 @@ void app.whenReady().then(() => {
   globalShortcut.register('MediaPreviousTrack', () => {
     win?.webContents.send('media-action', 'previous-track')
   })
+
+  win?.on('enter-full-screen', () => {
+    win?.setMenuBarVisibility(false)
+  })
+
+  win?.on('leave-full-screen', () => {
+    win?.setMenuBarVisibility(true)
+  })
 })
 
 app.on('will-quit', () => {
