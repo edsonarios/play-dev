@@ -240,7 +240,7 @@ function createMenu () {
         item.submenu.insert(0, new MenuItem({
           label: 'Export Configuration',
           click: () => {
-            win?.webContents.send('trigger-export-config', 'play-pause')
+            win?.webContents.send('trigger-export-config')
           }
         }))
         item.submenu.insert(1, new MenuItem({

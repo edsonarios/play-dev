@@ -95,37 +95,35 @@ export default function App () {
     }
     return <PlaylistPipMode />
   }
+
   const playerContainerRef = useRef<HTMLElement>(null)
   const updatePlayerSize = () => {
     if (playerContainerRef.current !== null) {
-      const playerWidth = playerContainerRef.current.offsetWidth
-      if (playerWidth <= 1350) {
-        const playerHeight = (playerWidth / 16) * 9
-        const playerWrapper = document.querySelector('.plyr__video-wrapper') as HTMLElement
-
-        if (playerWrapper !== null) {
-          playerWrapper.style.width = `${playerWidth}px`
-          playerWrapper.style.height = `${playerHeight}px`
-        }
+      let playerWidth = playerContainerRef.current.offsetWidth
+      if (playerWidth > 1350) {
+        playerWidth = 1350
+      }
+      const playerHeight = (playerWidth / 16) * 9
+      const playerWrapper = document.querySelector(
+        '.plyr__video-wrapper'
+      ) as HTMLElement
+      if (playerWrapper !== null) {
+        playerWrapper.style.width = `${playerWidth}px`
+        playerWrapper.style.height = `${playerHeight}px`
       }
     }
   }
 
   useEffect(() => {
     window.addEventListener('resize', updatePlayerSize)
-
-    // Stablish the first time the initial size
-    updatePlayerSize()
-
     return () => {
       window.removeEventListener('resize', updatePlayerSize)
     }
   }, [currentMusic.song])
+
   return (
     <div id="app" className="h-screen p-2 gap-3 overflow-x-hidden">
-      <div
-        className="[grid-area:main] overflow-y-auto"
-      >
+      <div className="[grid-area:main] overflow-y-auto">
         <Split
           className="flex flex-row h-full"
           sizes={[15, 85]}
@@ -133,8 +131,7 @@ export default function App () {
           gutterSize={10}
           cursor="col-resize"
         >
-          <aside
-            className="flex flex-col overflow-y-auto">
+          <aside className="flex flex-col overflow-y-auto">
             <AsideMenu />
           </aside>
 

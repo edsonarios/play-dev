@@ -140,6 +140,7 @@ export default function Controls () {
   }
 
   const handleMediaAction = useCallback((_event: any, action: string) => {
+    console.log(action)
     switch (action) {
       case 'play-pause':
         PlayPause()
