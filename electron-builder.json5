@@ -14,7 +14,7 @@
     "dist-electron"
   ],
   "mac": {
-    "icon": "dist/icn-played.icns",
+    "icon": "dist/icon-played.icns",
     "target": [
       "dmg"
     ],

@@ -93,6 +93,8 @@ html {
 :fullscreen .plyr__video-wrapper,
 :-webkit-full-screen .plyr__video-wrapper{
   max-width: none;
+  width: auto;
+  height: auto;
 }
 
 /* Base style for the scroll bar */

@@ -100,7 +100,7 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
     albumId: '1',
     title: 'All Songs',
     color: getRandomColor(),
-    cover: 'file://C:/Users/edson/Pictures/Covers/cover1.jpg',
+    cover: 'Covers/cover1.jpg',
     artists: []
   }],
   setPlaylists: (playlists) => { set({ playlists }) },
