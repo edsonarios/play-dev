@@ -103,13 +103,12 @@ export default function App () {
       if (playerWidth > 1350) {
         playerWidth = 1350
       }
-      const playerHeight = (playerWidth / 16) * 9
       const playerWrapper = document.querySelector(
         '.plyr__video-wrapper'
       ) as HTMLElement
       if (playerWrapper !== null) {
-        playerWrapper.style.width = `${playerWidth}px`
-        playerWrapper.style.height = `${playerHeight}px`
+        playerWrapper.style.maxWidth = `${playerWidth}px`
+        playerWrapper.style.minWidth = `${playerWidth}px`
       }
     }
   }
@@ -120,6 +119,26 @@ export default function App () {
       window.removeEventListener('resize', updatePlayerSize)
     }
   }, [currentMusic.song])
+
+  // Event full screen
+  useEffect(() => {
+    const handleFullScreen = (event: any) => {
+      if (event.target !== undefined) {
+        const playerWrapper = document.querySelector(
+          '.plyr__video-wrapper'
+        ) as HTMLElement
+        if (playerWrapper !== null) {
+          playerWrapper.style.maxWidth = 'none'
+          playerWrapper.style.minWidth = 'none'
+        }
+      }
+    }
+    window.addEventListener('enterfullscreen', handleFullScreen)
+
+    return () => {
+      window.removeEventListener('enterfullscreen', handleFullScreen)
+    }
+  }, [])
 
   return (
     <div id="app" className="h-screen p-2 gap-3 overflow-x-hidden">
