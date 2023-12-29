@@ -375,7 +375,11 @@ export default function PlayerComponent () {
   return (
     <div
     className='relative'>
-      <div onDragOver={handleDragOver} onDrop={handleDropElectron} className={pictureInPicture ? 'opacity-0' : ''}>
+      <div
+        onDragOver={handleDragOver}
+        onDrop={handleDropElectron}
+        className={pictureInPicture ? 'opacity-0 pointer-events-none' : ''}
+      >
         {/* disable error, because de source is handled by useEffect */}
         {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error */}
