@@ -65,15 +65,31 @@ export function PlaylistPipMode () {
               handleSetPlaylistView(playlist.id)
             }}
           >
-            <picture className="aspect-square">
-              <img
-                src={playlist.cover}
-                alt={`Cover of ${playlist.title} by ${playlist.artists.join(
-                  ','
-                )}`}
-                className="object-cover h-full rounded-md"
-              />
-            </picture>
+            {playlist.cover.length === 1
+              ? (
+              <picture className="aspect-square">
+                <img
+                  src={playlist.cover[0]}
+                  alt={`Cover of ${playlist.title} by ${playlist.artists.join(
+                    ','
+                  )}`}
+                  className="object-cover h-full rounded-md"
+                />
+              </picture>
+                )
+              : (
+              <div className="grid grid-cols-2 aspect-square w-full h-44">
+                {playlist.cover.map((cover, index) => (
+                  <div key={index} className="relative w-full h-full">
+                    <img
+                      src={cover}
+                      alt={`Song ${index}`}
+                      className="absolute w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+                )}
             <div className="flex flex-auto flex-col px-2">
               <h4 className="text-white text-sm">{playlist.title}</h4>
 

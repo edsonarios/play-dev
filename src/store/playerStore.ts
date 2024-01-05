@@ -12,6 +12,12 @@ export interface CurrentMusicType {
 export type RepeatPlaylistOptions = 'off' | 'on' | 'one'
 // type modeColorValues = 'dark' | 'light'
 
+interface IProfile {
+  name: string
+  email: string
+  image: string
+}
+
 export interface StoreType {
   modeColor: 'dark' | 'light'
   setModeColor: (modeColor: 'dark' | 'light') => void
@@ -78,6 +84,9 @@ export interface StoreType {
 
   homeHideSongs: boolean
   setHomeHideSongs: (homeHideSongs: boolean) => void
+
+  profile: IProfile | undefined
+  setProfile: (profile: IProfile | undefined) => void
 }
 const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
@@ -100,7 +109,7 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
     albumId: '1',
     title: 'All Songs',
     color: getRandomColor(),
-    cover: 'Covers/cover1.jpg',
+    cover: ['Covers/cover1.jpg'],
     artists: []
   }],
   setPlaylists: (playlists) => { set({ playlists }) },
@@ -164,7 +173,10 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   setSongRefToScroll: (songRefToScroll: ISong | undefined) => { set({ songRefToScroll }) },
 
   homeHideSongs: false,
-  setHomeHideSongs: (homeHideSongs) => { set({ homeHideSongs }) }
+  setHomeHideSongs: (homeHideSongs) => { set({ homeHideSongs }) },
+
+  profile: undefined,
+  setProfile: (profile) => { set({ profile }) }
 })
 
 export const usePlayerStore = create<StoreType>()(
@@ -179,7 +191,8 @@ export const usePlayerStore = create<StoreType>()(
         currentMusic: state.currentMusic,
         randomPlaylist: state.randomPlaylist,
         repeatPlaylist: state.repeatPlaylist,
-        volume: state.volume
+        volume: state.volume,
+        profile: state.profile
       })
     }
   )

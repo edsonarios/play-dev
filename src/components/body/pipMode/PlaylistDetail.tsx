@@ -98,7 +98,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
       if (playlist === undefined) return
       setEditTemporallyTitle(playlist.title)
       setEditTemporallyColor(playlist.color)
-      setEditTemporallyCover(playlist?.cover)
+      setEditTemporallyCover(playlist?.cover[0])
       setIsOpen(true)
     })
   }
@@ -110,7 +110,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
         withViewTransition(() => {
           setEditTemporallyTitle('')
           setEditTemporallyColor(playlist.color)
-          setEditTemporallyCover(playlist.cover)
+          setEditTemporallyCover(playlist.cover[0])
           setIsOpen(false)
         })
       }
@@ -126,7 +126,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
       if (playlist === undefined) return
       setEditTemporallyTitle('')
       setEditTemporallyColor(playlist.color)
-      setEditTemporallyCover(playlist.cover)
+      setEditTemporallyCover(playlist.cover[0])
       setIsOpen(false)
     })
   }
@@ -134,14 +134,40 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
   return (
     <div className="absolute top-14 w-[95%] flex flex-col overflow-y-disable rounded-lg">
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
-        <picture className="aspect-square w-52 h-52 flex-none">
+        {/* <picture className="aspect-square w-52 h-52 flex-none">
           <img
-            src={isOpen ? editTemporallyCover : currentPlaylist?.cover}
+            src={isOpen ? editTemporallyCover : currentPlaylist?.cover[0]}
             alt={`Cover of ${currentPlaylist?.title}`}
             className="object-cover w-full h-full shadow-lg rounded-md"
           />
-        </picture>
-
+        </picture> */}
+        <div className='w-40'>
+        {currentPlaylist?.cover.length === 1
+          ? (
+          <picture className="aspect-square">
+            <img
+              src={currentPlaylist?.cover[0]}
+              alt={`Cover of ${currentPlaylist?.title} by ${currentPlaylist?.artists.join(
+                ','
+              )}`}
+              className="object-cover h-full rounded-md"
+            />
+          </picture>
+            )
+          : (
+          <div className="grid grid-cols-2 aspect-square w-full h-44">
+            {currentPlaylist?.cover.map((cover, index) => (
+              <div key={index} className="relative w-full h-full">
+                <img
+                  src={cover}
+                  alt={`Song ${index}`}
+                  className="absolute w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+            )}
+        </div>
         <div className="flex flex-col justify-between">
           <h2 className="flex flex-1 items-end">Playlist</h2>
           <button onClick={handledEditPlaylist}

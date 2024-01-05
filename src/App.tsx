@@ -16,6 +16,18 @@ interface OpenDirectoryDialog {
   songs: ISong[]
 }
 
+interface IYoutube {
+  profile: IProfile
+  playlists: IPlaylist[]
+  songs: ISong[]
+}
+
+interface IProfile {
+  name: string
+  email: string
+  image: string
+}
+
 interface ElectronAPI {
   openDirectoryDialog: () => Promise<OpenDirectoryDialog>
   receive: (
@@ -27,6 +39,7 @@ interface ElectronAPI {
   getImageToCover: () => Promise<string>
   exportConfig: (config: string) => Promise<boolean>
   importConfig: (config: string) => Promise<boolean>
+  importYoutube: () => Promise<IYoutube>
 }
 
 declare global {

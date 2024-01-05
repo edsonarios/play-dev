@@ -40,7 +40,7 @@ export default function AsideMenu () {
         albumId: '',
         title: 'New Playlist',
         color: getRandomColor(),
-        cover: getRandomImage(),
+        cover: [getRandomImage()],
         artists: []
       })
       const currentPlaylists = playlists

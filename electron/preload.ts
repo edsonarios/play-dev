@@ -7,7 +7,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   removeListener: (channel: any) => ipcRenderer.removeAllListeners(channel),
   getMusicMetadata: async (filePath: string[]) => await ipcRenderer.invoke('get-music-metadata', filePath),
   getImageToCover: async () => await ipcRenderer.invoke('get-image-to-cover'),
-  exportConfig: async (config: string) => await ipcRenderer.invoke('export-config', config)
+  exportConfig: async (config: string) => await ipcRenderer.invoke('export-config', config),
+  importYoutube: async () => await ipcRenderer.invoke('import-youtube')
 })
 
 // --------- Preload scripts loading ---------

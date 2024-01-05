@@ -5,7 +5,7 @@ export class Playlist {
   albumId: string
   title: string
   color: string
-  cover: string
+  cover: string[]
   artists: string[]
 
   constructor (playlist: IPlaylist) {

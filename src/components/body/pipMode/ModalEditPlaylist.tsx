@@ -49,7 +49,7 @@ export default function ModalEditPlaylist ({
           ...item,
           title: editTemporallyTitle,
           color: editTemporallyColor,
-          cover: editTemporallyCover
+          cover: [editTemporallyCover]
         }
         if (currentMusic.playlist?.id === playlist.id) {
           setCurrentMusic({ ...currentMusic, playlist: newItem })
@@ -99,7 +99,7 @@ export default function ModalEditPlaylist ({
             <form onSubmit={handleSavePlaylist} className="flex flex-row">
               <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
                 <img
-                  src={editTemporallyCover !== '' ? editTemporallyCover : playlist?.cover}
+                  src={editTemporallyCover !== '' ? editTemporallyCover : playlist?.cover[0]}
                   alt={`Cover of ${playlist?.title}`}
                   className={`object-cover w-full h-full shadow-lg rounded-md image-${playlist?.id}`}
                 />

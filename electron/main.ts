@@ -3,11 +3,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import musicMetadata from 'music-metadata'
 import crypto from 'crypto'
-import { getRandomColor, getRandomImage, naturalSort } from './utils'
+import { getRandomColor, getRandomImage, improveCovers, naturalSort } from './utils'
 import { allowedExtensions } from './constants'
 import { Song } from './entities/song.entity'
 import { Playlist } from './entities/playlist.entity'
 import { type ISize } from './entities/size.entity'
+import { authenticate, getDatasFromYoutube, getProfile } from './youtube'
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -141,7 +142,7 @@ ipcMain.handle('open-directory-dialog', async () => {
       albumId: newPlaylistUUID,
       title: titlePlaylist,
       color: getRandomColor(),
-      cover: randomImage,
+      cover: [randomImage],
       artists: ['artist']
     })
 
@@ -289,3 +290,23 @@ function importConfig () {
   const config = fs.readFileSync(result[0], { encoding: 'utf-8' })
   win?.webContents.send('trigger-import-config', config)
 }
+
+ipcMain.handle('import-youtube', async () => {
+  console.log('import youtube from electron')
+  try {
+    await authenticate()
+    const profile = await getProfile()
+    const playlistsWithSongs = await getDatasFromYoutube()
+    const playlistsWithCovers = improveCovers(playlistsWithSongs.playlistsPlayed, playlistsWithSongs.songsPlayed)
+    const data = {
+      profile,
+      playlists: playlistsWithCovers,
+      songs: playlistsWithSongs.songsPlayed
+    }
+    console.log(data)
+    return data
+  } catch (error) {
+    console.error('Error to get youtube datas', error)
+    throw error
+  }
+})

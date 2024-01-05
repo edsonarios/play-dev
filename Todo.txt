@@ -34,3 +34,5 @@ Publish
 
 In Mac
 - MediaNext and MediaPrevious not work
+
+- Add description to playlist, include youtube

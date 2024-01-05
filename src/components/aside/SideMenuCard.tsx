@@ -171,7 +171,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
           const newSong = new Song({
             ...item,
             albumId: playlist.id,
-            image: playlist.cover
+            image: playlist.cover[0]
           })
           songsToAdd.push(newSong)
         }
@@ -251,7 +251,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
         {/* Image Playlist */}
         <picture className="h-12 w-12 flex-none">
           <img
-            src={playlist.cover}
+            src={playlist.cover[0]}
             alt={`Cover of ${playlist.title} by ${artistsString}`}
             className="object-cover w-full h-full rounded-md"
           />

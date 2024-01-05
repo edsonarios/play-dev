@@ -37,23 +37,42 @@ export default function PlayerComponent () {
 
   useEffect(() => {
     if (currentMusic.song !== undefined) {
-      const newVideoSrc = `file://${currentMusic.song.directoryPath}/${currentMusic.song.title}`
+      let newVideoSrc
+      if (currentMusic.song.format === 'youtube') {
+        newVideoSrc = currentMusic.song.id
+      } else {
+        newVideoSrc = `file://${currentMusic.song.directoryPath}/${currentMusic.song.title}`
+      }
       console.log(newVideoSrc)
       if (playerRef !== undefined && playerRef.current !== undefined && playerRef.current?.plyr !== undefined && currentMusic.song !== undefined && playerRef.current?.plyr.source !== null) {
-        playerRef.current.plyr.source = {
-          type: 'video',
-          sources: [
-            {
-              src: newVideoSrc,
-              provider: 'html5'
-            }
-          ]
-        }
-        void (playerRef.current.plyr.play() as Promise<void>).then(() => {
-          if (playerRef.current !== null && pictureInPicture) {
-            playerRef.current.plyr.pip = true
+        if (currentMusic.song.format === 'youtube') {
+          playerRef.current.plyr.autoplay = true
+          playerRef.current.plyr.source = {
+            type: 'video',
+            sources: [
+              {
+                src: newVideoSrc,
+                provider: 'youtube'
+              }
+            ]
           }
-        })
+        } else {
+          playerRef.current.plyr.autoplay = false
+          playerRef.current.plyr.source = {
+            type: 'video',
+            sources: [
+              {
+                src: newVideoSrc,
+                provider: 'html5'
+              }
+            ]
+          }
+          void (playerRef.current.plyr.play() as Promise<void>).then(() => {
+            if (playerRef.current !== null && pictureInPicture) {
+              playerRef.current.plyr.pip = true
+            }
+          })
+        }
       }
     }
   }, [currentMusic.song])
@@ -343,7 +362,7 @@ export default function PlayerComponent () {
           const newSong = new Song({
             ...item,
             albumId: '1',
-            image: playlists[0].cover
+            image: playlists[0].cover[0]
           })
           defaultSongsToAdd.push(newSong)
         }
