@@ -67,7 +67,7 @@ export function PlaylistPipMode () {
           >
             {playlist.cover.length === 1
               ? (
-              <picture className="aspect-square">
+              <picture className="aspect-square h-44 w-40">
                 <img
                   src={playlist.cover[0]}
                   alt={`Cover of ${playlist.title} by ${playlist.artists.join(

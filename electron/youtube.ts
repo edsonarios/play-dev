@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import http from 'http'
 import url from 'url'
 import opn from 'open'
@@ -7,6 +9,7 @@ import { google } from 'googleapis'
 import { type IPlaylist, Playlist } from './entities/playlist.entity'
 import { type ISong, Song } from './entities/song.entity'
 import { getRandomColor } from './utils'
+import fs from 'node:fs'
 const people = google.people('v1')
 const youtube = google.youtube('v3')
 
@@ -32,13 +35,13 @@ export async function authenticate () {
     const server = http
       .createServer(async (req, res) => {
         try {
-          if (req.url.includes('/oauth2callback')) {
+          if (req.url !== undefined && req.url.includes('/oauth2callback')) {
             const qs = new url.URL(req.url, 'http://localhost:7173')
               .searchParams
             res.end('Authentication successful! Close this window')
             server.destroy()
-            const response = await oauth2Client.getToken(qs.get('code'))
-            const { tokens } = response
+            const code = qs.get('code') as string
+            const { tokens } = await oauth2Client.getToken(code)
             oauth2Client.credentials = tokens
             resolve(oauth2Client)
           }
@@ -47,7 +50,7 @@ export async function authenticate () {
         }
       })
       .listen(7173, () => {
-        opn(authorizeUrl, { wait: false }).then(cp => { cp.unref() })
+        void opn(authorizeUrl, { wait: false }).then(cp => { cp.unref() })
       })
     destroyer(server)
   })
@@ -58,17 +61,17 @@ export async function getProfile () {
     resourceName: 'people/me',
     personFields: 'emailAddresses,names,photos'
   })
+  if (res.data?.names === undefined || res.data?.emailAddresses === undefined || res.data?.photos === undefined) return
   const profile = {
     name: res.data.names[0].displayName,
     email: res.data.emailAddresses[0].value,
     image: res.data.photos[0].url
   }
-  console.log(profile)
   return profile
 }
 
-async function getAllPlaylists (etag) {
-  let allPlaylists = []
+async function getAllPlaylists (etag: string | null) {
+  let allPlaylists: any = []
   let pageToken = null
   do {
     const response = await getPlaylistData(etag, pageToken)
@@ -79,24 +82,23 @@ async function getAllPlaylists (etag) {
   return allPlaylists
 }
 
-async function getPlaylistData (etag, pageToken) {
+async function getPlaylistData (etag: string, pageToken: string) {
   const headers = {}
-  if (etag) {
+  if (etag !== undefined) {
     headers['If-None-Match'] = etag
   }
-  const res = await youtube.playlists.list({
+  const res = youtube.playlists.list({
     part: 'id,snippet',
     mine: true,
     maxResults: 50,
     pageToken,
     headers
   })
-  console.log('Status code: ' + res.status)
   return await res
 }
 
 async function getPlaylistItems (playlistId) {
-  let allItems = []
+  let allItems: any = []
   let pageToken = null
   do {
     const response = await youtube.playlistItems.list({
@@ -116,75 +118,45 @@ export async function getDatasFromYoutube () {
   const playlists = await getAllPlaylists(null)
   const playlistsPlayed: IPlaylist[] = []
   const songsPlayed: ISong[] = []
-
-  const items = await getPlaylistItems(playlists[0].id)
-  const newPlaylist = new Playlist({
-    id: playlists[0].id,
-    albumId: playlists[0].id,
-    title: playlists[0].snippet.title,
-    color: getRandomColor(),
-    cover: playlists[0].snippet.thumbnails.default.url,
-    artists: ['youtube']
-  })
-  items.forEach(item => {
-    const newSong = new Song({
-      id: item.contentDetails.videoId,
-      title: item.snippet.title,
-      albumId: playlists[0].id,
-      directoryPath: 'youtube',
-      image: item.snippet.thumbnails.default.url,
-      artists: [item.snippet.videoOwnerChannelTitle],
-      album: playlists[0].snippet.title,
-      duration: 0,
-      format: 'youtube',
-      isDragging: false
+  const output = []
+  for (const playlist of playlists) {
+    console.log('----------------------------------------')
+    console.log(playlist.snippet.title)
+    console.log(playlist)
+    const items = await getPlaylistItems(playlist.id)
+    const newPlaylist = new Playlist({
+      id: playlist.id,
+      albumId: playlist.id,
+      title: playlist.snippet.title,
+      color: getRandomColor(),
+      cover: playlist.snippet.thumbnails.default.url,
+      artists: ['youtube']
     })
-    songsPlayed.push(newSong)
-  })
-  playlistsPlayed.push(newPlaylist)
+    output.push(playlist)
+    items.forEach(item => {
+      console.log(item)
+      console.log(item.snippet.title)
+      output.push(item)
+      if (item.snippet.title !== 'Private video' && item.snippet.title !== 'Deleted video') {
+        const newSong = new Song({
+          id: item.contentDetails.videoId,
+          title: item.snippet.title,
+          albumId: playlist.id,
+          directoryPath: 'youtube',
+          image: item.snippet.thumbnails.default.url,
+          artists: [item.snippet.videoOwnerChannelTitle],
+          album: playlist.snippet.title,
+          duration: 0,
+          format: 'youtube',
+          isDragging: false
+        })
+        songsPlayed.push(newSong)
+      }
+    })
+    playlistsPlayed.push(newPlaylist)
+  }
+  fs.writeFileSync('Allplaylists.json', JSON.stringify(output))
+  fs.writeFileSync('playlists.json', JSON.stringify(playlistsPlayed))
+  fs.writeFileSync('songs.json', JSON.stringify(songsPlayed))
   return { playlistsPlayed, songsPlayed }
 }
-
-// async function runSample() {
-//   const playlists = await getAllPlaylists(null);
-//   console.log('run sample---------------------')
-//   console.log(`Retrieved a total of ${playlists.length} playlists.`);
-//   const playlistsPlayed = []
-//   const songsPlayed = []
-//   for (const playlist of playlists) {
-//     console.log('----------------------------------------')
-//     console.log(`Obteniendo detalles de la playlist: ${playlist.snippet.title}`);
-//     const items = await getPlaylistItems(playlist.id);
-//     console.log(`Encontrados ${items.length} ítems en la playlist ${playlist.snippet.title}`);
-//     console.log(items)
-//     // Aquí puedes hacer algo con los ítems, como imprimir detalles o almacenarlos
-//     const newPlaylist = {
-//       id: playlist.id,
-//       albumId: playlist.id,
-//       title: playlist.snippet.title,
-//       color: getRandomColor(),
-//       cover: randomImage,
-//       artists: ['artist']
-//     }
-//     items.forEach(item => {
-//       const newSong = {
-//         id: item.contentDetails.videoId,
-//         title: item.snippet.title,
-//         albumId: playlist.id,
-//         directoryPath: 'youtube',
-//         image: '',
-//         artists: [item.snippet.videoOwnerChannelTitle],
-//         album: playlist.snippet.title,
-//         duration: 0,
-//         format: '',
-//         isDragging: false
-//       }
-//       songsPlayed.push(newSong)
-//     })
-//     playlistsPlayed.push(newPlaylist)
-//   }
-// }
-
-// authenticate(scopes)
-//   .then(async client => { await getDatasFromYoutube(client) })
-//   .catch(console.error)

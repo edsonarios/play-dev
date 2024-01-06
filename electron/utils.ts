@@ -40,7 +40,7 @@ export function improveCovers (playlists: IPlaylist[], songs: ISong[]): IPlaylis
   }, {})
 
   const improvedPlaylists = playlists.map(playlist => {
-    const copiedPlaylist = { ...playlist, cover: [...playlist.cover] } // Hacer una copia superficial de la playlist y su cover
+    const copiedPlaylist = { ...playlist, cover: [...playlist.cover] }
 
     const playlistSongs = songsByPlaylist[playlist.id]
     if (playlistSongs !== undefined && playlistSongs.length >= 4) {
@@ -52,13 +52,13 @@ export function improveCovers (playlists: IPlaylist[], songs: ISong[]): IPlaylis
       }
 
       if (uniqueCovers.size === 4) {
-        copiedPlaylist.cover = Array.from(uniqueCovers) // Asignar los nuevos covers
+        copiedPlaylist.cover = Array.from(uniqueCovers)
       }
-      // Si no hay 4 imágenes únicas, se mantiene el cover copiado original
     }
-    // Si no hay suficientes canciones, se mantiene el cover copiado original
+    if (copiedPlaylist.cover.length === 0) copiedPlaylist.cover.push(getRandomImage())
+    if (copiedPlaylist.cover.length > 4) copiedPlaylist.cover = [playlistSongs[0].image]
 
-    return copiedPlaylist // Devuelve la playlist mejorada
+    return copiedPlaylist
   })
 
   return improvedPlaylists

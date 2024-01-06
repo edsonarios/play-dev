@@ -291,8 +291,8 @@ function importConfig () {
   win?.webContents.send('trigger-import-config', config)
 }
 
+// Import playlists from youtube
 ipcMain.handle('import-youtube', async () => {
-  console.log('import youtube from electron')
   try {
     await authenticate()
     const profile = await getProfile()
@@ -303,7 +303,6 @@ ipcMain.handle('import-youtube', async () => {
       playlists: playlistsWithCovers,
       songs: playlistsWithSongs.songsPlayed
     }
-    console.log(data)
     return data
   } catch (error) {
     console.error('Error to get youtube datas', error)

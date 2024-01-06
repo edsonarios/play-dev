@@ -72,6 +72,12 @@ export default function ModalEditPlaylist ({
     setEditTemporallyCover([image])
   }
 
+  const handledCoverPlaylist = (event: any) => {
+    if (event.target.value === undefined) return
+    const newCover = event.target.value as string
+    setEditTemporallyCover([newCover])
+  }
+
   return (
     <div>
       {isOpen && (
@@ -85,7 +91,7 @@ export default function ModalEditPlaylist ({
             onClick={(event) => {
               event.stopPropagation()
             }}
-            className="relative flex flex-col bg-zinc-900 rounded-md p-6 gap-8 px-6 mt-12 mb-8"
+            className="relative flex flex-col bg-zinc-900 rounded-md p-6 gap-4 px-6 mt-12 mb-8"
           >
             <div className="flex justify-between">
               <h1>Edit Playlist</h1>
@@ -97,20 +103,6 @@ export default function ModalEditPlaylist ({
               </button>
             </div>
             <form onSubmit={handleSavePlaylist} className="flex flex-row">
-              {/* <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
-                <img
-                  src={editTemporallyCover !== '' ? editTemporallyCover : playlist?.cover[0]}
-                  alt={`Cover of ${playlist?.title}`}
-                  className={`object-cover w-full h-full shadow-lg rounded-md image-${playlist?.id}`}
-                />
-                <div
-                  onClick={handledUploadImage}
-                  className="absolute bg-black opacity-0 hover:opacity-80 w-full h-full top-0 flex justify-center items-center flex-col"
-                >
-                  <PencilIcon />
-                  <h1 className="mt-6">Chooise image</h1>
-                </div>
-              </picture> */}
               {playlist?.cover.length === 1 || editTemporallyCover.length === 1
                 ? (
                 <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
@@ -156,11 +148,20 @@ export default function ModalEditPlaylist ({
                   type="text"
                   id="title"
                   value={editTemporallyTitle}
-                  className="p-2 rounded-md bg-zinc-800 mb-6"
+                  className="p-2 rounded-md bg-zinc-800 mb-4"
                   onChange={handledEditPlaylist}
                 />
 
-                <label htmlFor="color" className="block mb-6">
+                <label htmlFor="title">Cover</label>
+                <input
+                  type="text"
+                  id="title"
+                  value={editTemporallyCover[0]}
+                  className="p-2 rounded-md bg-zinc-800 mb-4"
+                  onChange={handledCoverPlaylist}
+                />
+
+                <label htmlFor="color" className="block mb-4">
                   <span className="">Color</span>
                   <select
                     id="color"
