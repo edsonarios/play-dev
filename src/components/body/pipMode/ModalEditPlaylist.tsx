@@ -49,7 +49,7 @@ export default function ModalEditPlaylist ({
           ...item,
           title: editTemporallyTitle,
           color: editTemporallyColor,
-          cover: [editTemporallyCover]
+          cover: editTemporallyCover
         }
         if (currentMusic.playlist?.id === playlist.id) {
           setCurrentMusic({ ...currentMusic, playlist: newItem })
@@ -61,7 +61,7 @@ export default function ModalEditPlaylist ({
     withViewTransition(() => {
       setPlaylists(newPlaylists)
       setEditTemporallyTitle('')
-      setEditTemporallyCover('')
+      setEditTemporallyCover([])
       setIsOpen(false)
     })
   }
@@ -69,7 +69,7 @@ export default function ModalEditPlaylist ({
   const handledUploadImage = async () => {
     const image = await window.electronAPI.getImageToCover()
     if (image === '') return
-    setEditTemporallyCover(image)
+    setEditTemporallyCover([image])
   }
 
   return (
@@ -97,7 +97,7 @@ export default function ModalEditPlaylist ({
               </button>
             </div>
             <form onSubmit={handleSavePlaylist} className="flex flex-row">
-              <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
+              {/* <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
                 <img
                   src={editTemporallyCover !== '' ? editTemporallyCover : playlist?.cover[0]}
                   alt={`Cover of ${playlist?.title}`}
@@ -110,8 +110,46 @@ export default function ModalEditPlaylist ({
                   <PencilIcon />
                   <h1 className="mt-6">Chooise image</h1>
                 </div>
-              </picture>
-
+              </picture> */}
+              {playlist?.cover.length === 1 || editTemporallyCover.length === 1
+                ? (
+                <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
+                  <img
+                    src={editTemporallyCover.length === 1 ? editTemporallyCover[0] : playlist?.cover[0]}
+                    alt={`Cover of ${
+                      playlist?.title
+                    } by ${playlist?.artists.join(',')}`}
+                    className="object-cover h-full rounded-md"
+                  />
+                  <div
+                    onClick={handledUploadImage}
+                    className="absolute bg-black opacity-0 hover:opacity-80 w-full h-full top-0 flex justify-center items-center flex-col"
+                  >
+                    <PencilIcon />
+                    <h1 className="mt-6">Chooise image</h1>
+                  </div>
+                </picture>
+                  )
+                : (
+                <div className="relative grid grid-cols-2 aspect-square  w-52 h-52 mr-4">
+                  {playlist?.cover.map((cover, index) => (
+                    <div key={index} className="relative w-full h-full">
+                      <img
+                        src={cover}
+                        alt={`Song ${index}`}
+                        className="absolute w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                  <div
+                    onClick={handledUploadImage}
+                    className="absolute bg-black opacity-0 hover:opacity-80 w-full h-full top-0 flex justify-center items-center flex-col"
+                  >
+                    <PencilIcon />
+                    <h1 className="mt-6">Chooise image</h1>
+                  </div>
+                </div>
+                  )}
               <div className="flex flex-col">
                 <label htmlFor="title">Title</label>
                 <input

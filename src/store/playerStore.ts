@@ -76,8 +76,8 @@ export interface StoreType {
   editTemporallyColor: string
   setEditTemporallyColor: (temporallyColor: string) => void
 
-  editTemporallyCover: string
-  setEditTemporallyCover: (temporallyCover: string) => void
+  editTemporallyCover: string[]
+  setEditTemporallyCover: (temporallyCover: string[]) => void
 
   songRefToScroll: ISong | undefined
   setSongRefToScroll: (songRefToScroll: ISong | undefined) => void
@@ -166,7 +166,7 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   editTemporallyColor: '',
   setEditTemporallyColor: (editTemporallyColor) => { set({ editTemporallyColor }) },
 
-  editTemporallyCover: '',
+  editTemporallyCover: [],
   setEditTemporallyCover: (editTemporallyCover) => { set({ editTemporallyCover }) },
 
   songRefToScroll: undefined,
