@@ -59,6 +59,7 @@ export default function App () {
   } = usePlayerStore<StoreType>((state) => state)
 
   const [currentColor, setCurrentColor] = useState(colors.gray.dark)
+  let backGroundColor = colors.gray[modeColor as keyof typeof colors.gray]
   useEffect(() => {
     let newColor = colors.gray.dark
     let codeColor = colors.gray
@@ -80,6 +81,7 @@ export default function App () {
       }
     }
     newColor = codeColor[modeColor as keyof typeof codeColor]
+    backGroundColor = colors.gray[modeColor as keyof typeof colors.gray]
     setCurrentColor(newColor)
   }, [
     playlistView,
@@ -198,7 +200,7 @@ export default function App () {
             <div
               className="absolute top-0 left-0 w-full h-full"
               style={{
-                background: 'linear-gradient(to bottom, #27272a, #18181b)',
+                background: `linear-gradient(to bottom, ${backGroundColor}, #18181b)`,
                 transition: 'opacity 0.7s ease',
                 opacity: pictureInPicture && playlistView === '0' ? 1 : 0
               }}
