@@ -103,7 +103,8 @@ export default function AsideMenu () {
         currentMusic: state.currentMusic,
         randomPlaylist: state.randomPlaylist,
         repeatPlaylist: state.repeatPlaylist,
-        volume: state.volume
+        volume: state.volume,
+        profile: state.profile
       }
       const json = JSON.stringify(exportState, null, 2)
       const response = await window.electronAPI.exportConfig(json)
@@ -127,7 +128,8 @@ export default function AsideMenu () {
       currentMusic: configParsed.currentMusic,
       randomPlaylist: configParsed.randomPlaylist,
       repeatPlaylist: configParsed.repeatPlaylist,
-      volume: configParsed.volume
+      volume: configParsed.volume,
+      profile: configParsed.profile
     })
   }, [])
 

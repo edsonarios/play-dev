@@ -310,7 +310,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                   {/* ref just to current song */}
                   <div
                     ref={currentMusic.song?.id === song.id ? songRef : null}
-                    className="mr-3"
+                    className="mr-3 flex-shrink-0"
                   >
                     {currentMusic.song?.id === song.id &&
                     currentMusic.song?.albumId === song.albumId
@@ -319,6 +319,7 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
                         src="equaliser-animated-green.gif"
                         alt="equaliser"
                         width={16}
+                        height={16}
                       />
                         )
                       : (
