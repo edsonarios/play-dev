@@ -112,21 +112,38 @@ export default function App () {
   const playerContainerRef = useRef<HTMLElement>(null)
   const updatePlayerSize = () => {
     if (playerContainerRef.current !== null) {
-      let playerWidth = playerContainerRef.current.offsetWidth
-      if (playerWidth > 1350) {
-        playerWidth = 1350
+      const containerWidth = playerContainerRef.current.offsetWidth
+      const containerHeight = playerContainerRef.current.offsetHeight
+
+      const aspectRatio = 16 / 8
+
+      let playerHeight = containerHeight
+      let playerWidth = containerHeight * aspectRatio
+
+      if (playerWidth > containerWidth) {
+        playerWidth = containerWidth
+        playerHeight = containerWidth / aspectRatio
       }
+
+      if (playerHeight > containerHeight) {
+        playerHeight = containerHeight
+        playerWidth = playerHeight * aspectRatio
+      }
+
       const playerWrapper = document.querySelector(
         '.plyr__video-wrapper'
       ) as HTMLElement
       if (playerWrapper !== null) {
         playerWrapper.style.maxWidth = `${playerWidth}px`
         playerWrapper.style.minWidth = `${playerWidth}px`
+        playerWrapper.style.maxHeight = `${playerHeight}px`
+        playerWrapper.style.minHeight = `${playerHeight}px`
       }
     }
   }
 
   useEffect(() => {
+    updatePlayerSize()
     window.addEventListener('resize', updatePlayerSize)
     return () => {
       window.removeEventListener('resize', updatePlayerSize)
@@ -143,6 +160,8 @@ export default function App () {
         if (playerWrapper !== null) {
           playerWrapper.style.maxWidth = 'none'
           playerWrapper.style.minWidth = 'none'
+          playerWrapper.style.maxHeight = 'none'
+          playerWrapper.style.minHeight = 'none'
         }
       }
     }
@@ -169,7 +188,7 @@ export default function App () {
 
           <main
             ref={playerContainerRef}
-            className="rounded-lg overflow-y-auto overflow-x-hidden w-full h-full flex justify-center items-center relative flex-col"
+            className="rounded-lg overflow-y-auto overflow-x-hidden w-full h-full flex items-center relative flex-col"
             style={{
               background: `linear-gradient(to bottom, ${currentColor}, #18181b)`,
               transition: 'opacity 0.5s ease'
@@ -185,7 +204,9 @@ export default function App () {
               }}
             />
             <Header />
-            <PlayerComponent />
+            <div className="flex-grow flex justify-center items-center">
+              <PlayerComponent />
+            </div>
             {pictureInPicture && setPlaylist()}
           </main>
         </Split>

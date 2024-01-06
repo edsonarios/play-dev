@@ -41,7 +41,7 @@ export default function Header () {
   }
 
   return (
-    <div className="flex flex-row justify-between gap-2  w-full mb-6">
+    <div className="flex flex-row justify-between gap-2 w-full my-2">
       <div className="flex flex-row">
         <IconButton
           Icon={BackIcon}

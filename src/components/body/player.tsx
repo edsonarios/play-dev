@@ -393,7 +393,7 @@ export default function PlayerComponent () {
 
   return (
     <div
-    className='relative'>
+    className=''>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDropElectron}
