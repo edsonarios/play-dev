@@ -1,0 +1,11 @@
+{
+    "title": "Played (edsonarios)",
+    "aside": {
+        "home": "Inicio",
+        "folder": "Abrir carpeta",
+        "library": "Tu biblioteca"
+    },
+    "body": {
+        "premium": "Explorar Premium"
+    }
+}

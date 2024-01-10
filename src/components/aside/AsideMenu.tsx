@@ -18,8 +18,10 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
 import { useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export default function AsideMenu () {
+  const { t } = useTranslation()
   const {
     playlists,
     setPlaylists,
@@ -145,13 +147,13 @@ export default function AsideMenu () {
         <ul>
           <SideMenuItem
             Icon={HomeIcon}
-            text="Home"
+            text={t('aside.home')}
             href="#"
             handledFunction={handledHome}
           />
           <SideMenuItem
             Icon={FolderIcon}
-            text="Open Folder"
+            text={t('aside.folder')}
             href="#"
             handledFunction={handleSelectFolder}
           />
@@ -163,7 +165,7 @@ export default function AsideMenu () {
           <div className="flex justify-between">
             <SideMenuItem
               Icon={LibraryIcon}
-              text="Your Library"
+              text={t('aside.library')}
               href="#"
               handledFunction={handledExportStore}
             />

@@ -7,7 +7,11 @@ import { IconButton } from './IconButton'
 import { DarkIcon, LightIcon } from '@/icons/header/Theme'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { I18nComponent } from './i18n'
+
 export default function Header () {
+  const { t } = useTranslation()
   const { setPlaylistView, modeColor, setModeColor, playlists, setPlaylists, songs, setSongs, profile, setProfile } =
     usePlayerStore<StoreType>((state) => state)
 
@@ -41,7 +45,7 @@ export default function Header () {
   }
 
   return (
-    <div className="flex flex-row justify-between gap-2 w-full my-2">
+    <div className="flex flex-row justify-between gap-2 w-full my-2 z-10">
       <div className="flex flex-row">
         <IconButton
           Icon={BackIcon}
@@ -52,7 +56,7 @@ export default function Header () {
       </div>
       <div className="flex flex-row">
         <button className="bg-white rounded-full w-36 text-slate-900 font-bold text-sm border-white mr-4 hover:scale-110 transition-transform z-10">
-          Explore Premium
+          {t('body.premium')}
         </button>
         <label className="swap swap-rotate mr-4">
           <input
@@ -64,6 +68,7 @@ export default function Header () {
           <LightIcon />
           <DarkIcon />
         </label>
+        <I18nComponent />
         <IconButton
           Icon={NotificationIcon}
           className="mr-4 hover:scale-110 transition-transform"
