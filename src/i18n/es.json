@@ -7,5 +7,16 @@
     },
     "body": {
         "premium": "Explorar Premium"
+    },
+    "controls": {
+        "play": "Reproducir",
+        "pause": "Pausar",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "shuffle": "Aleatorio",
+        "repeat": "Repetir",
+        "volume": "Volumen",
+        "progress": "Progreso",
+        "speed": "Velocidad"
     }
 }

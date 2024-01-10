@@ -7,5 +7,16 @@
     },
     "body": {
         "premium": "Explore Premium"
+    },
+    "controls": {
+        "play": "Play",
+        "pause": "Pause",
+        "previous": "Previous",
+        "next": "Next",
+        "shuffle": "Shuffle",
+        "repeat": "Repeat",
+        "volume": "Volume",
+        "progress": "Progress",
+        "speed": "Speed"
     }
 }

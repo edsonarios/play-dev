@@ -10,8 +10,10 @@ import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { SpeedIcon } from '@/icons/controls/Speed'
 import { PictureInPictureOffIcon } from '@/icons/controls/PictureInPicture'
 import { speedOptions } from '@/utils/constants'
+import { useTranslation } from 'react-i18next'
 
 export function ControlsRight () {
+  const { t } = useTranslation()
   const {
     setVolume,
     volume,
@@ -73,13 +75,13 @@ export function ControlsRight () {
     <div className="flex justify-center gap-x-2 text-white">
       <div className="relative inline-block">
         <button
-          className="bg-white rounded-full w-24 text-slate-900 text-sm border-white mr-4 hover:scale-110 flex flex-row items-center justify-center cursor-pointer opacity-70 hover:opacity-100 transition"
+          className="bg-white rounded-full w-26 text-slate-900 text-sm border-white mr-4 hover:scale-110 flex flex-row items-center justify-center cursor-pointer opacity-70 hover:opacity-100 transition"
           onClick={toggleSpeedOptions}
         >
           <div className="">
             <SpeedIcon />
           </div>
-          <div className="text-sm ml-1">Speed {speed}x</div>
+          <div className="text-sm ml-1">{t('controls.speed')} {speed}x</div>
         </button>
 
         {showSpeedOptions && (
