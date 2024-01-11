@@ -18,5 +18,15 @@
         "volume": "Volumen",
         "progress": "Progreso",
         "speed": "Velocidad"
+    },
+    "playlist": {
+        "songs": "canciones",
+        "approximately": "aproximadamente",
+        "search": "Buscar canciones",
+        "title": "Título",
+        "album": "Álbum",
+        "deletePlaylist": "Eliminar lista de reproducción",
+        "deleteSong": "Eliminar canción",
+        "empty": "No hay canciones en esta lista de reproducción"
     }
 }

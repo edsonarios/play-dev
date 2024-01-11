@@ -12,8 +12,11 @@ import ModalEditPlaylist from './ModalEditPlaylist'
 import { type Playlist } from '@/lib/entities/playlist.entity'
 import { withViewTransition } from '@/utils/transition'
 import { deletePlaylistInCurrentSongsIfNeeded } from '@/utils/currentSongs'
+import { useTranslation } from 'react-i18next'
 
 export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrentColor: (color: string) => void }) {
+  const { t } = useTranslation()
+
   const {
     playlists,
     songs,
@@ -131,6 +134,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
     })
   }
 
+  const durationSongs = formatTotalDuration(totalDurationSongs)
   return (
     <div className="absolute top-14 w-[95%] flex flex-col overflow-y-disable rounded-lg">
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
@@ -161,13 +165,13 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
           </div>
             )}
         </div>
-        <div className="flex flex-col justify-between">
+        <div className="flex flex-col">
           <h2 className="flex flex-1 items-end">Playlist</h2>
-          <button onClick={handledEditPlaylist}
+          <button className='flex flex-1 items-end'
+          onClick={handledEditPlaylist}
           title='Edit Playlist'>
-            <h1 className="text-5xl font-bold block text-white">
+            <h1 className="text-5xl font-bold block">
               {editTemporallyTitle !== '' ? editTemporallyTitle : currentPlaylist?.title}
-              <span></span>
             </h1>
           </button>
 
@@ -177,8 +181,8 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
                 <span>{playlist?.artists.join(', ')}</span>
               </div>
               <p className="mt-1">
-                <span className="text-white">{playListSongs.length} songs</span>
-                {`${playListSongs.length > 0 ? ' ' + formatTotalDuration(totalDurationSongs) + ', approximately' : ''}`}
+                <span className="">{playListSongs.length} {t('playlist.songs')}</span>
+                {`${durationSongs !== '' ? (', ' + durationSongs + ' ' + (t('playlist.approximately'))) : ''}`}
               </p>
             </div>
           </div>
@@ -190,7 +194,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
           <div className="relative ml-8">
             <button
               className="absolute bottom-2 opacity-20 hover:opacity-100 hover:text-red-400"
-              title="Delete playlist"
+              title={t('playlist.deletePlaylist')}
               onClick={() => {
                 deletePlaylist()
               }}
@@ -214,7 +218,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
                   handleInputChange(event.target.value)
                 }}
                 className="ml-2 rounded-xl p-2 w-96 opacity-60 bg-transparent outline-none"
-                placeholder="Search song"
+                placeholder={t('playlist.search')}
                 onFocus={() => {
                   setIsSearching(true)
                 }}

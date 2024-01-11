@@ -16,6 +16,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
 import { withViewTransition } from '@/utils/transition'
 import { deleteSongInCurrentSongsIfNeeded, updateCurrentSongsByDragDropIfNeeded } from '@/utils/currentSongs'
+import { useTranslation } from 'react-i18next'
 
 interface PlayListTable {
   playlist: IPlaylist | undefined
@@ -27,6 +28,8 @@ interface ActivatorEvent {
   altKey: boolean
 }
 export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
+  const { t } = useTranslation()
+
   const {
     currentMusic,
     setCurrentMusic,
@@ -206,8 +209,8 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         <thead className="">
           <tr className="text-zinc-400 text-sm">
             <th className="px-4 py-2 font-light">#</th>
-            <th className="px-4 py-2 font-light">Title</th>
-            <th className="px-4 py-2 font-light">Álbum</th>
+            <th className="px-4 py-2 font-light">{t('playlist.title')}</th>
+            <th className="px-4 py-2 font-light">{t('playlist.album')}</th>
             <th className="px-4 py-2 font-light">
               <TimeIcon />
             </th>
@@ -232,7 +235,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       {playlistSongs.length === 0
         ? (
         <h1 className="flex justify-center self-center w-full h-36 mt-20">
-          Not Found Songs in this playlist
+          {t('playlist.empty')}
         </h1>
           )
         : (

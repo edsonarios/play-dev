@@ -9,6 +9,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { formatTime } from 'electron/utils'
 import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface IDragableRow {
   song: ISong
@@ -22,6 +23,8 @@ export function DragableRow ({
   playSong,
   deleteSong
 }: IDragableRow) {
+  const { t } = useTranslation()
+
   const {
     currentMusic,
     setCurrentMusic,
@@ -263,7 +266,7 @@ export function DragableRow ({
           onClick={(event) => {
             deleteSong(event, song)
           }}
-          title="Delete song"
+          title={t('playlist.deleteSong')}
         >
           <DeleteOptionsIcon />
         </button>

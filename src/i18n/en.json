@@ -18,5 +18,15 @@
         "volume": "Volume",
         "progress": "Progress",
         "speed": "Speed"
+    },
+    "playlist": {
+        "songs": "songs",
+        "approximately": "approximately",
+        "search": "Search songs",
+        "title": "Title",
+        "album": "Album",
+        "deletePlaylist": "Delete playlist",
+        "deleteSong": "Delete song",
+        "empty": "No tracks in this playlist"
     }
 }
