@@ -78,10 +78,10 @@ export function ControlsRight () {
           className="bg-white rounded-full w-26 text-slate-900 text-sm border-white mr-4 hover:scale-110 flex flex-row items-center justify-center cursor-pointer opacity-70 hover:opacity-100 transition"
           onClick={toggleSpeedOptions}
         >
-          <div className="">
+          <div className="mx-1">
             <SpeedIcon />
           </div>
-          <div className="text-sm ml-1">{t('controls.speed')} {speed}x</div>
+          <div className="text-sm mr-2">{t('controls.speed')} {speed}x</div>
         </button>
 
         {showSpeedOptions && (
