@@ -1,5 +1,4 @@
 import { BackIcon } from '@/icons/header/Back'
-import { NotificationIcon } from '@/icons/header/Notification'
 import { RightIcon } from '@/icons/header/Righ'
 import { UserIcon } from '@/icons/header/User'
 import 'plyr-react/plyr.css'
@@ -55,7 +54,7 @@ export default function Header () {
         <IconButton Icon={RightIcon} className="ml-4" />
       </div>
       <div className="flex flex-row">
-        <button className="bg-white rounded-full w-36 text-slate-900 font-bold text-sm border-white mr-4 hover:scale-110 transition-transform z-10">
+        <button className="bg-white rounded-full w-36 text-slate-900 font-bold text-sm border-white mr-4 hover:scale-110 transition-transform">
           {t('body.premium')}
         </button>
         <label className="swap swap-rotate mr-4">
@@ -69,10 +68,6 @@ export default function Header () {
           <DarkIcon />
         </label>
         <I18nComponent />
-        <IconButton
-          Icon={NotificationIcon}
-          className="mr-4 hover:scale-110 transition-transform"
-        />
         {profile === undefined
           ? (
           <IconButton
