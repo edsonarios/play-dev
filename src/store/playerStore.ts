@@ -87,6 +87,9 @@ export interface StoreType {
 
   profile: IProfile | undefined
   setProfile: (profile: IProfile | undefined) => void
+
+  language: string
+  setLanguage: (language: string) => void
 }
 const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
@@ -176,7 +179,10 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   setHomeHideSongs: (homeHideSongs) => { set({ homeHideSongs }) },
 
   profile: undefined,
-  setProfile: (profile) => { set({ profile }) }
+  setProfile: (profile) => { set({ profile }) },
+
+  language: 'en',
+  setLanguage: (language) => { set({ language }) }
 })
 
 export const usePlayerStore = create<StoreType>()(
@@ -192,7 +198,8 @@ export const usePlayerStore = create<StoreType>()(
         randomPlaylist: state.randomPlaylist,
         repeatPlaylist: state.repeatPlaylist,
         volume: state.volume,
-        profile: state.profile
+        profile: state.profile,
+        language: state.language
       })
     }
   )

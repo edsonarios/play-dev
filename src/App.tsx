@@ -10,6 +10,7 @@ import { PlaylistDetail } from './components/body/pipMode/PlaylistDetail'
 import { useEffect, useRef, useState } from 'react'
 import Split from 'react-split'
 import { type IPlaylist, type ISong } from './lib/data'
+import { useTranslation } from 'react-i18next'
 
 interface OpenDirectoryDialog {
   playlist: IPlaylist
@@ -55,8 +56,14 @@ export default function App () {
     playlistView,
     playlists,
     editTemporallyColor,
-    modeColor
+    modeColor,
+    language
   } = usePlayerStore<StoreType>((state) => state)
+
+  const { i18n } = useTranslation()
+  useEffect(() => {
+    void i18n.changeLanguage(language)
+  }, [language, i18n])
 
   const [currentColor, setCurrentColor] = useState(colors.gray.dark)
   let backGroundColor = colors.gray[modeColor as keyof typeof colors.gray]

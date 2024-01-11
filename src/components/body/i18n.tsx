@@ -1,7 +1,9 @@
 import { DownIcon } from '@/icons/header/Down'
 import { FlagSpain } from '../../icons/i18n/flags/Spain'
 import { useTranslation } from 'react-i18next'
+import { type StoreType, usePlayerStore } from '@/store/playerStore'
 export function I18nComponent () {
+  const { setLanguage } = usePlayerStore<StoreType>((state) => state)
   const languages = [
     {
       name: 'EN',
@@ -17,7 +19,7 @@ export function I18nComponent () {
   const { i18n } = useTranslation()
   const currentLanguage = languages.find((lang) => lang.file === i18n.language)
   const changeLanguage = (language: string) => {
-    void i18n.changeLanguage(language)
+    setLanguage(language)
   }
   return (
     <div className="relative inline-block text-left">
