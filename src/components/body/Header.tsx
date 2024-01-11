@@ -49,15 +49,23 @@ export default function Header () {
         <IconButton
           Icon={BackIcon}
           className="ml-4"
+          title={t('body.back')}
           handledFunction={handleSetPlaylist}
         />
-        <IconButton Icon={RightIcon} className="ml-4" />
+        <IconButton
+          Icon={RightIcon}
+          className="ml-4"
+          title={t('body.next')}
+        />
       </div>
       <div className="flex flex-row">
         <button className="bg-white rounded-full w-36 text-slate-900 font-bold text-sm border-white mr-4 hover:scale-110 transition-transform">
           {t('body.premium')}
         </button>
-        <label className="swap swap-rotate mr-4">
+        <label
+          className="swap swap-rotate mr-4"
+          title={t('body.theme')}
+        >
           <input
             type="checkbox"
             className="theme-controller"
@@ -73,6 +81,7 @@ export default function Header () {
           <IconButton
             Icon={UserIcon}
             className="mr-4 hover:scale-110 transition-transform"
+            title={t('body.profile')}
             handledFunction={handledImportYoutube}
           />)
           : (<picture className="w-8 mr-4 transition-transform" title='Edson'>

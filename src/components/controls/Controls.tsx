@@ -16,8 +16,10 @@ import {
 import { RandomOffIcon, RandomOnIcon } from '@/icons/controls/Random'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
+import { useTranslation } from 'react-i18next'
 
 export default function Controls () {
+  const { t } = useTranslation()
   const {
     currentMusic,
     setCurrentMusic,
@@ -172,7 +174,10 @@ export default function Controls () {
       <div className='grid place-content-center gap-4 flex-1 -ml-48'>
         <div className='flex justify-center flex-col items-center'>
           <div className='flex flex-row'>
-            <button className='mr-6' onClick={handleRandomPlaylist}>
+            <button
+              className='mr-6'
+              title={t('controls.random')}
+              onClick={handleRandomPlaylist}>
               <IconControls
                 Icon={randomPlaylist ? RandomOffIcon : RandomOnIcon}
                 className={`${
@@ -180,16 +185,28 @@ export default function Controls () {
                 }`}
               />
             </button>
-            <button className='mr-6' onClick={handlePreviousSong}>
+            <button
+              className='mr-6'
+              title={t('controls.previous')}
+              onClick={handlePreviousSong}>
               <IconControls Icon={PreviousIcon} />
             </button>
-            <button className='bg-white rounded-full p-2' onClick={handlePlayPause}>
+            <button
+              className='bg-white rounded-full p-2'
+              title={t('controls.playPause')}
+              onClick={handlePlayPause}>
               {isPlaying ? <PauseIcon /> : <PlayIcon />}
             </button>
-            <button className='ml-6' onClick={handleNextSong}>
+            <button
+              className='ml-6'
+              title={t('controls.next')}
+              onClick={handleNextSong}>
               <IconControls Icon={NextIcon} />
             </button>
-            <button className='ml-6' onClick={handleRepeat}>
+            <button
+              className='ml-6'
+              title={t('controls.repeat')}
+              onClick={handleRepeat}>
               <IconControls
                 Icon={
                   repeatPlaylist === 'off'

@@ -3,21 +3,27 @@
     "aside": {
         "home": "Inicio",
         "folder": "Abrir carpeta",
-        "library": "Tu biblioteca"
+        "library": "Tu biblioteca",
+        "newPlaylist": "Crear una nueva lista de reproducción"
     },
     "body": {
-        "premium": "Explorar Premium"
+        "premium": "Explorar Premium",
+        "profile": "Perfil",
+        "back": "Volver",
+        "next": "Avanzar",
+        "theme": "Tema Oscuro/Claro"
     },
     "controls": {
-        "play": "Reproducir",
-        "pause": "Pausar",
+        "playPause": "Reproducir/Pausar",
         "previous": "Anterior",
         "next": "Siguiente",
-        "shuffle": "Aleatorio",
+        "random": "Aleatorio",
         "repeat": "Repetir",
         "volume": "Volumen",
         "progress": "Progreso",
-        "speed": "Velocidad"
+        "speed": "Velocidad",
+        "mute": "Silenciar",
+        "pip": "Abrir el reproductor en miniatura"
     },
     "playlist": {
         "songs": "canciones",

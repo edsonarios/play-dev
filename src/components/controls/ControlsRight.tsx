@@ -103,6 +103,7 @@ export function ControlsRight () {
 
       <button
         className="opacity-70 hover:opacity-100 transition"
+        title={t('controls.mute')}
         onClick={handleClickVolumen}
       >
         {getVolumeIcon()}
@@ -125,6 +126,7 @@ export function ControlsRight () {
         className={`ml-2 opacity-60 hover:opacity-100 transition ${
           pictureInPicture ? 'text-green-400' : ''
         }`}
+        title={t('controls.pip')}
         onClick={handlePictureInPicture}
       >
         {showIconPictureInPicture()}

@@ -124,6 +124,7 @@ export default function AsideMenu () {
             <button
               className="self-center mt-2 p-2 rounded-full opacity-70 hover:bg-zinc-800 hover:opacity-100"
               onClick={handledNewPlaylist}
+              title={t('aside.newPlaylist')}
             >
               <PlusIcon />
             </button>
