@@ -17,7 +17,6 @@ import {
 import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
-import { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export default function AsideMenu () {
@@ -94,53 +93,6 @@ export default function AsideMenu () {
     console.log('Your Library')
   }
 
-  // Export config to file from store
-  useEffect(() => {
-    const handleExport = async () => {
-      const state = usePlayerStore.getState()
-      const exportState = {
-        modeColor: state.modeColor,
-        playlists: state.playlists,
-        songs: state.songs,
-        currentMusic: state.currentMusic,
-        randomPlaylist: state.randomPlaylist,
-        repeatPlaylist: state.repeatPlaylist,
-        volume: state.volume,
-        profile: state.profile
-      }
-      const json = JSON.stringify(exportState, null, 2)
-      const response = await window.electronAPI.exportConfig(json)
-      console.log(response) // true or false
-    }
-
-    window.electronAPI.receive('trigger-export-config', handleExport)
-
-    return () => {
-      window.electronAPI.removeListener('trigger-export-config', handleExport)
-    }
-  }, [])
-
-  // Import config from file to store
-  const importConfig = useCallback((_event: any, action: string) => {
-    const configParsed = JSON.parse(action) as StoreType
-    usePlayerStore.setState({
-      modeColor: configParsed.modeColor,
-      playlists: configParsed.playlists,
-      songs: configParsed.songs,
-      currentMusic: configParsed.currentMusic,
-      randomPlaylist: configParsed.randomPlaylist,
-      repeatPlaylist: configParsed.repeatPlaylist,
-      volume: configParsed.volume,
-      profile: configParsed.profile
-    })
-  }, [])
-
-  useEffect(() => {
-    window.electronAPI.receive('trigger-import-config', importConfig)
-    return () => {
-      window.electronAPI.removeListener('trigger-import-config', importConfig)
-    }
-  }, [])
   return (
     <nav className="flex flex-col flex-1 gap-2 overflow-y-auto">
       <div className="bg-zinc-900 rounded-lg p-2">

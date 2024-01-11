@@ -7,7 +7,7 @@ import { colors } from './lib/colors'
 import { type StoreType, usePlayerStore } from './store/playerStore'
 import { PlaylistPipMode } from './components/body/pipMode/Playlist'
 import { PlaylistDetail } from './components/body/pipMode/PlaylistDetail'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Split from 'react-split'
 import { type IPlaylist, type ISong } from './lib/data'
 import { useTranslation } from 'react-i18next'
@@ -178,6 +178,56 @@ export default function App () {
 
     return () => {
       window.removeEventListener('enterfullscreen', handleFullScreen)
+    }
+  }, [])
+
+  // Export config to file from store
+  useEffect(() => {
+    const handleExport = async () => {
+      const state = usePlayerStore.getState()
+      const exportState = {
+        profile: state.profile,
+        modeColor: state.modeColor,
+        randomPlaylist: state.randomPlaylist,
+        repeatPlaylist: state.repeatPlaylist,
+        volume: state.volume,
+        language: state.language,
+        currentMusic: state.currentMusic,
+        playlists: state.playlists,
+        songs: state.songs
+      }
+      const json = JSON.stringify(exportState, null, 2)
+      const response = await window.electronAPI.exportConfig(json)
+      console.log(response) // true or false
+    }
+
+    window.electronAPI.receive('trigger-export-config', handleExport)
+
+    return () => {
+      window.electronAPI.removeListener('trigger-export-config', handleExport)
+    }
+  }, [])
+
+  // Import config from file to store
+  const importConfig = useCallback((_event: any, action: string) => {
+    const configParsed = JSON.parse(action) as StoreType
+    usePlayerStore.setState({
+      profile: configParsed.profile,
+      modeColor: configParsed.modeColor,
+      randomPlaylist: configParsed.randomPlaylist,
+      repeatPlaylist: configParsed.repeatPlaylist,
+      volume: configParsed.volume,
+      language: configParsed.language,
+      currentMusic: configParsed.currentMusic,
+      playlists: configParsed.playlists,
+      songs: configParsed.songs
+    })
+  }, [])
+
+  useEffect(() => {
+    window.electronAPI.receive('trigger-import-config', importConfig)
+    return () => {
+      window.electronAPI.removeListener('trigger-import-config', importConfig)
     }
   }, [])
 
