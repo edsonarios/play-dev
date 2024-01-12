@@ -11,7 +11,9 @@
         "profile": "Perfil",
         "back": "Volver",
         "next": "Avanzar",
-        "theme": "Tema Oscuro/Claro"
+        "theme": "Tema Oscuro/Claro",
+        "importYoutube": "Importar Youtube",
+        "importSpotify": "Importar Spotify"
     },
     "controls": {
         "playPause": "Reproducir/Pausar",

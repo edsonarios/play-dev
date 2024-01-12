@@ -1,17 +1,16 @@
 import { BackIcon } from '@/icons/header/Back'
 import { RightIcon } from '@/icons/header/Righ'
-import { UserIcon } from '@/icons/header/User'
-import 'plyr-react/plyr.css'
 import { IconButton } from './IconButton'
 import { DarkIcon, LightIcon } from '@/icons/header/Theme'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { I18nComponent } from './i18n'
+import { ProfileComponent } from './Profile'
 
 export default function Header () {
   const { t } = useTranslation()
-  const { setPlaylistView, modeColor, setModeColor, playlists, setPlaylists, songs, setSongs, profile, setProfile } =
+  const { setPlaylistView, modeColor, setModeColor } =
     usePlayerStore<StoreType>((state) => state)
 
   // Set playlist view to 0
@@ -29,18 +28,6 @@ export default function Header () {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     const newTheme = event.target.checked ? 'light' : 'dark'
     setModeColor(newTheme)
-  }
-
-  // Import PLaylist from Youtube
-  const handledImportYoutube = async () => {
-    console.log('Import Youtube')
-    const response = await window.electronAPI.importYoutube()
-    const newPlaylists = [...playlists, ...response.playlists]
-    const newSongs = [...songs, ...response.songs]
-    setProfile(response.profile)
-    setPlaylists(newPlaylists)
-    setSongs(newSongs)
-    console.log(response)
   }
 
   return (
@@ -76,7 +63,8 @@ export default function Header () {
           <DarkIcon />
         </label>
         <I18nComponent />
-        {profile === undefined
+        <ProfileComponent />
+        {/* {profile === undefined
           ? (
           <IconButton
             Icon={UserIcon}
@@ -92,7 +80,7 @@ export default function Header () {
               className="object-cover w-full h-full shadow-lg rounded-full hover:scale-120"
             />
           </picture>)
-        }
+        } */}
       </div>
     </div>
   )
