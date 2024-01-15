@@ -64,23 +64,6 @@ export default function Header () {
         </label>
         <I18nComponent />
         <ProfileComponent />
-        {/* {profile === undefined
-          ? (
-          <IconButton
-            Icon={UserIcon}
-            className="mr-4 hover:scale-110 transition-transform"
-            title={t('body.profile')}
-            handledFunction={handledImportYoutube}
-          />)
-          : (<picture className="w-8 mr-4 transition-transform" title='Edson'>
-            <img
-              src={profile.image}
-              alt={profile.email}
-              title={profile.name}
-              className="object-cover w-full h-full shadow-lg rounded-full hover:scale-120"
-            />
-          </picture>)
-        } */}
       </div>
     </div>
   )
