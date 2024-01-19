@@ -9,6 +9,10 @@ import { Song } from './entities/song.entity'
 import { Playlist } from './entities/playlist.entity'
 import { type ISize } from './entities/size.entity'
 import { authenticate, getDatasFromYoutube, getProfile } from './youtube'
+import { autoUpdater } from 'electron-updater'
+
+autoUpdater.autoDownload = false
+autoUpdater.autoInstallOnAppQuit = true
 // The built directory structure
 //
 // ├─┬─┬ dist
@@ -260,6 +264,14 @@ function createMenu () {
         }))
         item.submenu.insert(2, new MenuItem({ type: 'separator' }))
       }
+      if (item.label === 'Help' && item.submenu !== undefined) {
+        item.submenu.insert(0, new MenuItem({
+          label: 'Check for updates',
+          click: () => {
+            checkForUpdates()
+          }
+        }))
+      }
     })
 
     Menu.setApplicationMenu(menu)
@@ -309,3 +321,30 @@ ipcMain.handle('import-youtube', async () => {
     throw error
   }
 })
+
+function checkForUpdates () {
+  void autoUpdater.checkForUpdates()
+
+  autoUpdater.on('update-available', () => {
+    void dialog.showMessageBox({
+      type: 'info',
+      title: 'Update Available',
+      message: 'A new version is available. Do you want to update now?',
+      buttons: ['Update', 'Later']
+    }).then(result => {
+      if (result.response === 0) { // Si el usuario elige 'Update'
+        void autoUpdater.downloadUpdate()
+      }
+    })
+  })
+
+  autoUpdater.on('update-downloaded', () => {
+    void dialog.showMessageBox({
+      type: 'info',
+      title: 'Update Ready',
+      message: 'Update downloaded, application will be quit for update...'
+    }).then(() => {
+      autoUpdater.quitAndInstall()
+    })
+  })
+}

@@ -1,7 +1,15 @@
 {
-  "name": "reproductor-electron-vite",
+  "name": "played",
+  "version": "1.0.1",
+  "description": "A music player for your local files.",
+  "author": "edsonrios9@gmail.com",
+  "license": "MIT",
+  "repository": "https://github.com/edsonarios/played",
+  "publish:": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "private": true,
-  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
@@ -13,6 +21,7 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@radix-ui/react-slider": "^1.1.2",
     "clsx": "^2.0.0",
+    "electron-updater": "^6.1.7",
     "googleapis": "^129.0.0",
     "i18next": "^23.7.16",
     "lodash.debounce": "^4.0.8",
