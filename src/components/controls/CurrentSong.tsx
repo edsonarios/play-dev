@@ -1,7 +1,9 @@
 'use client'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { useTranslation } from 'react-i18next'
 
 export default function CurrentSong () {
+  const { t } = useTranslation()
   const { currentMusic, songs, setSongRefToScroll } = usePlayerStore<StoreType>((state) => state)
   const allSongsFromPlaylist = songs.filter(
     (song) => song.albumId === currentMusic.playlist?.id
@@ -10,7 +12,6 @@ export default function CurrentSong () {
     (song) => song.id === currentMusic.song?.id
   )
   const { song } = currentMusic
-  const message = 'No song selected'
 
   const handledSongFocus = () => {
     if (song === undefined) return
@@ -32,7 +33,7 @@ export default function CurrentSong () {
         <h3 className="font-semibold text-sm text-left text-css">
           {song !== undefined
             ? findIndexSong + 1 + '. ' + song?.title
-            : message}
+            : t('controls.currentSong')}
         </h3>
         <span className="text-xs opacity-80">{song?.album}</span>
       </button>

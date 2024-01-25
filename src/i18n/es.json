@@ -25,7 +25,8 @@
         "progress": "Progreso",
         "speed": "Velocidad",
         "mute": "Silenciar",
-        "pip": "Abrir el reproductor en miniatura"
+        "pip": "Abrir el reproductor en miniatura",
+        "currentSong": "Ninguna canción seleccionada"
     },
     "playlist": {
         "songs": "canciones",
@@ -36,5 +37,10 @@
         "deletePlaylist": "Eliminar lista de reproducción",
         "deleteSong": "Eliminar canción",
         "empty": "No hay canciones en esta lista de reproducción"
+    },
+    "update": {
+        "title": "Descargando actualización...",
+        "speed": "Velocidad: ",
+        "transferred": "Transferido: "
     }
 }

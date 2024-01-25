@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Split from 'react-split'
 import { type IPlaylist, type ISong } from './lib/data'
 import { useTranslation } from 'react-i18next'
+import ModalUpdateStatus from './components/ModalUpdateStatus'
 
 interface OpenDirectoryDialog {
   playlist: IPlaylist
@@ -273,6 +274,7 @@ export default function App () {
       <footer className="[grid-area:player] flex flex-row h-[80px]">
         <Controls />
       </footer>
+      <ModalUpdateStatus />
     </div>
   )
 }

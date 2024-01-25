@@ -125,3 +125,7 @@ html {
 .text-css {
   text-wrap: balance;
 }
+
+.bg-primary {
+  background-color: #42c973;
+}

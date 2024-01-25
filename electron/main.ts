@@ -347,4 +347,8 @@ function checkForUpdates () {
       autoUpdater.quitAndInstall()
     })
   })
+
+  autoUpdater.on('download-progress', (progressObj) => {
+    win?.webContents.send('update-download-progress', progressObj)
+  })
 }
