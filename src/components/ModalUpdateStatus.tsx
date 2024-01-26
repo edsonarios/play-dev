@@ -1,3 +1,4 @@
+import { withViewTransition } from '@/utils/transition'
 import { Progress } from '@nextui-org/react'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -17,8 +18,9 @@ export default function ModalUpdateStatus () {
 
   const updateDownloadProgress = useCallback(
     (_event: any, action: IDowloadProgress) => {
-      console.log(action)
-      setUpdateDownload(action)
+      withViewTransition(() => {
+        setUpdateDownload(action)
+      })
     },
     []
   )
@@ -62,10 +64,14 @@ export default function ModalUpdateStatus () {
             }}
             className="relative flex flex-col bg-zinc-900 rounded-md p-6 gap-2 w-full max-w-md"
           >
-            <p className='text-xl'>{t('update.title')}</p>
-            <p className='text-xs'>{t('update.speed')} {formatBytes(updateDownload.bytesPerSecond)}/s</p>
-            <p className='text-xs'>
-              {t('update.transferred')} {formatBytes(updateDownload.transferred)} / {formatBytes(updateDownload.total)}
+            <p className="text-xl">{t('update.title')}</p>
+            <p className="text-xs">
+              {t('update.speed')} {formatBytes(updateDownload.bytesPerSecond)}/s
+            </p>
+            <p className="text-xs">
+              {t('update.transferred')}{' '}
+              {formatBytes(updateDownload.transferred)} /{' '}
+              {formatBytes(updateDownload.total)}
             </p>
             <Progress
               aria-label="Downloading..."

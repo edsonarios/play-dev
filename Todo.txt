@@ -20,15 +20,12 @@
 
 Press alt in a song and open the folder where is the song
 
-- Language (i18n)
-
 Publish
 - Packaging
   * Windows
   * Mac
   * Linux
 - Create a page to show the app
-- Made code to update the app
 - Features premium
 - Pay methods
 

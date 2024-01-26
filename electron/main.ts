@@ -332,9 +332,17 @@ function checkForUpdates () {
       message: 'A new version is available. Do you want to update now?',
       buttons: ['Update', 'Later']
     }).then(result => {
-      if (result.response === 0) { // Si el usuario elige 'Update'
+      if (result.response === 0) {
         void autoUpdater.downloadUpdate()
       }
+    })
+  })
+
+  autoUpdater.on('update-not-available', () => {
+    void dialog.showMessageBox({
+      type: 'info',
+      title: 'No Updates',
+      message: 'Current version is up-to-date.'
     })
   })
 
