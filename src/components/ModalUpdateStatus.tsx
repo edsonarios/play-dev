@@ -11,12 +11,6 @@ interface IDowloadProgress {
 
 export default function ModalUpdateStatus () {
   const { t } = useTranslation()
-  // const mokeDownload: IDowloadProgress = {
-  //   total: 80665674,
-  //   transferred: 80665674,
-  //   percent: 100,
-  //   bytesPerSecond: 1476258
-  // }
   const [updateDownload, setUpdateDownload] = useState<IDowloadProgress | null>(
     null
   )
