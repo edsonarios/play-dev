@@ -27,7 +27,8 @@
         "speed": "Velocidad",
         "mute": "Silenciar",
         "pip": "Abrir el reproductor en miniatura",
-        "currentSong": "Ninguna canción seleccionada"
+        "currentSong": "Ninguna canción seleccionada",
+        "shortcuts": "Atajos de teclado"
     },
     "playlist": {
         "songs": "canciones",

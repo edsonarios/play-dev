@@ -27,7 +27,8 @@
         "speed": "Speed",
         "mute": "Mute",
         "pip": "Picture in Picture",
-        "currentSong": "No song selected"
+        "currentSong": "No song selected",
+        "shortcuts": "Shortcuts"
     },
     "playlist": {
         "songs": "songs",

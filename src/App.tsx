@@ -13,6 +13,7 @@ import { type IPlaylist, type ISong } from './lib/data'
 import { useTranslation } from 'react-i18next'
 import ModalUpdateStatus from './components/ModalUpdateStatus'
 import ModalDownloading from './components/ModalDownloading'
+import ModalShowShortcuts from './components/controls/ModalShortcuts'
 
 interface OpenDirectoryDialog {
   playlist: IPlaylist
@@ -277,6 +278,7 @@ export default function App () {
       </footer>
       <ModalUpdateStatus />
       <ModalDownloading />
+      <ModalShowShortcuts />
     </div>
   )
 }

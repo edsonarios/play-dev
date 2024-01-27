@@ -93,6 +93,9 @@ export interface StoreType {
 
   isLoading: boolean
   setIsLoading: (isLoading: boolean) => void
+
+  isShowShortcuts: boolean
+  setIsShowShortcuts: (showShortcuts: boolean) => void
 }
 const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
@@ -188,7 +191,10 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   setLanguage: (language) => { set({ language }) },
 
   isLoading: false,
-  setIsLoading: (isLoading) => { set({ isLoading }) }
+  setIsLoading: (isLoading) => { set({ isLoading }) },
+
+  isShowShortcuts: false,
+  setIsShowShortcuts: (isShowShortcuts) => { set({ isShowShortcuts }) }
 })
 
 export const usePlayerStore = create<StoreType>()(

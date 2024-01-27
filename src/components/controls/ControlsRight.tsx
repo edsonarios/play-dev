@@ -11,6 +11,7 @@ import { SpeedIcon } from '@/icons/controls/Speed'
 import { PictureInPictureOffIcon } from '@/icons/controls/PictureInPicture'
 import { speedOptions } from '@/utils/constants'
 import { useTranslation } from 'react-i18next'
+import { ShortCutsIcon } from '@/icons/controls/Shortcuts'
 
 export function ControlsRight () {
   const { t } = useTranslation()
@@ -20,7 +21,9 @@ export function ControlsRight () {
     speed,
     setSpeed,
     pictureInPicture,
-    setPictureInPicture
+    setPictureInPicture,
+    isShowShortcuts,
+    setIsShowShortcuts
   } = usePlayerStore<StoreType>((state) => state)
   const previousVolumeRef = useRef(volume)
 
@@ -71,8 +74,21 @@ export function ControlsRight () {
     }
   }
 
+  const handleShowShortcuts = () => {
+    setIsShowShortcuts(true)
+  }
+
   return (
     <div className="flex justify-center gap-x-2 text-white">
+      <button
+        className={`mr-2 opacity-60 hover:opacity-100 transition ${
+          isShowShortcuts ? 'text-green-400' : ''
+        }`}
+        title={t('controls.shortcuts')}
+        onClick={handleShowShortcuts}
+      >
+        <ShortCutsIcon />
+      </button>
       <div className="relative inline-block">
         <button
           className="bg-white rounded-full w-26 text-slate-900 text-sm border-white mr-4 hover:scale-110 flex flex-row items-center justify-center cursor-pointer opacity-70 hover:opacity-100 transition"
