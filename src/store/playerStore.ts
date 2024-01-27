@@ -90,6 +90,9 @@ export interface StoreType {
 
   language: string
   setLanguage: (language: string) => void
+
+  isLoading: boolean
+  setIsLoading: (isLoading: boolean) => void
 }
 const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
@@ -182,7 +185,10 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   setProfile: (profile) => { set({ profile }) },
 
   language: 'en',
-  setLanguage: (language) => { set({ language }) }
+  setLanguage: (language) => { set({ language }) },
+
+  isLoading: false,
+  setIsLoading: (isLoading) => { set({ isLoading }) }
 })
 
 export const usePlayerStore = create<StoreType>()(

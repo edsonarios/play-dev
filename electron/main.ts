@@ -322,6 +322,7 @@ ipcMain.handle('import-youtube', async () => {
   }
 })
 
+// Check for updates
 function checkForUpdates () {
   void autoUpdater.checkForUpdates()
 

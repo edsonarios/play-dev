@@ -12,6 +12,7 @@
         "back": "Back",
         "next": "Next",
         "theme": "Dark/Light Theme",
+        "isLoading": "Loading...",
         "importYoutube": "Import Youtube",
         "importSpotify": "Import Spotify"
     },

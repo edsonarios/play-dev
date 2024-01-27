@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { SpotifyIcon, YoutubeIcon } from '@/icons/header/Profile'
 export function ProfileComponent () {
   const { t } = useTranslation()
-  const { setProfile, setPlaylists, setSongs, playlists, songs, profile } =
+  const { setProfile, setPlaylists, setSongs, playlists, songs, profile, setIsLoading } =
     usePlayerStore<StoreType>((state) => state)
 
   // Import PLaylist from Youtube
   const handledImportYoutube = async () => {
-    console.log('Import Youtube')
+    setIsLoading(true)
     const response = await window.electronAPI.importYoutube()
     const newPlaylists = [...playlists, ...response.playlists]
     const newSongs = [...songs, ...response.songs]
@@ -17,6 +17,7 @@ export function ProfileComponent () {
     setPlaylists(newPlaylists)
     setSongs(newSongs)
     console.log(response)
+    setIsLoading(false)
   }
 
   const handledImportSpotify = async () => {

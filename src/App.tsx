@@ -12,6 +12,7 @@ import Split from 'react-split'
 import { type IPlaylist, type ISong } from './lib/data'
 import { useTranslation } from 'react-i18next'
 import ModalUpdateStatus from './components/ModalUpdateStatus'
+import ModalDownloading from './components/ModalDownloading'
 
 interface OpenDirectoryDialog {
   playlist: IPlaylist
@@ -275,6 +276,7 @@ export default function App () {
         <Controls />
       </footer>
       <ModalUpdateStatus />
+      <ModalDownloading />
     </div>
   )
 }

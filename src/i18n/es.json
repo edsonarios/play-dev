@@ -12,6 +12,7 @@
         "back": "Volver",
         "next": "Avanzar",
         "theme": "Tema Oscuro/Claro",
+        "isLoading": "Cargando...",
         "importYoutube": "Importar Youtube",
         "importSpotify": "Importar Spotify"
     },

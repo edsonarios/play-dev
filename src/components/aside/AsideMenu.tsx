@@ -29,11 +29,12 @@ export default function AsideMenu () {
     homeHideSongs,
     setHomeHideSongs,
     setPlaylistView,
-    setPictureInPicture
+    setPictureInPicture,
+    setIsLoading
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleSelectFolder = async () => {
-    await OpenFolder(playlists, setPlaylists, setSongs, songs)
+    await OpenFolder(playlists, setPlaylists, setSongs, songs, setIsLoading)
   }
 
   const handledNewPlaylist = () => {
