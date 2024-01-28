@@ -11,6 +11,7 @@ export class Song {
   duration: number
   format: string
   isDragging: boolean
+
   constructor (song: ISong) {
     this.id = song.id
     this.albumId = song.albumId
