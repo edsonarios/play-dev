@@ -3,6 +3,7 @@ import { PreviousIcon } from '@/icons/controls/Previous'
 import { CloseIcon } from '@/icons/edit/Close'
 import { PlayPauseIcon } from '@/icons/shorrtcuts/PlayPause'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export default function ModalShowShortcuts () {
@@ -14,6 +15,19 @@ export default function ModalShowShortcuts () {
   const handleCloseModal = () => {
     setIsShowShortcuts(false)
   }
+
+  // Event key escape to close the modal
+  useEffect(() => {
+    const handleKeyPress = (event: any) => {
+      if (event.key === 'Escape') {
+        setIsShowShortcuts(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
 
   return (
     <div>
