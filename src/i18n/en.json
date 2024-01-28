@@ -28,7 +28,14 @@
         "mute": "Mute",
         "pip": "Picture in Picture",
         "currentSong": "No song selected",
-        "shortcuts": "Keyboard Controls"
+        "shortcuts": "Keyboard Controls",
+        "media": "Media Key",
+        "space": "Space",
+        "seekFB": "Seek Forward/Backward",
+        "seek%": "Seek to 10% - 90%",
+        "volumeUpDown": "Volume Up/Down",
+        "sppedID": "Speed Up/Down",
+        "fullScreen": "Full Screen"
     },
     "playlist": {
         "songs": "songs",

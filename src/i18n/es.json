@@ -28,7 +28,14 @@
         "mute": "Silenciar",
         "pip": "Abrir el reproductor en miniatura",
         "currentSong": "Ninguna canción seleccionada",
-        "shortcuts": "Controles del teclado"
+        "shortcuts": "Controles del teclado",
+        "media": "Multimedia",
+        "space": "Espacio",
+        "seekFB": "Adelantar/Retroceder",
+        "seek%": "Adelantar/Retroceder a 10% - 90%",
+        "volumeUpDown": "Subir/Bajar volumen",
+        "sppedID": "Subir/Bajar velocidad",
+        "fullScreen": "Pantalla completa"
     },
     "playlist": {
         "songs": "canciones",
