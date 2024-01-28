@@ -24,7 +24,6 @@ Press alt in a song and open the folder where is the song
 
 * Refactor playlist, now the playlists is separated from the songs, all songs is in a single place, in every click a playlist, made filter in all songs, and it's not the best idea in quality
 * Refactor plyr-react for react-player
-* New panel to show the shortcuts
 * Divide in sections the list playlists
 
 Publish

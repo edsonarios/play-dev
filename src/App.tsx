@@ -240,7 +240,7 @@ export default function App () {
         <Split
           className="flex flex-row h-full"
           sizes={[15, 85]}
-          minSize={[300, 800]}
+          minSize={[250, 800]}
           gutterSize={10}
           cursor="col-resize"
         >
@@ -273,7 +273,7 @@ export default function App () {
           </main>
         </Split>
       </div>
-      <footer className="[grid-area:player] flex flex-row h-[80px]">
+      <footer className="[grid-area:player] flex flex-row h-[45px]">
         <Controls />
       </footer>
       <ModalUpdateStatus />
