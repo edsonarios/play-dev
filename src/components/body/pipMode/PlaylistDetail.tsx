@@ -30,7 +30,9 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
     editTemporallyCover,
     setEditTemporallyCover,
     currentMusic,
-    setCurrentMusic
+    setCurrentMusic,
+    sections,
+    setEditTemporallySection
   } = usePlayerStore<StoreType>((state) => state)
   const playlist = playlists.find((playlist) => playlist.id === playlistID)
   const playListSongs = songs.filter((song) => song.albumId === playlistID)
@@ -96,12 +98,16 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
   }
 
   const [isOpen, setIsOpen] = useState(false)
-  const handledEditPlaylist = () => {
+  const handledOpenEditPlaylist = () => {
+    const currentSection = sections.find(section => section.playlists.find(ply => ply.id === playlist?.id))
+    const currentValueSection = currentSection?.id ?? ''
+
     withViewTransition(() => {
       if (playlist === undefined) return
       setEditTemporallyTitle(playlist.title)
       setEditTemporallyColor(playlist.color)
       setEditTemporallyCover(playlist?.cover)
+      setEditTemporallySection(currentValueSection)
       setIsOpen(true)
     })
   }
@@ -114,6 +120,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
           setEditTemporallyTitle('')
           setEditTemporallyColor(playlist.color)
           setEditTemporallyCover(playlist.cover)
+          setEditTemporallySection('')
           setIsOpen(false)
         })
       }
@@ -130,6 +137,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
       setEditTemporallyTitle('')
       setEditTemporallyColor(playlist.color)
       setEditTemporallyCover([])
+      setEditTemporallySection('')
       setIsOpen(false)
     })
   }
@@ -168,7 +176,7 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
         <div className="flex flex-col">
           <h2 className="flex flex-1 items-end">Playlist</h2>
           <button className='flex flex-1 items-end'
-          onClick={handledEditPlaylist}
+          onClick={handledOpenEditPlaylist}
           title='Edit Playlist'>
             <h1 className="text-5xl font-bold block">
               {editTemporallyTitle !== '' ? editTemporallyTitle : currentPlaylist?.title}

@@ -3,7 +3,9 @@ import { PencilIcon } from '@/icons/edit/Pencil'
 import { colors } from '@/lib/colors'
 import { type Playlist } from '@/lib/entities/playlist.entity'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { updateSections } from '@/utils/sections'
 import { withViewTransition } from '@/utils/transition'
+import { type IPlaylist } from 'electron/entities/playlist.entity'
 
 export default function ModalEditPlaylist ({
   playlist,
@@ -11,7 +13,7 @@ export default function ModalEditPlaylist ({
   setIsOpen,
   handledCloseModal
 }: {
-  playlist?: Playlist
+  playlist?: IPlaylist
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
   handledCloseModal: () => void
@@ -26,7 +28,11 @@ export default function ModalEditPlaylist ({
     currentMusic,
     setCurrentMusic,
     editTemporallyCover,
-    setEditTemporallyCover
+    setEditTemporallyCover,
+    sections,
+    setSections,
+    editTemporallySection,
+    setEditTemporallySection
   } = usePlayerStore<StoreType>((state) => state)
 
   const handledEditPlaylist = (event: any) => {
@@ -58,11 +64,13 @@ export default function ModalEditPlaylist ({
       }
       return item
     })
+    const newSections = updateSections(sections, editTemporallySection, playlist)
     withViewTransition(() => {
       setPlaylists(newPlaylists)
       setEditTemporallyTitle('')
       setEditTemporallyCover([])
       setIsOpen(false)
+      setSections(newSections)
     })
   }
 
@@ -76,6 +84,11 @@ export default function ModalEditPlaylist ({
     if (event.target.value === undefined) return
     const newCover = event.target.value as string
     setEditTemporallyCover([newCover])
+  }
+
+  const handledSection = (event: any) => {
+    const newSection = event.target.value as string
+    setEditTemporallySection(newSection)
   }
 
   return (
@@ -105,7 +118,7 @@ export default function ModalEditPlaylist ({
             <form onSubmit={handleSavePlaylist} className="flex flex-row">
               {playlist?.cover.length === 1 || editTemporallyCover.length === 1
                 ? (
-                <picture className="relative aspect-square w-52 h-52 flex-none mr-4">
+                <picture className="relative aspect-square w-64 h-64 flex-none mr-6 mt-2">
                   <img
                     src={editTemporallyCover.length === 1 ? editTemporallyCover[0] : playlist?.cover[0]}
                     alt={`Cover of ${
@@ -172,6 +185,22 @@ export default function ModalEditPlaylist ({
                     {Object.entries(colors).map(([colorName]) => (
                       <option key={colorName} value={colorName}>
                         {colorName.charAt(0).toUpperCase() + colorName.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label htmlFor="color" className="block mb-4">
+                  <span className="">Section</span>
+                  <select
+                    id="color"
+                    onChange={handledSection}
+                    className="w-full mt-1 rounded-md p-2 bg-zinc-800"
+                    value={editTemporallySection}
+                  >
+                    {sections.map((section) => (
+                      <option key={section.id} value={section.id}>
+                        {section.title}
                       </option>
                     ))}
                   </select>

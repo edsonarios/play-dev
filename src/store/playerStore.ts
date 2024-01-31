@@ -3,6 +3,7 @@ import { type IPlaylist, type ISong } from '../lib/data'
 import { type PlyrOptions } from 'plyr-react'
 import { persist } from 'zustand/middleware'
 import { getRandomColor } from '@/utils/random'
+import { type ISections } from '@/lib/entities/sections.entity'
 
 export interface CurrentMusicType {
   playlist: IPlaylist | undefined
@@ -96,6 +97,12 @@ export interface StoreType {
 
   isShowShortcuts: boolean
   setIsShowShortcuts: (showShortcuts: boolean) => void
+
+  sections: ISections[]
+  setSections: (sections: ISections[]) => void
+
+  editTemporallySection: string
+  setEditTemporallySection: (temporallySection: string) => void
 }
 const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
@@ -194,7 +201,29 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   setIsLoading: (isLoading) => { set({ isLoading }) },
 
   isShowShortcuts: false,
-  setIsShowShortcuts: (isShowShortcuts) => { set({ isShowShortcuts }) }
+  setIsShowShortcuts: (isShowShortcuts) => { set({ isShowShortcuts }) },
+
+  sections: [
+    {
+      id: window.crypto.randomUUID(),
+      title: 'My Playlist',
+      playlists: []
+    },
+    {
+      id: window.crypto.randomUUID(),
+      title: 'Favorites',
+      playlists: []
+    },
+    {
+      id: window.crypto.randomUUID(),
+      title: 'Youtube',
+      playlists: []
+    }
+  ],
+  setSections: (sections) => { set({ sections }) },
+
+  editTemporallySection: '',
+  setEditTemporallySection: (editTemporallySection) => { set({ editTemporallySection }) }
 })
 
 export const usePlayerStore = create<StoreType>()(
