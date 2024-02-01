@@ -136,7 +136,7 @@ export default function ModalEditPlaylist ({
                 </picture>
                   )
                 : (
-                <div className="relative grid grid-cols-2 aspect-square  w-52 h-52 mr-4">
+                <div className="relative grid grid-cols-2 aspect-square  w-64 h-64 mr-4 mt-2">
                   {playlist?.cover.map((cover, index) => (
                     <div key={index} className="relative w-full h-full">
                       <img
