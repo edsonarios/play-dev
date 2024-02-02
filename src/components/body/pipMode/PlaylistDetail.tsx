@@ -39,47 +39,24 @@ export function PlaylistDetail ({
     setCurrentMusic,
     sections,
     setEditTemporallySection,
-    playlistsMap,
     currentPlaylistView,
     currentSongsView
   } = usePlayerStore<StoreType>((state) => state)
-  // const playlistID = currentPlaylistView?.id
-  // const [sectionID, playlistID] = sectionIdPlaylistId.split(';')
-  // console.log(sectionID, playlistID)
-  // const currentSection = sections.find((section) => section.id === sectionID)
-  // const playlist = currentSection?.playlists.find((playlist) => playlist.id === playlistID)
-  // const playListSongs = playlist?.songs
-  // const playlist = playlistsMap.get(playlistID)
-  // console.log(playlist)
-  // const playListSongs = playlist?.songs
-  // const playlist = playlists.find((playlist) => playlist.id === playlistID)
-  // const playListSongs = songs.filter((song) => song.albumId === playlistID)
-  const totalDurationSongs = currentSongsView.reduce(
+  const totalDurationSongs = currentSongsView?.reduce(
     (acc, song) => acc + song.duration,
     0
   )
 
   // search song in playlist
   const [currentPlaylistSongs, setCurrentPlaylistSongs] = useState<Song[]>([])
-  // useEffect(() => {
-  //   const thisSongs = songs.filter((song) => song.albumId === playlistID)
-  //   setCurrentPlaylistSongs(thisSongs)
-  // }, [playlistView, songs, songs.length])
-
-  // useEffect(() => {
-  //   if (playListSongs !== undefined) {
-  //     console.log(playListSongs)
-  //     setCurrentPlaylistSongs(playListSongs)
-  //   }
-  // }, [])
+  useEffect(() => {
+    setCurrentPlaylistSongs(currentSongsView)
+  }, [playlistView, songs, songs.length])
 
   const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | undefined>(
     undefined
   )
   useEffect(() => {
-    // const thisPlaylist = playlists.find(
-    //   (playlist) => playlist.id === playlistID
-    // )
     setCurrentPlaylist(currentPlaylistView)
   }, [playlistView, playlists])
 
