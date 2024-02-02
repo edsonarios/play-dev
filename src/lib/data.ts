@@ -7,6 +7,7 @@ export interface IPlaylist {
   color: string
   cover: string[]
   artists: string[]
+  songs: ISong[]
 }
 
 export const playlists: IPlaylist[] = [
@@ -17,7 +18,8 @@ export const playlists: IPlaylist[] = [
     color: getRandomColor(),
     cover:
       ['Covers/cover1.jpg'],
-    artists: []
+    artists: [],
+    songs: []
   }
 ]
 

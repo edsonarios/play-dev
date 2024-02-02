@@ -15,8 +15,8 @@ export function PlaylistPipMode () {
     sections
   } = usePlayerStore<StoreType>((state) => state)
 
-  const handleSetPlaylistView = (id: string) => {
-    setPlaylistView(id)
+  const handleSetPlaylistView = (sectionId: string, playlistId: string) => {
+    setPlaylistView(`${sectionId};${playlistId}`)
   }
 
   const delPlaylist = (id: string) => {
@@ -67,7 +67,7 @@ export function PlaylistPipMode () {
                 <button
                   className="transition-all duration-300 flex p-2 overflow-hidden gap-2 pb-6 rounded-md w-44 flex-col"
                   onClick={() => {
-                    handleSetPlaylistView(playlist.id)
+                    handleSetPlaylistView(section.id, playlist.id)
                   }}
                 >
                   {playlist.cover.length === 1
@@ -135,7 +135,7 @@ export function PlaylistPipMode () {
             <button
               className="transition-all duration-300 flex p-2 overflow-hidden gap-2 pb-6 rounded-md w-44 flex-col"
               onClick={() => {
-                handleSetPlaylistView(playlist.id)
+                handleSetPlaylistView('0', playlist.id)
               }}
             >
               {playlist.cover.length === 1

@@ -14,7 +14,13 @@ import { withViewTransition } from '@/utils/transition'
 import { deletePlaylistInCurrentSongsIfNeeded } from '@/utils/currentSongs'
 import { useTranslation } from 'react-i18next'
 
-export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrentColor: (color: string) => void }) {
+export function PlaylistDetail ({
+  sectionIdPlaylistId,
+  setCurrentColor
+}: {
+  sectionIdPlaylistId: string
+  setCurrentColor: (color: string) => void
+}) {
   const { t } = useTranslation()
 
   const {
@@ -32,24 +38,45 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
     currentMusic,
     setCurrentMusic,
     sections,
-    setEditTemporallySection
+    setEditTemporallySection,
+    playlistsMap
   } = usePlayerStore<StoreType>((state) => state)
-  const playlist = playlists.find((playlist) => playlist.id === playlistID)
-  const playListSongs = songs.filter((song) => song.albumId === playlistID)
-  const totalDurationSongs = playListSongs.reduce(
+  const [sectionID, playlistID] = sectionIdPlaylistId.split(';')
+  console.log(sectionID, playlistID)
+  // const currentSection = sections.find((section) => section.id === sectionID)
+  // const playlist = currentSection?.playlists.find((playlist) => playlist.id === playlistID)
+  // const playListSongs = playlist?.songs
+  const playlist = playlistsMap.get(playlistID)
+  console.log(playlist)
+  const playListSongs = playlist?.songs
+  // const playlist = playlists.find((playlist) => playlist.id === playlistID)
+  // const playListSongs = songs.filter((song) => song.albumId === playlistID)
+  const totalDurationSongs = playListSongs!.reduce(
     (acc, song) => acc + song.duration,
     0
   )
 
+  // search song in playlist
   const [currentPlaylistSongs, setCurrentPlaylistSongs] = useState<Song[]>([])
-  useEffect(() => {
-    const thisSongs = songs.filter((song) => song.albumId === playlistID)
-    setCurrentPlaylistSongs(thisSongs)
-  }, [playlistView, songs, songs.length])
+  // useEffect(() => {
+  //   const thisSongs = songs.filter((song) => song.albumId === playlistID)
+  //   setCurrentPlaylistSongs(thisSongs)
+  // }, [playlistView, songs, songs.length])
 
-  const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | undefined>(undefined)
   useEffect(() => {
-    const thisPlaylist = playlists.find((playlist) => playlist.id === playlistID)
+    if (playListSongs !== undefined) {
+      console.log(playListSongs)
+      setCurrentPlaylistSongs(playListSongs)
+    }
+  }, [])
+
+  const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | undefined>(
+    undefined
+  )
+  useEffect(() => {
+    const thisPlaylist = playlists.find(
+      (playlist) => playlist.id === playlistID
+    )
     setCurrentPlaylist(thisPlaylist)
   }, [playlistView, playlists])
 
@@ -99,15 +126,17 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
 
   const [isOpen, setIsOpen] = useState(false)
   const handledOpenEditPlaylist = () => {
-    const currentSection = sections.find(section => section.playlists.find(ply => ply.id === playlist?.id))
-    const currentValueSection = currentSection?.id ?? ''
+    const temporallySection = sections.find((section) =>
+      section.playlists.find((ply) => ply.id === playlist?.id)
+    )
+    const temporallyCurrentValueSection = temporallySection?.id ?? ''
 
     withViewTransition(() => {
       if (playlist === undefined) return
       setEditTemporallyTitle(playlist.title)
       setEditTemporallyColor(playlist.color)
       setEditTemporallyCover(playlist?.cover)
-      setEditTemporallySection(currentValueSection)
+      setEditTemporallySection(temporallyCurrentValueSection)
       setIsOpen(true)
     })
   }
@@ -146,40 +175,47 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
   return (
     <div className="absolute top-14 w-[95%] flex flex-col overflow-y-disable rounded-lg">
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
-        <div className='w-40'>
-        {currentPlaylist?.cover.length === 1 || editTemporallyCover.length === 1
-          ? (
-          <picture className="aspect-square">
-            <img
-              src={isOpen ? editTemporallyCover[0] : currentPlaylist?.cover[0]}
-              alt={`Cover of ${currentPlaylist?.title} by ${currentPlaylist?.artists.join(
-                ','
-              )}`}
-              className="object-cover h-full rounded-md"
-            />
-          </picture>
-            )
-          : (
-          <div className="grid grid-cols-2 aspect-square w-full h-44">
-            {currentPlaylist?.cover.map((cover, index) => (
-              <div key={index} className="relative w-full h-full">
-                <img
-                  src={cover}
-                  alt={`Song ${index}`}
-                  className="absolute w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-            )}
+        <div className="w-40">
+          {currentPlaylist?.cover.length === 1 ||
+          editTemporallyCover.length === 1
+            ? (
+            <picture className="aspect-square">
+              <img
+                src={
+                  isOpen ? editTemporallyCover[0] : currentPlaylist?.cover[0]
+                }
+                alt={`Cover of ${
+                  currentPlaylist?.title
+                } by ${currentPlaylist?.artists.join(',')}`}
+                className="object-cover h-full rounded-md"
+              />
+            </picture>
+              )
+            : (
+            <div className="grid grid-cols-2 aspect-square w-full h-44">
+              {currentPlaylist?.cover.map((cover, index) => (
+                <div key={index} className="relative w-full h-full">
+                  <img
+                    src={cover}
+                    alt={`Song ${index}`}
+                    className="absolute w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+              )}
         </div>
         <div className="flex flex-col">
           <h2 className="flex flex-1 items-end">Playlist</h2>
-          <button className='flex flex-1 items-end'
-          onClick={handledOpenEditPlaylist}
-          title='Edit Playlist'>
+          <button
+            className="flex flex-1 items-end"
+            onClick={handledOpenEditPlaylist}
+            title="Edit Playlist"
+          >
             <h1 className="text-5xl font-bold block">
-              {editTemporallyTitle !== '' ? editTemporallyTitle : currentPlaylist?.title}
+              {editTemporallyTitle !== ''
+                ? editTemporallyTitle
+                : currentPlaylist?.title}
             </h1>
           </button>
 
@@ -189,8 +225,14 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
                 <span>{playlist?.artists.join(', ')}</span>
               </div>
               <p className="mt-1">
-                <span className="">{playListSongs.length} {t('playlist.songs')}</span>
-                {`${durationSongs !== '' ? (', ' + durationSongs + ' ' + (t('playlist.approximately'))) : ''}`}
+                <span className="">
+                  {playListSongs!.length} {t('playlist.songs')}
+                </span>
+                {`${
+                  durationSongs !== ''
+                    ? ', ' + durationSongs + ' ' + t('playlist.approximately')
+                    : ''
+                }`}
               </p>
             </div>
           </div>
@@ -249,7 +291,12 @@ export function PlaylistDetail ({ playlistID }: { playlistID: string, setCurrent
           playlist={playlist}
           playlistSongs={currentPlaylistSongs}
         />
-        <ModalEditPlaylist playlist={currentPlaylist} isOpen={isOpen} setIsOpen={setIsOpen} handledCloseModal={handledCloseModal} />
+        <ModalEditPlaylist
+          playlist={currentPlaylist}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          handledCloseModal={handledCloseModal}
+        />
       </section>
     </div>
   )

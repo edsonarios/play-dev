@@ -103,6 +103,9 @@ export interface StoreType {
 
   editTemporallySection: string
   setEditTemporallySection: (temporallySection: string) => void
+
+  playlistsMap: Map<string, IPlaylist>
+  setPlaylistsMap: (playlistsMap: Map<string, IPlaylist>) => void
 }
 const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
@@ -126,7 +129,8 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
     title: 'All Songs',
     color: getRandomColor(),
     cover: ['Covers/cover1.jpg'],
-    artists: []
+    artists: [],
+    songs: []
   }],
   setPlaylists: (playlists) => { set({ playlists }) },
 
@@ -205,8 +209,8 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
 
   sections: [
     {
-      id: window.crypto.randomUUID(),
-      title: 'My Playlist',
+      id: '1',
+      title: 'My Playlists',
       playlists: []
     },
     {
@@ -223,7 +227,10 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   setSections: (sections) => { set({ sections }) },
 
   editTemporallySection: '',
-  setEditTemporallySection: (editTemporallySection) => { set({ editTemporallySection }) }
+  setEditTemporallySection: (editTemporallySection) => { set({ editTemporallySection }) },
+
+  playlistsMap: new Map(),
+  setPlaylistsMap: (playlistsMap) => { set({ playlistsMap }) }
 })
 
 export const usePlayerStore = create<StoreType>()(
@@ -233,6 +240,7 @@ export const usePlayerStore = create<StoreType>()(
       name: 'player-storage',
       partialize: (state) => ({
         modeColor: state.modeColor,
+        sections: state.sections,
         playlists: state.playlists,
         songs: state.songs,
         currentMusic: state.currentMusic,

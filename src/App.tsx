@@ -60,8 +60,19 @@ export default function App () {
     playlists,
     editTemporallyColor,
     modeColor,
-    language
+    language,
+    sections,
+    playlistsMap
   } = usePlayerStore<StoreType>((state) => state)
+
+  useEffect(() => {
+    sections.forEach((section) => {
+      section.playlists.forEach((playlist) => {
+        playlistsMap.set(playlist.id, playlist)
+      })
+    })
+    console.log(playlistsMap)
+  }, [])
 
   const { i18n } = useTranslation()
   useEffect(() => {
@@ -74,10 +85,13 @@ export default function App () {
     let newColor = colors.gray.dark
     let codeColor = colors.gray
     if (playlistView !== '0' && pictureInPicture) {
+      console.log(playlistView)
+      const [sectionId, playlistId] = playlistView.split(';')
       // Take color in pip mode from current view playlist
-      const viewPlaylist = playlists.find(
-        (playlist) => playlist.id === playlistView
-      )
+      const viewPlaylist = sections.find(section => section.id === sectionId)?.playlists.find(ply => ply.id === playlistId)
+      // const viewPlaylist = playlists.find(
+      //   (playlist) => playlist.id === playlistId
+      // )
       if (viewPlaylist?.color !== undefined) {
         codeColor = colors[viewPlaylist.color]
       }
@@ -113,7 +127,7 @@ export default function App () {
     if (pictureInPicture && playlistView !== '0') {
       return (
         <PlaylistDetail
-          playlistID={playlistView}
+        sectionIdPlaylistId={playlistView}
           setCurrentColor={setCurrentColor}
         />
       )
@@ -196,6 +210,7 @@ export default function App () {
         volume: state.volume,
         language: state.language,
         currentMusic: state.currentMusic,
+        sections: state.sections,
         playlists: state.playlists,
         songs: state.songs
       }
@@ -222,6 +237,7 @@ export default function App () {
       volume: configParsed.volume,
       language: configParsed.language,
       currentMusic: configParsed.currentMusic,
+      sections: configParsed.sections,
       playlists: configParsed.playlists,
       songs: configParsed.songs
     })
