@@ -12,11 +12,19 @@ export function PlaylistPipMode () {
     setPlaylists,
     currentMusic,
     setCurrentMusic,
-    sections
+    sections,
+    setCurrentPlaylistView,
+    setCurrentSongsView
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleSetPlaylistView = (sectionId: string, playlistId: string) => {
-    setPlaylistView(`${sectionId};${playlistId}`)
+    const playlistToView = playlists.find(playlist => playlist.id === playlistId)
+    const songsToView = songs.filter(song => song.albumId === playlistId)
+    setCurrentPlaylistView(playlistToView)
+    setCurrentSongsView(songsToView)
+    withViewTransition(() => {
+      setPlaylistView(`${sectionId};${playlistId}`)
+    })
   }
 
   const delPlaylist = (id: string) => {
@@ -75,10 +83,13 @@ export function PlaylistPipMode () {
                     <picture className="aspect-square h-44 w-40">
                       <img
                         src={playlist.cover[0]}
-                        alt={`Cover of ${playlist.title} by ${playlist.artists.join(
-                          ','
-                        )}`}
+                        alt={`Cover of ${
+                          playlist.title
+                        } by ${playlist.artists.join(',')}`}
                         className="object-cover h-full rounded-md"
+                        style={{
+                          viewTransitionName: `playlist-${playlist?.id}`
+                        }}
                       />
                     </picture>
                       )
@@ -90,13 +101,21 @@ export function PlaylistPipMode () {
                             src={cover}
                             alt={`Song ${index}`}
                             className="absolute w-full h-full object-cover"
+                            style={{
+                              viewTransitionName: `playlist-${playlist?.id}-${index}`
+                            }}
                           />
                         </div>
                       ))}
                     </div>
                       )}
                   <div className="flex flex-auto flex-col px-2">
-                    <h4 className="text-white text-sm">{playlist.title}</h4>
+                    <h4
+                      className="text-white text-sm"
+                      style={{ viewTransitionName: `title-${playlist?.id}` }}
+                    >
+                      {playlist.title}
+                    </h4>
 
                     <span className="text-xs text-gray-400">
                       {playlist.artists.join(',')}

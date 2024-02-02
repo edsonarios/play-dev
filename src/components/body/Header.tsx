@@ -9,6 +9,7 @@ import { I18nComponent } from './i18n'
 import { ProfileComponent } from './Profile'
 import { PlusIcon } from '@/icons/aside/Library'
 import { Sections } from '@/lib/entities/sections.entity'
+import { withViewTransition } from '@/utils/transition'
 
 export default function Header () {
   const { t } = useTranslation()
@@ -17,7 +18,9 @@ export default function Header () {
 
   // Set playlist view to 0
   const handleSetPlaylist = () => {
-    setPlaylistView('0')
+    withViewTransition(() => {
+      setPlaylistView('0')
+    })
   }
 
   // Dark/Light mode

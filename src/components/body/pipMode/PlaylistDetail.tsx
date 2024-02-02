@@ -39,19 +39,22 @@ export function PlaylistDetail ({
     setCurrentMusic,
     sections,
     setEditTemporallySection,
-    playlistsMap
+    playlistsMap,
+    currentPlaylistView,
+    currentSongsView
   } = usePlayerStore<StoreType>((state) => state)
-  const [sectionID, playlistID] = sectionIdPlaylistId.split(';')
-  console.log(sectionID, playlistID)
+  // const playlistID = currentPlaylistView?.id
+  // const [sectionID, playlistID] = sectionIdPlaylistId.split(';')
+  // console.log(sectionID, playlistID)
   // const currentSection = sections.find((section) => section.id === sectionID)
   // const playlist = currentSection?.playlists.find((playlist) => playlist.id === playlistID)
   // const playListSongs = playlist?.songs
-  const playlist = playlistsMap.get(playlistID)
-  console.log(playlist)
-  const playListSongs = playlist?.songs
+  // const playlist = playlistsMap.get(playlistID)
+  // console.log(playlist)
+  // const playListSongs = playlist?.songs
   // const playlist = playlists.find((playlist) => playlist.id === playlistID)
   // const playListSongs = songs.filter((song) => song.albumId === playlistID)
-  const totalDurationSongs = playListSongs!.reduce(
+  const totalDurationSongs = currentSongsView.reduce(
     (acc, song) => acc + song.duration,
     0
   )
@@ -63,35 +66,35 @@ export function PlaylistDetail ({
   //   setCurrentPlaylistSongs(thisSongs)
   // }, [playlistView, songs, songs.length])
 
-  useEffect(() => {
-    if (playListSongs !== undefined) {
-      console.log(playListSongs)
-      setCurrentPlaylistSongs(playListSongs)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (playListSongs !== undefined) {
+  //     console.log(playListSongs)
+  //     setCurrentPlaylistSongs(playListSongs)
+  //   }
+  // }, [])
 
   const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | undefined>(
     undefined
   )
   useEffect(() => {
-    const thisPlaylist = playlists.find(
-      (playlist) => playlist.id === playlistID
-    )
-    setCurrentPlaylist(thisPlaylist)
+    // const thisPlaylist = playlists.find(
+    //   (playlist) => playlist.id === playlistID
+    // )
+    setCurrentPlaylist(currentPlaylistView)
   }, [playlistView, playlists])
 
   const deletePlaylist = () => {
     withViewTransition(() => {
-      if (playlist === undefined) return
-      if (playlist.title === 'All Songs') return
+      if (currentPlaylistView === undefined) return
+      if (currentPlaylistView.title === 'All Songs') return
       deletePlaylistInCurrentSongsIfNeeded({
-        playlistID: playlist.id,
+        playlistID: currentPlaylistView.id,
         currentMusic,
         setCurrentMusic
       })
-      const newSongs = songs.filter((song) => song.albumId !== playlist.id)
+      const newSongs = songs.filter((song) => song.albumId !== currentPlaylistView.id)
       setSongs(newSongs)
-      const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
+      const newPlaylists = playlists.filter((item) => item.id !== currentPlaylistView.id)
       setPlaylists(newPlaylists)
       setPlaylistView('0')
     })
@@ -111,7 +114,7 @@ export function PlaylistDetail ({
       const album = song.album.toLowerCase()
       const filter = value.toLowerCase()
       return (
-        song.albumId === playlistID &&
+        song.albumId === currentPlaylistView?.id &&
         (title.includes(filter) || album.includes(filter))
       )
     })
@@ -119,23 +122,23 @@ export function PlaylistDetail ({
   }
 
   const handleClearFilter = () => {
-    const playListSongs = songs.filter((song) => song.albumId === playlistID)
+    // const playListSongs = songs.filter((song) => song.albumId === playlistID)
     setInputValue('')
-    setCurrentPlaylistSongs(playListSongs)
+    setCurrentPlaylistSongs(currentSongsView)
   }
 
   const [isOpen, setIsOpen] = useState(false)
   const handledOpenEditPlaylist = () => {
     const temporallySection = sections.find((section) =>
-      section.playlists.find((ply) => ply.id === playlist?.id)
+      section.playlists.find((ply) => ply.id === currentPlaylistView?.id)
     )
     const temporallyCurrentValueSection = temporallySection?.id ?? ''
 
     withViewTransition(() => {
-      if (playlist === undefined) return
-      setEditTemporallyTitle(playlist.title)
-      setEditTemporallyColor(playlist.color)
-      setEditTemporallyCover(playlist?.cover)
+      if (currentPlaylistView === undefined) return
+      setEditTemporallyTitle(currentPlaylistView.title)
+      setEditTemporallyColor(currentPlaylistView.color)
+      setEditTemporallyCover(currentPlaylistView?.cover)
       setEditTemporallySection(temporallyCurrentValueSection)
       setIsOpen(true)
     })
@@ -144,11 +147,11 @@ export function PlaylistDetail ({
   // Event key escape to close edit playlist
   useEffect(() => {
     const handleKeyPress = (event: any) => {
-      if (event.key === 'Escape' && playlist !== undefined) {
+      if (event.key === 'Escape' && currentPlaylistView !== undefined) {
         withViewTransition(() => {
           setEditTemporallyTitle('')
-          setEditTemporallyColor(playlist.color)
-          setEditTemporallyCover(playlist.cover)
+          setEditTemporallyColor(currentPlaylistView.color)
+          setEditTemporallyCover(currentPlaylistView.cover)
           setEditTemporallySection('')
           setIsOpen(false)
         })
@@ -158,13 +161,13 @@ export function PlaylistDetail ({
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [playlist])
+  }, [currentPlaylistView])
 
   const handledCloseModal = () => {
     withViewTransition(() => {
-      if (playlist === undefined) return
+      if (currentPlaylistView === undefined) return
       setEditTemporallyTitle('')
-      setEditTemporallyColor(playlist.color)
+      setEditTemporallyColor(currentPlaylistView.color)
       setEditTemporallyCover([])
       setEditTemporallySection('')
       setIsOpen(false)
@@ -176,29 +179,35 @@ export function PlaylistDetail ({
     <div className="absolute top-14 w-[95%] flex flex-col overflow-y-disable rounded-lg">
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
         <div className="w-40">
-          {currentPlaylist?.cover.length === 1 ||
+          {currentPlaylistView?.cover.length === 1 ||
           editTemporallyCover.length === 1
             ? (
             <picture className="aspect-square">
               <img
                 src={
-                  isOpen ? editTemporallyCover[0] : currentPlaylist?.cover[0]
+                  isOpen ? editTemporallyCover[0] : currentPlaylistView?.cover[0]
                 }
                 alt={`Cover of ${
-                  currentPlaylist?.title
-                } by ${currentPlaylist?.artists.join(',')}`}
+                  currentPlaylistView?.title
+                } by ${currentPlaylistView?.artists.join(',')}`}
                 className="object-cover h-full rounded-md"
+                style={{
+                  viewTransitionName: `playlist-${currentPlaylistView?.id}`
+                }}
               />
             </picture>
               )
             : (
             <div className="grid grid-cols-2 aspect-square w-full h-44">
-              {currentPlaylist?.cover.map((cover, index) => (
+              {currentPlaylistView?.cover.map((cover, index) => (
                 <div key={index} className="relative w-full h-full">
                   <img
                     src={cover}
                     alt={`Song ${index}`}
                     className="absolute w-full h-full object-cover"
+                    style={{
+                      viewTransitionName: `playlist-${currentPlaylistView?.id}-${index}`
+                    }}
                   />
                 </div>
               ))}
@@ -212,21 +221,24 @@ export function PlaylistDetail ({
             onClick={handledOpenEditPlaylist}
             title="Edit Playlist"
           >
-            <h1 className="text-5xl font-bold block">
+            <h1
+              className="text-5xl font-bold block"
+              style={{ viewTransitionName: `title-${currentPlaylistView?.id}` }}
+            >
               {editTemporallyTitle !== ''
                 ? editTemporallyTitle
-                : currentPlaylist?.title}
+                : currentPlaylistView?.title}
             </h1>
           </button>
 
           <div className="flex-1 flex items-end">
             <div className="text-sm text-gray-300 font-normal">
               <div>
-                <span>{playlist?.artists.join(', ')}</span>
+                <span>{currentPlaylistView?.artists.join(', ')}</span>
               </div>
               <p className="mt-1">
                 <span className="">
-                  {playListSongs!.length} {t('playlist.songs')}
+                  {currentSongsView?.length} {t('playlist.songs')}
                 </span>
                 {`${
                   durationSongs !== ''
@@ -240,7 +252,7 @@ export function PlaylistDetail ({
       </header>
       <section className="bg-zinc-950 bg-opacity-50">
         <div className="pl-6 pt-4 flex flex-row">
-          <CardPlayButton playlist={playlist} size="large" />
+          <CardPlayButton playlist={currentPlaylistView} size="large" />
           <div className="relative ml-8">
             <button
               className="absolute bottom-2 opacity-20 hover:opacity-100 hover:text-red-400"
@@ -288,7 +300,7 @@ export function PlaylistDetail ({
           </div>
         </div>
         <PlaylistTable
-          playlist={playlist}
+          playlist={currentPlaylistView}
           playlistSongs={currentPlaylistSongs}
         />
         <ModalEditPlaylist
