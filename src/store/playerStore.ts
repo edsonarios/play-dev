@@ -223,7 +223,15 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
     {
       id: '1',
       title: 'My Playlists',
-      playlists: []
+      playlists: [{
+        id: '1',
+        albumId: '1',
+        title: 'All Songs',
+        color: getRandomColor(),
+        cover: ['Covers/cover1.jpg'],
+        artists: [],
+        songs: []
+      }]
     },
     {
       id: window.crypto.randomUUID(),

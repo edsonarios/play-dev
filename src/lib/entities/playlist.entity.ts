@@ -1,4 +1,4 @@
-import { type IPlaylist } from '../data'
+import { type ISong, type IPlaylist } from '../data'
 
 export class Playlist {
   id: string
@@ -7,6 +7,7 @@ export class Playlist {
   color: string
   cover: string[]
   artists: string[]
+  songs: ISong[]
 
   constructor (playlist: IPlaylist) {
     this.id = playlist.id
@@ -15,5 +16,6 @@ export class Playlist {
     this.color = playlist.color
     this.cover = playlist.cover
     this.artists = playlist.artists
+    this.songs = playlist.songs
   }
 }

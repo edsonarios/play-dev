@@ -4,7 +4,6 @@ import SideMenuCard from './SideMenuCard'
 import SideMenuItem from './SideMenuItem'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { FolderIcon } from '@/icons/aside/Folder'
-import { Playlist } from '@/lib/entities/playlist.entity'
 import { getRandomColor, getRandomImage } from '@/utils/random'
 import {
   DndContext,
@@ -18,6 +17,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
 import { useTranslation } from 'react-i18next'
+import { type IPlaylist } from '@/lib/data'
 
 export default function AsideMenu () {
   const { t } = useTranslation()
@@ -30,7 +30,9 @@ export default function AsideMenu () {
     setHomeHideSongs,
     setPlaylistView,
     setPictureInPicture,
-    setIsLoading
+    setIsLoading,
+    sections,
+    setSections
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleSelectFolder = async () => {
@@ -39,17 +41,18 @@ export default function AsideMenu () {
 
   const handledNewPlaylist = () => {
     withViewTransition(() => {
-      const newPlaylist = new Playlist({
+      const newPlaylist: IPlaylist = {
         id: window.crypto.randomUUID(),
         albumId: '',
         title: 'New Playlist',
         color: getRandomColor(),
         cover: [getRandomImage()],
-        artists: []
-      })
-      const currentPlaylists = playlists
-      currentPlaylists.push(newPlaylist)
-      setPlaylists(currentPlaylists)
+        artists: [],
+        songs: []
+      }
+      const newSections = structuredClone(sections)
+      newSections[0].playlists.push(newPlaylist)
+      setSections(newSections)
     })
   }
 
@@ -130,13 +133,20 @@ export default function AsideMenu () {
               <PlusIcon />
             </button>
           </div>
-          <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-            <SortableContext items={playlists.map((playlist) => playlist.id)}>
-              {playlists.map((playlist) => (
-                <SideMenuCard key={playlist.id} playlist={playlist} />
-              ))}
-            </SortableContext>
-          </DndContext>
+          {sections.map((section) => (
+            <div key={section.id}>
+              <header className="p-2 text-lg">{section.title}</header>
+              <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+                <SortableContext
+                  items={playlists.map((playlist) => playlist.id)}
+                >
+                  {section.playlists.map((playlist) => (
+                    <SideMenuCard key={playlist.id} playlist={playlist} />
+                  ))}
+                </SortableContext>
+              </DndContext>
+            </div>
+          ))}
         </ul>
       </div>
     </nav>

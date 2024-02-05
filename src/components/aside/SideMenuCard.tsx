@@ -72,9 +72,10 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
         setCurrentPlaylist([])
         return
       }
-      const playListSongs = songs.filter(
-        (song) => song.albumId === playlist.id
-      )
+      const playListSongs = playlist.songs
+      // const playListSongs = songs.filter(
+      //   (song) => song.albumId === playlist.id
+      // )
       setCurrentPlaylist(playListSongs)
     })
   }
@@ -82,15 +83,17 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
   // Reload playlist songs
   useEffect(() => {
     if (currentPlaylist.length !== 0 || isPlaylistExpanded) {
-      const playListSongs = songs?.filter(
-        (song) => song.albumId === playlist.id
-      )
+      const playListSongs = playlist.songs
+      // const playListSongs = songs?.filter(
+      //   (song) => song.albumId === playlist.id
+      // )
       setCurrentPlaylist(playListSongs)
     }
   }, [songs, songs.length])
 
   const playSong = (song: ISong) => {
-    let playListSongs = songs.filter((song) => song.albumId === playlist.id)
+    let playListSongs = playlist.songs
+    // let playListSongs = songs.filter((song) => song.albumId === playlist.id)
 
     if (randomPlaylist) {
       playListSongs = shuffleSongsWithCurrentSong(playListSongs, song.id)
@@ -199,9 +202,10 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
       !isPlaylistExpanded
     ) {
       setIsPlaylistExpanded(true)
-      const playListSongs = songs.filter(
-        (song) => song.albumId === playlist.id
-      )
+      const playListSongs = playlist.songs
+      // const playListSongs = songs.filter(
+      //   (song) => song.albumId === playlist.id
+      // )
       setCurrentPlaylist(playListSongs)
       setSongRefToScroll(undefined)
     }

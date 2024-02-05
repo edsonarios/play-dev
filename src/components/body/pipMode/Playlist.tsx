@@ -19,6 +19,7 @@ export function PlaylistPipMode () {
 
   const handleSetPlaylistView = (sectionID: string, playlistId: string) => {
     const playlistToView = sections.find(section => section.id === sectionID)?.playlists.find(playlist => playlist.id === playlistId)
+
     console.log(playlistToView)
     if (playlistToView === undefined) return
     setCurrentPlaylistView(playlistToView)
