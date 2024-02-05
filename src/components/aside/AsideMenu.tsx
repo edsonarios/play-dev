@@ -141,7 +141,11 @@ export default function AsideMenu () {
                   items={playlists.map((playlist) => playlist.id)}
                 >
                   {section.playlists.map((playlist) => (
-                    <SideMenuCard key={playlist.id} playlist={playlist} />
+                    <SideMenuCard
+                      key={playlist.id}
+                      sectionID={section.id}
+                      playlist={playlist}
+                    />
                   ))}
                 </SortableContext>
               </DndContext>

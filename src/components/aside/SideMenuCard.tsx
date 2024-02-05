@@ -16,10 +16,11 @@ import {
 } from '@/utils/currentSongs'
 
 interface CardPlaylist {
+  sectionID: string
   playlist: IPlaylist
 }
 
-export default function SideMenuCard ({ playlist }: CardPlaylist) {
+export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
   const {
     setCurrentMusic,
     currentMusic,
@@ -27,12 +28,12 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
     randomPlaylist,
     songs,
     setSongs,
-    playlists,
-    setPlaylists,
     setPlaylistView,
     songRefToScroll,
     setSongRefToScroll,
-    homeHideSongs
+    homeHideSongs,
+    sections,
+    setSections
   } = usePlayerStore<StoreType>((state) => state)
 
   const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
@@ -109,20 +110,18 @@ export default function SideMenuCard ({ playlist }: CardPlaylist) {
 
   const delPlaylist = () => {
     withViewTransition(() => {
-      deletePlaylistInCurrentSongsIfNeeded({
-        playlistID: playlist.id,
-        currentMusic,
-        setCurrentMusic
-      })
       if (playlist.title === 'All Songs') {
-        const newSongs = songs.filter((song) => song.albumId !== '1')
-        setSongs(newSongs)
+        const newSections = structuredClone(sections)
+        newSections[0].playlists = []
+        setSections(newSections)
         return
       }
-      const newSongs = songs.filter((song) => song.albumId !== playlist.id)
-      setSongs(newSongs)
-      const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
-      setPlaylists(newPlaylists)
+      const newSections = structuredClone(sections)
+      const currentSectionIndex = newSections.findIndex((section) => section.id === sectionID)
+      if (currentSectionIndex === -1) return
+      const newPlaylists = newSections[currentSectionIndex].playlists.filter((item) => item.id !== playlist.id)
+      newSections[currentSectionIndex].playlists = newPlaylists
+      setSections(newSections)
       setPlaylistView('0')
     })
   }
