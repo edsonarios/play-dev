@@ -6,14 +6,9 @@ import { CardPlayButton } from '../CardPlay'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { VolumeAsideIcon } from '@/icons/aside/Volume'
 import { formatTime } from '@/utils/time'
-import { Song } from '@/lib/entities/song.entity'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { withViewTransition } from '@/utils/transition'
-import {
-  deletePlaylistInCurrentSongsIfNeeded,
-  updateCurrentSongsIfNeeded
-} from '@/utils/currentSongs'
 
 interface CardPlaylist {
   sectionID: string
@@ -26,14 +21,14 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     currentMusic,
     setIsPlaying,
     randomPlaylist,
-    songs,
-    setSongs,
-    setPlaylistView,
     songRefToScroll,
     setSongRefToScroll,
     homeHideSongs,
     sections,
-    setSections
+    setSections,
+    setPlaylistView,
+    currentPlaylistView,
+    setCurrentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
 
   const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
@@ -63,34 +58,31 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
   const artistsString = playlist.artists.join(', ')
 
   const getPlaylist = () => {
-    withViewTransition(() => {
-      if (isPlaylistExpanded) {
-        setIsPlaylistExpanded(false)
-      } else {
-        setIsPlaylistExpanded(true)
-      }
-      if (isPlaylistExpanded && currentPlaylist.length > 0) {
-        setCurrentPlaylist([])
-        return
-      }
-      const playListSongs = playlist.songs
-      // const playListSongs = songs.filter(
-      //   (song) => song.albumId === playlist.id
-      // )
-      setCurrentPlaylist(playListSongs)
-    })
+    // withViewTransition(() => {
+    if (isPlaylistExpanded) {
+      setIsPlaylistExpanded(false)
+    } else {
+      setIsPlaylistExpanded(true)
+    }
+    if (isPlaylistExpanded && currentPlaylist.length > 0) {
+      setCurrentPlaylist([])
+      return
+    }
+    const playListSongs = playlist.songs
+    // const playListSongs = songs.filter(
+    //   (song) => song.albumId === playlist.id
+    // )
+    setCurrentPlaylist(playListSongs)
+    // })
   }
 
   // Reload playlist songs
-  useEffect(() => {
-    if (currentPlaylist.length !== 0 || isPlaylistExpanded) {
-      const playListSongs = playlist.songs
-      // const playListSongs = songs?.filter(
-      //   (song) => song.albumId === playlist.id
-      // )
-      setCurrentPlaylist(playListSongs)
-    }
-  }, [songs, songs.length])
+  // useEffect(() => {
+  //   if (isPlaylistExpanded) {
+  //     const playListSongs = playlist.songs
+  //     setCurrentPlaylist(playListSongs)
+  //   }
+  // }, [sections])
 
   const playSong = (song: ISong) => {
     let playListSongs = playlist.songs
@@ -117,9 +109,13 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
         return
       }
       const newSections = structuredClone(sections)
-      const currentSectionIndex = newSections.findIndex((section) => section.id === sectionID)
+      const currentSectionIndex = newSections.findIndex(
+        (section) => section.id === sectionID
+      )
       if (currentSectionIndex === -1) return
-      const newPlaylists = newSections[currentSectionIndex].playlists.filter((item) => item.id !== playlist.id)
+      const newPlaylists = newSections[currentSectionIndex].playlists.filter(
+        (item) => item.id !== playlist.id
+      )
       newSections[currentSectionIndex].playlists = newPlaylists
       setSections(newSections)
       setPlaylistView('0')
@@ -170,22 +166,48 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
       if (dataFiles.length > 0) {
         const songsToAdd: ISong[] = []
         for (const item of filesWithMetadata) {
-          const newSong = new Song({
+          const newSong: ISong = {
             ...item,
             albumId: playlist.id,
             image: playlist.cover[0]
-          })
+          }
           songsToAdd.push(newSong)
         }
+        console.log(songsToAdd)
         withViewTransition(() => {
-          updateCurrentSongsIfNeeded({
-            songsToAdd,
-            playlistID: playlist.id,
-            currentMusic,
-            randomPlaylist,
-            setCurrentMusic
-          })
-          setSongs([...songs, ...songsToAdd])
+          // updateCurrentSongsIfNeeded({
+          //   songsToAdd,
+          //   playlistID: playlist.id,
+          //   currentMusic,
+          //   randomPlaylist,
+          //   setCurrentMusic
+          // })
+          // setSongs([...songs, ...songsToAdd])
+          const newSections = structuredClone(sections)
+          const currentSectionIndex = newSections.findIndex(
+            (section) => section.id === sectionID
+          )
+          if (currentSectionIndex === -1) return
+          const currentPlaylistIndex = newSections[
+            currentSectionIndex
+          ].playlists.findIndex((item) => item.id === playlist.id)
+          if (currentPlaylistIndex === -1) return
+          newSections[currentSectionIndex].playlists[
+            currentPlaylistIndex
+          ].songs = [
+            ...newSections[currentSectionIndex].playlists[currentPlaylistIndex]
+              .songs,
+            ...songsToAdd
+          ]
+          // Update sections
+          setSections(newSections)
+
+          // Update aside playlist
+          if (isPlaylistExpanded) {
+            setCurrentPlaylist([...currentPlaylist, ...songsToAdd])
+          }
+          // Update current playlist view
+          setCurrentPlaylistView(newSections[currentSectionIndex].playlists[currentPlaylistIndex])
         })
       }
     }

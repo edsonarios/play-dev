@@ -6,21 +6,14 @@ import { PlaylistTable } from './PlaylistTable'
 import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 import { useCallback, useEffect, useState } from 'react'
 import { SearchLittleIcon } from '@/icons/aside/Search'
-import { type Song } from '@/lib/entities/song.entity'
 import debounce from 'lodash.debounce'
 import ModalEditPlaylist from './ModalEditPlaylist'
-import { type Playlist } from '@/lib/entities/playlist.entity'
 import { withViewTransition } from '@/utils/transition'
 import { deletePlaylistInCurrentSongsIfNeeded } from '@/utils/currentSongs'
 import { useTranslation } from 'react-i18next'
+import { type ISong } from '@/lib/data'
 
-export function PlaylistDetail ({
-  sectionIdPlaylistId,
-  setCurrentColor
-}: {
-  sectionIdPlaylistId: string
-  setCurrentColor: (color: string) => void
-}) {
+export function PlaylistDetail () {
   const { t } = useTranslation()
 
   const {
@@ -29,7 +22,6 @@ export function PlaylistDetail ({
     setSongs,
     setPlaylists,
     setPlaylistView,
-    playlistView,
     editTemporallyTitle,
     setEditTemporallyTitle,
     setEditTemporallyColor,
@@ -39,26 +31,18 @@ export function PlaylistDetail ({
     setCurrentMusic,
     sections,
     setEditTemporallySection,
-    currentPlaylistView,
-    currentSongsView
+    currentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
-  const totalDurationSongs = currentSongsView?.reduce(
+  const totalDurationSongs = currentPlaylistView?.songs.reduce(
     (acc, song) => acc + song.duration,
     0
   )
 
   // search song in playlist
-  const [currentPlaylistSongs, setCurrentPlaylistSongs] = useState<Song[]>([])
+  const [currentPlaylistSongs, setCurrentPlaylistSongs] = useState<ISong[]>([])
   useEffect(() => {
-    setCurrentPlaylistSongs(currentSongsView)
-  }, [playlistView, songs, songs.length])
-
-  const [currentPlaylist, setCurrentPlaylist] = useState<Playlist | undefined>(
-    undefined
-  )
-  useEffect(() => {
-    setCurrentPlaylist(currentPlaylistView)
-  }, [playlistView, playlists])
+    setCurrentPlaylistSongs(currentPlaylistView?.songs ?? [])
+  }, [sections])
 
   const deletePlaylist = () => {
     withViewTransition(() => {
@@ -69,9 +53,13 @@ export function PlaylistDetail ({
         currentMusic,
         setCurrentMusic
       })
-      const newSongs = songs.filter((song) => song.albumId !== currentPlaylistView.id)
+      const newSongs = songs.filter(
+        (song) => song.albumId !== currentPlaylistView.id
+      )
       setSongs(newSongs)
-      const newPlaylists = playlists.filter((item) => item.id !== currentPlaylistView.id)
+      const newPlaylists = playlists.filter(
+        (item) => item.id !== currentPlaylistView.id
+      )
       setPlaylists(newPlaylists)
       setPlaylistView('0')
     })
@@ -86,22 +74,19 @@ export function PlaylistDetail ({
   const [isSearching, setIsSearching] = useState(false)
   const handleInputChange = (value: string) => {
     setInputValue(value)
-    const newCurrentPlaylistSongs = songs.filter((song) => {
+    if (currentPlaylistView === undefined) return
+    const newCurrentPlaylistSongs = currentPlaylistView.songs.filter((song) => {
       const title = song.title.toLowerCase()
       const album = song.album.toLowerCase()
       const filter = value.toLowerCase()
-      return (
-        song.albumId === currentPlaylistView?.id &&
-        (title.includes(filter) || album.includes(filter))
-      )
+      return title.includes(filter) || album.includes(filter)
     })
     debouncedFilterSong(newCurrentPlaylistSongs)
   }
 
   const handleClearFilter = () => {
-    // const playListSongs = songs.filter((song) => song.albumId === playlistID)
     setInputValue('')
-    setCurrentPlaylistSongs(currentSongsView)
+    setCurrentPlaylistSongs(currentPlaylistView?.songs ?? [])
   }
 
   const [isOpen, setIsOpen] = useState(false)
@@ -151,7 +136,7 @@ export function PlaylistDetail ({
     })
   }
 
-  const durationSongs = formatTotalDuration(totalDurationSongs)
+  const durationSongs = formatTotalDuration(totalDurationSongs ?? 0)
   return (
     <div className="absolute top-14 w-[95%] flex flex-col overflow-y-disable rounded-lg">
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
@@ -162,7 +147,9 @@ export function PlaylistDetail ({
             <picture className="aspect-square">
               <img
                 src={
-                  isOpen ? editTemporallyCover[0] : currentPlaylistView?.cover[0]
+                  isOpen
+                    ? editTemporallyCover[0]
+                    : currentPlaylistView?.cover[0]
                 }
                 alt={`Cover of ${
                   currentPlaylistView?.title
@@ -215,7 +202,7 @@ export function PlaylistDetail ({
               </div>
               <p className="mt-1">
                 <span className="">
-                  {currentSongsView?.length} {t('playlist.songs')}
+                  {currentPlaylistView?.songs.length} {t('playlist.songs')}
                 </span>
                 {`${
                   durationSongs !== ''
@@ -281,7 +268,7 @@ export function PlaylistDetail ({
           playlistSongs={currentPlaylistSongs}
         />
         <ModalEditPlaylist
-          playlist={currentPlaylist}
+          playlist={currentPlaylistView}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           handledCloseModal={handledCloseModal}
