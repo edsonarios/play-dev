@@ -89,6 +89,7 @@ export function PlaylistDetail () {
     setCurrentPlaylistSongs(currentPlaylistView?.songs ?? [])
   }
 
+  // Open modal edit playlist
   const [isOpen, setIsOpen] = useState(false)
   const handledOpenEditPlaylist = () => {
     const temporallySection = sections.find((section) =>
@@ -113,7 +114,7 @@ export function PlaylistDetail () {
         withViewTransition(() => {
           setEditTemporallyTitle('')
           setEditTemporallyColor(currentPlaylistView.color)
-          setEditTemporallyCover(currentPlaylistView.cover)
+          setEditTemporallyCover([])
           setEditTemporallySection('')
           setIsOpen(false)
         })

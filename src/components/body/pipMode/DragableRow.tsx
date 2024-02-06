@@ -1,7 +1,6 @@
 import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 import { PlayTableIcon } from '@/icons/playlist/PlayPause'
 import { type ISong } from '@/lib/data'
-import { Song } from '@/lib/entities/song.entity'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { updateCurrentSongsIfNeeded } from '@/utils/currentSongs'
 import { withViewTransition } from '@/utils/transition'
@@ -147,11 +146,11 @@ export function DragableRow ({
       if (dataFiles.length > 0) {
         const songsToAdd: ISong[] = []
         for (const item of filesWithMetadata) {
-          const newSong = new Song({
+          const newSong: ISong = {
             ...item,
             albumId: song.albumId,
             image: song.image
-          })
+          }
           songsToAdd.push(newSong)
         }
         const newSongs = songs

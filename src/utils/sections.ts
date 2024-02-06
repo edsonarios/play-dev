@@ -1,15 +1,15 @@
-import { type ISections } from '@/lib/entities/sections.entity'
-import { type IPlaylist } from 'electron/entities/playlist.entity'
+import { type IPlaylist, type ISections } from '@/lib/data'
 
-export function updateSections (sections: ISections[], sectionId: string, playlist: IPlaylist) {
-  const cleanSections = sections.map(section => {
+export function updateSections (sections: ISections[], sectionID: string, playlist: IPlaylist): ISections[] {
+  const newSectionsToClean = structuredClone(sections)
+  const cleanSections = newSectionsToClean.map(section => {
     return {
       ...section,
       playlists: section.playlists.filter(ply => ply.id !== playlist.id)
     }
   })
   return cleanSections.map(section => {
-    if (section.id === sectionId) {
+    if (section.id === sectionID) {
       return {
         ...section,
         playlists: [...section.playlists, playlist]

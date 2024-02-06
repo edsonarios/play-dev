@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { I18nComponent } from './i18n'
 import { ProfileComponent } from './Profile'
 import { PlusIcon } from '@/icons/aside/Library'
-import { Sections } from '@/lib/entities/sections.entity'
 import { withViewTransition } from '@/utils/transition'
+import { type ISections } from '@/lib/data'
 
 export default function Header () {
   const { t } = useTranslation()
@@ -36,11 +36,11 @@ export default function Header () {
   }
 
   const handleNewSection = () => {
-    const newSection = new Sections({
+    const newSection: ISections = {
       id: window.crypto.randomUUID(),
       title: 'New Section',
       playlists: []
-    })
+    }
     setSections([...sections, newSection])
   }
 

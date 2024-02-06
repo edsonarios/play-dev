@@ -1,11 +1,10 @@
 import { CloseIcon } from '@/icons/edit/Close'
 import { PencilIcon } from '@/icons/edit/Pencil'
 import { colors } from '@/lib/colors'
-import { type Playlist } from '@/lib/entities/playlist.entity'
+import { type IPlaylist } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { updateSections } from '@/utils/sections'
 import { withViewTransition } from '@/utils/transition'
-import { type IPlaylist } from 'electron/entities/playlist.entity'
 
 export default function ModalEditPlaylist ({
   playlist,
@@ -19,20 +18,18 @@ export default function ModalEditPlaylist ({
   handledCloseModal: () => void
 }) {
   const {
-    playlists,
-    setPlaylists,
     editTemporallyColor,
     setEditTemporallyColor,
     editTemporallyTitle,
     setEditTemporallyTitle,
-    currentMusic,
-    setCurrentMusic,
     editTemporallyCover,
     setEditTemporallyCover,
     sections,
     setSections,
     editTemporallySection,
-    setEditTemporallySection
+    setEditTemporallySection,
+    currentPlaylistView,
+    setCurrentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
 
   const handledEditPlaylist = (event: any) => {
@@ -48,29 +45,23 @@ export default function ModalEditPlaylist ({
 
   const handleSavePlaylist = (event: any) => {
     event.preventDefault()
-    if (playlist === undefined) return
-    const newPlaylists = playlists.map((item) => {
-      if (item.id === playlist.id) {
-        const newItem: Playlist = {
-          ...item,
-          title: editTemporallyTitle,
-          color: editTemporallyColor,
-          cover: editTemporallyCover
-        }
-        if (currentMusic.playlist?.id === playlist.id) {
-          setCurrentMusic({ ...currentMusic, playlist: newItem })
-        }
-        return newItem
-      }
-      return item
-    })
-    const newSections = updateSections(sections, editTemporallySection, playlist)
+    const newPlaylist: IPlaylist = {
+      ...currentPlaylistView!,
+      title: editTemporallyTitle,
+      color: editTemporallyColor,
+      cover: editTemporallyCover
+    }
+    const newSections = updateSections(
+      sections,
+      editTemporallySection,
+      newPlaylist
+    )
     withViewTransition(() => {
-      setPlaylists(newPlaylists)
       setEditTemporallyTitle('')
       setEditTemporallyCover([])
-      setIsOpen(false)
+      setCurrentPlaylistView(newPlaylist)
       setSections(newSections)
+      setIsOpen(false)
     })
   }
 
@@ -116,11 +107,16 @@ export default function ModalEditPlaylist ({
               </button>
             </div>
             <form onSubmit={handleSavePlaylist} className="flex flex-row">
-              {playlist?.cover.length === 1 || editTemporallyCover.length === 1
+              {playlist?.cover.length === 1 ||
+              editTemporallyCover.length === 1
                 ? (
                 <picture className="relative aspect-square w-64 h-64 flex-none mr-6 mt-2">
                   <img
-                    src={editTemporallyCover.length === 1 ? editTemporallyCover[0] : playlist?.cover[0]}
+                    src={
+                      editTemporallyCover.length === 1
+                        ? editTemporallyCover[0]
+                        : playlist?.cover[0]
+                    }
                     alt={`Cover of ${
                       playlist?.title
                     } by ${playlist?.artists.join(',')}`}

@@ -1,9 +1,8 @@
 import { type StateCreator, create } from 'zustand'
-import { type IPlaylist, type ISong } from '../lib/data'
+import { type ISections, type IPlaylist, type ISong } from '../lib/data'
 import { type PlyrOptions } from 'plyr-react'
 import { persist } from 'zustand/middleware'
 import { getRandomColor } from '@/utils/random'
-import { type ISections } from '@/lib/entities/sections.entity'
 
 export interface CurrentMusicType {
   playlist: IPlaylist | undefined

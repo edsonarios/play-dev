@@ -126,10 +126,7 @@ export default function App () {
   const setPlaylist = () => {
     if (pictureInPicture && playlistView !== '0') {
       return (
-        <PlaylistDetail
-        sectionIdPlaylistId={playlistView}
-          setCurrentColor={setCurrentColor}
-        />
+        <PlaylistDetail />
       )
     }
     return <PlaylistPipMode />

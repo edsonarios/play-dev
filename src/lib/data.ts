@@ -1,5 +1,11 @@
 import { getRandomColor } from 'electron/utils'
 
+export interface ISections {
+  id: string
+  title: string
+  playlists: IPlaylist[]
+}
+
 export interface IPlaylist {
   id: string
   albumId: string

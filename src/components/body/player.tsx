@@ -3,7 +3,6 @@
 import { useRef, useEffect } from 'react'
 import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
-import { Song } from '@/lib/entities/song.entity'
 import { type ISong } from '@/lib/data'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
@@ -360,11 +359,11 @@ export default function PlayerComponent () {
       if (dataFiles.length > 0) {
         const defaultSongsToAdd: ISong[] = []
         for (const item of filesWithMetadata) {
-          const newSong = new Song({
+          const newSong: ISong = {
             ...item,
             albumId: '1',
             image: playlists[0].cover[0]
-          })
+          }
           defaultSongsToAdd.push(newSong)
         }
 

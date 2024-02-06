@@ -27,7 +27,6 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     sections,
     setSections,
     setPlaylistView,
-    currentPlaylistView,
     setCurrentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
 
@@ -173,7 +172,6 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
           }
           songsToAdd.push(newSong)
         }
-        console.log(songsToAdd)
         withViewTransition(() => {
           // updateCurrentSongsIfNeeded({
           //   songsToAdd,
