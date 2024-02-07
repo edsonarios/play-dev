@@ -111,6 +111,12 @@ export default function AsideMenu () {
     console.log('Your Library')
   }
 
+  const handledDeleteSection = (sectionID: string) => {
+    if (sectionID === '1') return
+    const newSections = sections.filter((section) => section.id !== sectionID)
+    setSections(newSections)
+  }
+
   return (
     <nav className="flex flex-col flex-1 gap-2 overflow-y-auto">
       <div className="bg-zinc-900 rounded-lg p-2">
@@ -149,7 +155,16 @@ export default function AsideMenu () {
           </div>
           {sections.map((section) => (
             <div key={section.id}>
-              <div className="group flex">
+              <div className="relative group flex">
+                <button
+                  className="absolute z-20 bg-slate-900 w-2 rounded-md text-xs opacity-0 hover:opacity-70 transition-opacity"
+                  onClick={() => {
+                    handledDeleteSection(section.id)
+                  }}
+                  title={t('aside.deleteSection')}
+                >
+                  X
+                </button>
                 <header className="p-2 text-lg">{section.title}</header>
                 <button
                   className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-800 group-hover:opacity-100"

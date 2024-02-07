@@ -9,6 +9,7 @@ import { formatTime } from '@/utils/time'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { withViewTransition } from '@/utils/transition'
+import { useTranslation } from 'react-i18next'
 
 interface CardPlaylist {
   sectionID: string
@@ -16,6 +17,7 @@ interface CardPlaylist {
 }
 
 export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
+  const { t } = useTranslation()
   const {
     setCurrentMusic,
     currentMusic,
@@ -278,6 +280,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
       <button
         className="absolute z-20 bg-slate-900 w-5 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity"
         onClick={delPlaylist}
+        title={t('playlist.deletePlaylist')}
       >
         X
       </button>

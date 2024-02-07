@@ -27,7 +27,7 @@ export function PlaylistPipMode () {
     })
   }
 
-  const delPlaylist = (sectionID: string, playlistID: string) => {
+  const handledDeletePlaylist = (sectionID: string, playlistID: string) => {
     withViewTransition(() => {
       if (playlistID === '1') {
         const newSections = structuredClone(sections)
@@ -85,11 +85,28 @@ export function PlaylistPipMode () {
     })
   }
 
+  const handledDeleteSection = (sectionID: string) => {
+    if (sectionID === '1') return
+    withViewTransition(() => {
+      const newSections = sections.filter((section) => section.id !== sectionID)
+      setSections(newSections)
+    })
+  }
+
   return (
     <div className="absolute top-24 w-[95%] flex overflow-y-disable flex-col">
       {sections.map((section) => (
         <div key={section.id}>
           <div className="group flex">
+            <button
+              className="absolute z-20 bg-slate-900 w-2 rounded-md text-xs opacity-0 hover:opacity-70 transition-opacity"
+              onClick={() => {
+                handledDeleteSection(section.id)
+              }}
+              title={t('aside.deleteSection')}
+            >
+              X
+            </button>
             <header className="p-2 text-2xl">{section.title}</header>
             <button
               className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-900 group-hover:opacity-100"
@@ -111,7 +128,7 @@ export function PlaylistPipMode () {
                 <button
                   className="absolute z-40 bg-slate-900 w-5 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity"
                   onClick={() => {
-                    delPlaylist(section.id, playlist.id)
+                    handledDeletePlaylist(section.id, playlist.id)
                   }}
                 >
                   X

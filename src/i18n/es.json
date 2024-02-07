@@ -5,7 +5,8 @@
         "folder": "Abrir carpeta",
         "library": "Tu biblioteca",
         "newSection": "Crear una nueva sección",
-        "newPlaylist": "Crear una nueva lista de reproducción"
+        "newPlaylist": "Crear una nueva lista de reproducción",
+        "deleteSection": "Eliminar sección"
     },
     "body": {
         "premium": "Explorar Premium",

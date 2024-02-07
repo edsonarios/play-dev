@@ -5,7 +5,8 @@
         "folder": "Open Folder",
         "library": "Your Library",
         "newSection": "Create a New Section",
-        "newPlaylist": "Create a new Playlist"
+        "newPlaylist": "Create a new Playlist",
+        "deleteSection": "Delete Section"
     },
     "body": {
         "premium": "Explore Premium",
