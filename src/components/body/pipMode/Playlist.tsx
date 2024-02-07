@@ -13,17 +13,16 @@ export function PlaylistPipMode () {
     currentMusic,
     setCurrentMusic,
     sections,
-    setCurrentPlaylistView,
-    setCurrentSongsView
+    setCurrentSectionView,
+    setCurrentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleSetPlaylistView = (sectionID: string, playlistId: string) => {
     const playlistToView = sections.find(section => section.id === sectionID)?.playlists.find(playlist => playlist.id === playlistId)
 
-    console.log(playlistToView)
     if (playlistToView === undefined) return
+    setCurrentSectionView(sectionID)
     setCurrentPlaylistView(playlistToView)
-    setCurrentSongsView(playlistToView?.songs)
     withViewTransition(() => {
       setPlaylistView(`${sectionID};${playlistId}`)
     })

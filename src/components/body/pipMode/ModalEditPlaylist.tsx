@@ -28,6 +28,7 @@ export default function ModalEditPlaylist ({
     setSections,
     editTemporallySection,
     setEditTemporallySection,
+    currentSectionView,
     currentPlaylistView,
     setCurrentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
@@ -53,6 +54,7 @@ export default function ModalEditPlaylist ({
     }
     const newSections = updateSections(
       sections,
+      currentSectionView,
       editTemporallySection,
       newPlaylist
     )

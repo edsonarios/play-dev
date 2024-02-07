@@ -31,6 +31,7 @@ export function PlaylistDetail () {
     setCurrentMusic,
     sections,
     setEditTemporallySection,
+    currentSectionView,
     currentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
   const totalDurationSongs = currentPlaylistView?.songs.reduce(
@@ -92,17 +93,12 @@ export function PlaylistDetail () {
   // Open modal edit playlist
   const [isOpen, setIsOpen] = useState(false)
   const handledOpenEditPlaylist = () => {
-    const temporallySection = sections.find((section) =>
-      section.playlists.find((ply) => ply.id === currentPlaylistView?.id)
-    )
-    const temporallyCurrentValueSection = temporallySection?.id ?? ''
-
     withViewTransition(() => {
       if (currentPlaylistView === undefined) return
       setEditTemporallyTitle(currentPlaylistView.title)
       setEditTemporallyColor(currentPlaylistView.color)
       setEditTemporallyCover(currentPlaylistView?.cover)
-      setEditTemporallySection(temporallyCurrentValueSection)
+      setEditTemporallySection(currentSectionView)
       setIsOpen(true)
     })
   }

@@ -101,10 +101,26 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
 
   const delPlaylist = () => {
     withViewTransition(() => {
-      if (playlist.title === 'All Songs') {
+      if (playlist.id === '1') {
         const newSections = structuredClone(sections)
-        newSections[0].playlists = []
-        setSections(newSections)
+        const sectionUpdated = newSections.map(section => {
+          const newPlaylist = section.playlists.map(ply => {
+            if (ply.id === '1') {
+              return {
+                ...ply,
+                songs: []
+              }
+            }
+            return ply
+          })
+          return {
+            ...section,
+            playlists: newPlaylist
+          }
+        })
+        setSections(sectionUpdated)
+        setCurrentPlaylist([])
+        setIsPlaylistExpanded(false)
         return
       }
       const newSections = structuredClone(sections)
