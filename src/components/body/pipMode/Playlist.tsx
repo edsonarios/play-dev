@@ -4,6 +4,7 @@ import { type IPlaylist } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { getRandomColor, getRandomImage } from '@/utils/random'
 import { withViewTransition } from '@/utils/transition'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export function PlaylistPipMode () {
@@ -17,7 +18,9 @@ export function PlaylistPipMode () {
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleSetPlaylistView = (sectionID: string, playlistId: string) => {
-    const playlistToView = sections.find(section => section.id === sectionID)?.playlists.find(playlist => playlist.id === playlistId)
+    const playlistToView = sections
+      .find((section) => section.id === sectionID)
+      ?.playlists.find((playlist) => playlist.id === playlistId)
 
     if (playlistToView === undefined) return
     setCurrentSectionView(sectionID)
@@ -31,8 +34,8 @@ export function PlaylistPipMode () {
     withViewTransition(() => {
       if (playlistID === '1') {
         const newSections = structuredClone(sections)
-        const sectionUpdated = newSections.map(section => {
-          const newPlaylist = section.playlists.map(ply => {
+        const sectionUpdated = newSections.map((section) => {
+          const newPlaylist = section.playlists.map((ply) => {
             if (ply.id === '1') {
               return {
                 ...ply,
@@ -88,9 +91,30 @@ export function PlaylistPipMode () {
   const handledDeleteSection = (sectionID: string) => {
     if (sectionID === '1') return
     withViewTransition(() => {
-      const newSections = sections.filter((section) => section.id !== sectionID)
+      const newSections = sections.filter(
+        (section) => section.id !== sectionID
+      )
       setSections(newSections)
     })
+  }
+
+  const [isEditSection, setIsEditSection] = useState('')
+  const [valueEditSection, setValueEditSection] = useState('')
+  const handledIsEditSection = (sectionID: string, sectionTitle: string) => {
+    withViewTransition(() => {
+      setValueEditSection(sectionTitle)
+      setIsEditSection(sectionID)
+    })
+  }
+
+  const handledEditTitleSection = (newValueEditSection: string) => {
+    const newSections = structuredClone(sections)
+    const sectionIndex = newSections.findIndex(
+      (section) => section.id === isEditSection
+    )
+    if (sectionIndex === -1) return
+    newSections[sectionIndex].title = newValueEditSection
+    setSections(newSections)
   }
 
   return (
@@ -99,7 +123,7 @@ export function PlaylistPipMode () {
         <div key={section.id}>
           <div className="group flex">
             <button
-              className="absolute z-20 bg-slate-900 w-2 rounded-md text-xs opacity-0 hover:opacity-70 transition-opacity"
+              className="absolute z-20 bg-slate-900 w-2 rounded-md text-xs opacity-0 hover:opacity-70 transition-opacity -left-2 -top-2"
               onClick={() => {
                 handledDeleteSection(section.id)
               }}
@@ -107,18 +131,61 @@ export function PlaylistPipMode () {
             >
               X
             </button>
-            <header className="p-2 text-2xl">{section.title}</header>
-            <button
-              className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-900 group-hover:opacity-100"
-              onClick={() => {
-                handledNewPlaylist(section.id)
-              }}
-              title={t('aside.newPlaylist')}
-            >
-              <PlusIcon className="w-4 h-4" />
-            </button>
+            {isEditSection !== '' && isEditSection === section.id
+              ? (<label
+                className={`flex bg-zinc-900 rounded-2xl opacity-60 border-2
+            ${isEditSection !== '' ? ' border-white' : 'border-transparent'}`}
+              >
+                <input
+                  type="text"
+                  value={valueEditSection}
+                  onChange={(event) => {
+                    setValueEditSection(event.target.value)
+                  }}
+                  className="rounded-xl p-1 bg-transparent outline-none text-xl"
+                  placeholder={t('playlist.search')}
+                  autoFocus
+                  onBlur={() => {
+                    withViewTransition(() => {
+                      setIsEditSection('')
+                    })
+                  }}
+                  onKeyDown={(e) => {
+                    withViewTransition(() => {
+                      if (e.key === 'Enter') {
+                        handledEditTitleSection(valueEditSection)
+                        setIsEditSection('')
+                      } else if (e.key === 'Escape') {
+                        setValueEditSection('')
+                        setIsEditSection('')
+                      }
+                    })
+                  }}
+                />
+              </label>
+                ) : (
+              <div className="flex mb-2">
+                <header
+                  className="text-2xl"
+                  onDoubleClick={() => {
+                    handledIsEditSection(section.id, section.title)
+                  }}
+                >
+                  {section.title}
+                </header>
+                <button
+                  className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-900 group-hover:opacity-100"
+                  onClick={() => {
+                    handledNewPlaylist(section.id)
+                  }}
+                  title={t('aside.newPlaylist')}
+                >
+                  <PlusIcon className="w-4 h-4" />
+                </button>
+              </div>
+                )}
           </div>
-          <section className="flex p-2 gap-10 flex-wrap">
+          <section className="flex gap-10 flex-wrap mb-8 mt-2">
             {section.playlists.map((playlist) => (
               <article
                 key={playlist.id}
