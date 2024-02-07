@@ -13,9 +13,13 @@ export function LibraryIcon () {
   )
 }
 
-export function PlusIcon () {
+interface PlusButtonType {
+  className?: string
+}
+export function PlusIcon ({ className = 'w-4 h-4' }: PlusButtonType) {
   return (
     <svg
+      className={className}
       role="img"
       height="16"
       width="16"

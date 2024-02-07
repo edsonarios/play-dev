@@ -1,20 +1,19 @@
 import { CardPlayButton } from '@/components/CardPlay'
+import { PlusIcon } from '@/icons/aside/Library'
+import { type IPlaylist } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
-import { deletePlaylistInCurrentSongsIfNeeded } from '@/utils/currentSongs'
+import { getRandomColor, getRandomImage } from '@/utils/random'
 import { withViewTransition } from '@/utils/transition'
+import { useTranslation } from 'react-i18next'
 
 export function PlaylistPipMode () {
+  const { t } = useTranslation()
   const {
-    playlists,
     setPlaylistView,
-    songs,
-    setSongs,
-    setPlaylists,
-    currentMusic,
-    setCurrentMusic,
     sections,
     setCurrentSectionView,
-    setCurrentPlaylistView
+    setCurrentPlaylistView,
+    setSections
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleSetPlaylistView = (sectionID: string, playlistId: string) => {
@@ -28,20 +27,61 @@ export function PlaylistPipMode () {
     })
   }
 
-  const delPlaylist = (id: string) => {
+  const delPlaylist = (sectionID: string, playlistID: string) => {
     withViewTransition(() => {
-      const playlist = playlists.find((playlist) => playlist.id === id)
-      if (playlist === undefined) return
-      if (playlist.title === 'All Songs') return
-      deletePlaylistInCurrentSongsIfNeeded({
-        playlistID: playlist.id,
-        currentMusic,
-        setCurrentMusic
+      if (playlistID === '1') {
+        const newSections = structuredClone(sections)
+        const sectionUpdated = newSections.map(section => {
+          const newPlaylist = section.playlists.map(ply => {
+            if (ply.id === '1') {
+              return {
+                ...ply,
+                songs: []
+              }
+            }
+            return ply
+          })
+          return {
+            ...section,
+            playlists: newPlaylist
+          }
+        })
+        setSections(sectionUpdated)
+        return
+      }
+      const newSections = structuredClone(sections)
+      const currentSectionIndex = newSections.findIndex(
+        (section) => section.id === sectionID
+      )
+      if (currentSectionIndex === -1) return
+      const newPlaylists = newSections[currentSectionIndex].playlists.filter(
+        (item) => item.id !== playlistID
+      )
+      newSections[currentSectionIndex].playlists = newPlaylists
+      setSections(newSections)
+      setPlaylistView('0')
+    })
+  }
+
+  const handledNewPlaylist = (sectionID: string) => {
+    withViewTransition(() => {
+      const newPlaylist: IPlaylist = {
+        id: window.crypto.randomUUID(),
+        albumId: '',
+        title: 'New Playlist',
+        color: getRandomColor(),
+        cover: [getRandomImage()],
+        artists: [],
+        songs: []
+      }
+      const newSections = structuredClone(sections)
+      newSections.map((section) => {
+        if (section.id === sectionID) {
+          section.playlists.push(newPlaylist)
+        }
+        return section
       })
-      const newSongs = songs.filter((song) => song.albumId !== playlist.id)
-      setSongs(newSongs)
-      const newPlaylists = playlists.filter((item) => item.id !== playlist.id)
-      setPlaylists(newPlaylists)
+      setSections(newSections)
     })
   }
 
@@ -49,7 +89,18 @@ export function PlaylistPipMode () {
     <div className="absolute top-24 w-[95%] flex overflow-y-disable flex-col">
       {sections.map((section) => (
         <div key={section.id}>
-          <header className="p-2 text-2xl">{section.title}</header>
+          <div className="group flex">
+            <header className="p-2 text-2xl">{section.title}</header>
+            <button
+              className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-900 group-hover:opacity-100"
+              onClick={() => {
+                handledNewPlaylist(section.id)
+              }}
+              title={t('aside.newPlaylist')}
+            >
+              <PlusIcon className="w-4 h-4" />
+            </button>
+          </div>
           <section className="flex p-2 gap-10 flex-wrap">
             {section.playlists.map((playlist) => (
               <article
@@ -60,7 +111,7 @@ export function PlaylistPipMode () {
                 <button
                   className="absolute z-40 bg-slate-900 w-5 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity"
                   onClick={() => {
-                    delPlaylist(playlist.id)
+                    delPlaylist(section.id, playlist.id)
                   }}
                 >
                   X

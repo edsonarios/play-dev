@@ -17,7 +17,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
 import { useTranslation } from 'react-i18next'
-import { type IPlaylist } from '@/lib/data'
+import { type ISections, type IPlaylist } from '@/lib/data'
 
 export default function AsideMenu () {
   const { t } = useTranslation()
@@ -39,7 +39,7 @@ export default function AsideMenu () {
     await OpenFolder(playlists, setPlaylists, setSongs, songs, setIsLoading)
   }
 
-  const handledNewPlaylist = () => {
+  const handledNewPlaylist = (sectionID: string) => {
     withViewTransition(() => {
       const newPlaylist: IPlaylist = {
         id: window.crypto.randomUUID(),
@@ -51,9 +51,23 @@ export default function AsideMenu () {
         songs: []
       }
       const newSections = structuredClone(sections)
-      newSections[0].playlists.push(newPlaylist)
+      newSections.map((section) => {
+        if (section.id === sectionID) {
+          section.playlists.push(newPlaylist)
+        }
+        return section
+      })
       setSections(newSections)
     })
+  }
+
+  const handledNewSection = () => {
+    const newSection: ISections = {
+      id: window.crypto.randomUUID(),
+      title: 'New Section',
+      playlists: []
+    }
+    setSections([...sections, newSection])
   }
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -127,15 +141,26 @@ export default function AsideMenu () {
             />
             <button
               className="self-center mt-2 p-2 rounded-full opacity-70 hover:bg-zinc-800 hover:opacity-100"
-              onClick={handledNewPlaylist}
-              title={t('aside.newPlaylist')}
+              onClick={handledNewSection}
+              title={t('aside.newSection')}
             >
               <PlusIcon />
             </button>
           </div>
           {sections.map((section) => (
             <div key={section.id}>
-              <header className="p-2 text-lg">{section.title}</header>
+              <div className="group flex">
+                <header className="p-2 text-lg">{section.title}</header>
+                <button
+                  className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-800 group-hover:opacity-100"
+                  onClick={() => {
+                    handledNewPlaylist(section.id)
+                  }}
+                  title={t('aside.newPlaylist')}
+                >
+                  <PlusIcon className="w-3 h-3" />
+                </button>
+              </div>
               <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
                 <SortableContext
                   items={playlists.map((playlist) => playlist.id)}

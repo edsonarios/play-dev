@@ -4,6 +4,7 @@
         "home": "Home",
         "folder": "Open Folder",
         "library": "Your Library",
+        "newSection": "Create a New Section",
         "newPlaylist": "Create a new Playlist"
     },
     "body": {

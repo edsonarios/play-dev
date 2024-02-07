@@ -17,7 +17,7 @@ export default function Header () {
     usePlayerStore<StoreType>((state) => state)
 
   // Set playlist view to 0
-  const handleSetPlaylist = () => {
+  const handledSetPlaylist = () => {
     withViewTransition(() => {
       setPlaylistView('0')
     })
@@ -28,14 +28,14 @@ export default function Header () {
   useEffect(() => {
     setIsChecked(modeColor === 'light')
   }, [])
-  const handleThemeChange = (event: any) => {
+  const handledThemeChange = (event: any) => {
     setIsChecked(!isChecked)
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     const newTheme = event.target.checked ? 'light' : 'dark'
     setModeColor(newTheme)
   }
 
-  const handleNewSection = () => {
+  const handledNewSection = () => {
     const newSection: ISections = {
       id: window.crypto.randomUUID(),
       title: 'New Section',
@@ -51,14 +51,14 @@ export default function Header () {
           Icon={BackIcon}
           className="ml-4"
           title={t('body.back')}
-          handledFunction={handleSetPlaylist}
+          handledFunction={handledSetPlaylist}
         />
         <IconButton Icon={RightIcon} className="ml-4" title={t('body.next')} />
         <IconButton
           Icon={PlusIcon}
           className="ml-4"
           title={t('body.next')}
-          handledFunction={handleNewSection}
+          handledFunction={handledNewSection}
         />
       </div>
       <div className="flex flex-row">
@@ -70,7 +70,7 @@ export default function Header () {
             type="checkbox"
             className="theme-controller"
             checked={isChecked}
-            onChange={handleThemeChange}
+            onChange={handledThemeChange}
           />
           <LightIcon />
           <DarkIcon />
