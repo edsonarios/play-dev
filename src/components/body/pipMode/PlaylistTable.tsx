@@ -188,7 +188,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
 
   // Delay in drang and drop
   const activationConstraint = {
-    delay: 150,
+    delay: 300,
     tolerance: 5
   }
   const sensors = useSensors(

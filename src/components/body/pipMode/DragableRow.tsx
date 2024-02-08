@@ -2,7 +2,6 @@ import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 import { PlayTableIcon } from '@/icons/playlist/PlayPause'
 import { type ISong } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
-import { updateCurrentSongsIfNeeded } from '@/utils/currentSongs'
 import { withViewTransition } from '@/utils/transition'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -26,14 +25,16 @@ export function DragableRow ({
 
   const {
     currentMusic,
-    setCurrentMusic,
     songs,
-    setSongs,
     songsIdSelected,
     setSongsIdSelected,
     lastSongIdSelected,
     setLastSongIdSelected,
-    randomPlaylist
+    sections,
+    setSections,
+    currentSectionView,
+    currentPlaylistView,
+    setCurrentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
   const {
     isDragging,
@@ -131,6 +132,7 @@ export function DragableRow ({
     }
   }
 
+  // Insert new songs by drag and drop
   const handleDrop = async (event: any, songIndex: ISong) => {
     event.preventDefault()
     event.stopPropagation()
@@ -153,21 +155,34 @@ export function DragableRow ({
           }
           songsToAdd.push(newSong)
         }
-        const newSongs = songs
-        const indexSong = newSongs.findIndex(
+        const newSections = structuredClone(sections)
+        const newPlaylist = structuredClone(
+          newSections
+            .find((section) => section.id === currentSectionView)
+            ?.playlists.find((ply) => ply.id === currentPlaylistView?.id)
+        )
+        const newPlaylistSongs = structuredClone(newPlaylist?.songs)
+        const indexSong = newPlaylistSongs?.findIndex(
           (song) => song.id === songIndex.id
         )
-        newSongs.splice(indexSong, 0, ...songsToAdd)
+        newPlaylistSongs?.splice(indexSong!, 0, ...songsToAdd)
+        const newSectionToAdd = newSections.map((section) => {
+          if (section.id === currentSectionView) {
+            section.playlists = section.playlists.map((playlist) => {
+              if (playlist.id === currentPlaylistView?.id) {
+                playlist.songs = newPlaylistSongs!
+              }
+              return playlist
+            })
+          }
+          return section
+        })
         withViewTransition(() => {
-          // Not work, but in another place is used the same function and work (SideMenuCard.tsx)
-          updateCurrentSongsIfNeeded({
-            songsToAdd,
-            playlistID: song.albumId,
-            currentMusic,
-            randomPlaylist,
-            setCurrentMusic
+          setCurrentPlaylistView({
+            ...currentPlaylistView!,
+            songs: newPlaylistSongs!
           })
-          setSongs(newSongs)
+          setSections(newSectionToAdd)
         })
       }
     }
@@ -208,16 +223,14 @@ export function DragableRow ({
         }
       >
         {currentMusic.song?.id === song.id &&
-        currentMusic.song?.albumId === song.albumId
-          ? (
+        currentMusic.song?.albumId === song.albumId ? (
           <img
             src="equaliser-animated-green.gif"
             alt="equaliser"
             width={16}
             className=""
           />
-            )
-          : (
+            ) : (
           <div>{index + 1}</div>
             )}
         <button

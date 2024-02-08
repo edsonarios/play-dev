@@ -29,7 +29,8 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     sections,
     setSections,
     setPlaylistView,
-    setCurrentPlaylistView
+    setCurrentPlaylistView,
+    currentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
 
   const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
@@ -55,6 +56,11 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
   }
 
   const [currentPlaylist, setCurrentPlaylist] = useState<ISong[]>([])
+  useEffect(() => {
+    if (playlist.id === currentPlaylistView?.id && isPlaylistExpanded) {
+      setCurrentPlaylist(playlist.songs)
+    }
+  }, [sections])
 
   const artistsString = playlist.artists.join(', ')
 
@@ -121,7 +127,9 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
       )
       newSections[currentSectionIndex].playlists = newPlaylists
       setSections(newSections)
-      setPlaylistView('0')
+      if (playlist.id === currentPlaylistView?.id) {
+        setPlaylistView('0')
+      }
     })
   }
 
