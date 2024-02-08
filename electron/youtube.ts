@@ -6,8 +6,8 @@ import opn from 'open'
 import destroyer from 'server-destroy'
 
 import { google } from 'googleapis'
-import { type IPlaylist, Playlist } from './entities/playlist.entity'
-import { type ISong, Song } from './entities/song.entity'
+import { type IPlaylist } from './entities/playlist.entity'
+import { type ISong } from './entities/song.entity'
 import { getRandomColor } from './utils'
 import fs from 'node:fs'
 const people = google.people('v1')
@@ -124,21 +124,14 @@ export async function getDatasFromYoutube () {
     console.log(playlist.snippet.title)
     console.log(playlist)
     const items = await getPlaylistItems(playlist.id)
-    const newPlaylist = new Playlist({
-      id: playlist.id,
-      albumId: playlist.id,
-      title: playlist.snippet.title,
-      color: getRandomColor(),
-      cover: playlist.snippet.thumbnails.default.url,
-      artists: ['youtube']
-    })
+
     output.push(playlist)
     items.forEach(item => {
       console.log(item)
       console.log(item.snippet.title)
       output.push(item)
       if (item.snippet.title !== 'Private video' && item.snippet.title !== 'Deleted video') {
-        const newSong = new Song({
+        const newSong: ISong = {
           id: item.contentDetails.videoId,
           title: item.snippet.title,
           albumId: playlist.id,
@@ -149,10 +142,19 @@ export async function getDatasFromYoutube () {
           duration: 0,
           format: 'youtube',
           isDragging: false
-        })
+        }
         songsPlayed.push(newSong)
       }
     })
+    const newPlaylist: IPlaylist = {
+      id: playlist.id,
+      albumId: playlist.id,
+      title: playlist.snippet.title,
+      color: getRandomColor(),
+      cover: playlist.snippet.thumbnails.default.url,
+      artists: ['youtube'],
+      songs: songsPlayed
+    }
     playlistsPlayed.push(newPlaylist)
   }
   fs.writeFileSync('Allplaylists.json', JSON.stringify(output))

@@ -1,21 +1,24 @@
-import { type IPlaylist, type ISong } from '@/lib/data'
+import { type ISections } from '@/lib/data'
 import { withViewTransition } from '@/utils/transition'
 
 export const OpenFolder = async (
-  playlists: IPlaylist[],
-  setPlaylists: (playlists: IPlaylist[]) => void,
-  setSongs: (songs: ISong[]) => void,
-  songs: ISong[],
+  sections: ISections[],
+  setSections: (sections: ISections[]) => void,
   setIsLoading: (isLoading: boolean) => void
 ) => {
   withViewTransition(async () => {
     setIsLoading(true)
     const folder = await window.electronAPI.openDirectoryDialog()
+    console.log(folder)
     if (folder?.playlist !== undefined) {
-      const Newplaylists = [...playlists, folder.playlist]
-      setPlaylists(Newplaylists)
-      const newSongs = [...songs, ...folder.songs]
-      setSongs(newSongs)
+      const newSections = structuredClone(sections)
+      newSections.map((section) => {
+        if (section.id === '1') {
+          section.playlists.push(folder.playlist)
+        }
+        return section
+      })
+      setSections(newSections)
     }
     setIsLoading(false)
   })

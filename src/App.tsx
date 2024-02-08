@@ -17,7 +17,6 @@ import ModalShowShortcuts from './components/controls/ModalShortcuts'
 
 interface OpenDirectoryDialog {
   playlist: IPlaylist
-  songs: ISong[]
 }
 
 interface IYoutube {

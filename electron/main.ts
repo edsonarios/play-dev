@@ -5,8 +5,8 @@ import musicMetadata from 'music-metadata'
 import crypto from 'crypto'
 import { getRandomColor, getRandomImage, improveCovers, naturalSort } from './utils'
 import { allowedExtensions } from './constants'
-import { Song } from './entities/song.entity'
-import { Playlist } from './entities/playlist.entity'
+import { type ISong } from './entities/song.entity'
+import { type IPlaylist } from './entities/playlist.entity'
 import { type ISize } from './entities/size.entity'
 import { authenticate, getDatasFromYoutube, getProfile } from './youtube'
 import { autoUpdater } from 'electron-updater'
@@ -141,14 +141,6 @@ ipcMain.handle('open-directory-dialog', async () => {
     const randomImage = getRandomImage()
     const newPlaylistUUID = crypto.randomUUID()
     const titlePlaylist = path.basename(originalDirectoryPath)
-    const newPlaylist = new Playlist({
-      id: newPlaylistUUID,
-      albumId: newPlaylistUUID,
-      title: titlePlaylist,
-      color: getRandomColor(),
-      cover: [randomImage],
-      artists: ['artist']
-    })
 
     const songsWithMetadata = await Promise.all(
       files
@@ -165,7 +157,7 @@ ipcMain.handle('open-directory-dialog', async () => {
             if (metadata.format.duration !== undefined) {
               duration = metadata.format.duration
             }
-            const newSong = new Song({
+            const newSong: ISong = {
               id: crypto.randomUUID(),
               albumId: newPlaylistUUID,
               title: fileName,
@@ -176,16 +168,25 @@ ipcMain.handle('open-directory-dialog', async () => {
               duration,
               format,
               isDragging: false
-            })
+            }
             return newSong
           } catch (error) {
             console.error(`Error to read the metadata to file: ${file}`, error)
           }
         })
     )
+
+    const newPlaylist: IPlaylist = {
+      id: newPlaylistUUID,
+      albumId: newPlaylistUUID,
+      title: titlePlaylist,
+      color: getRandomColor(),
+      cover: [randomImage],
+      artists: ['artist'],
+      songs: songsWithMetadata as ISong[]
+    }
     return {
-      playlist: newPlaylist,
-      songs: songsWithMetadata
+      playlist: newPlaylist
     }
   } catch (err) {
     console.error('Error in read the directory', err)
@@ -212,7 +213,7 @@ ipcMain.handle('get-music-metadata', async (_event, filePath: string[]) => {
             if (metadata.format.duration !== undefined) {
               duration = metadata.format.duration
             }
-            const newSong = new Song({
+            const newSong: ISong = {
               id: crypto.randomUUID(),
               albumId: '',
               title: fileName,
@@ -223,7 +224,7 @@ ipcMain.handle('get-music-metadata', async (_event, filePath: string[]) => {
               duration,
               format,
               isDragging: false
-            })
+            }
             return newSong
           } catch (error) {
             console.error(`Error to read the metadata to file: ${file}`, error)

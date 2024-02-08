@@ -59,7 +59,6 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
   const artistsString = playlist.artists.join(', ')
 
   const getPlaylist = () => {
-    // withViewTransition(() => {
     if (isPlaylistExpanded) {
       setIsPlaylistExpanded(false)
     } else {
@@ -70,24 +69,11 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
       return
     }
     const playListSongs = playlist.songs
-    // const playListSongs = songs.filter(
-    //   (song) => song.albumId === playlist.id
-    // )
     setCurrentPlaylist(playListSongs)
-    // })
   }
-
-  // Reload playlist songs
-  // useEffect(() => {
-  //   if (isPlaylistExpanded) {
-  //     const playListSongs = playlist.songs
-  //     setCurrentPlaylist(playListSongs)
-  //   }
-  // }, [sections])
 
   const playSong = (song: ISong) => {
     let playListSongs = playlist.songs
-    // let playListSongs = songs.filter((song) => song.albumId === playlist.id)
 
     if (randomPlaylist) {
       playListSongs = shuffleSongsWithCurrentSong(playListSongs, song.id)
@@ -191,14 +177,6 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
           songsToAdd.push(newSong)
         }
         withViewTransition(() => {
-          // updateCurrentSongsIfNeeded({
-          //   songsToAdd,
-          //   playlistID: playlist.id,
-          //   currentMusic,
-          //   randomPlaylist,
-          //   setCurrentMusic
-          // })
-          // setSongs([...songs, ...songsToAdd])
           const newSections = structuredClone(sections)
           const currentSectionIndex = newSections.findIndex(
             (section) => section.id === sectionID
@@ -240,9 +218,6 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     ) {
       setIsPlaylistExpanded(true)
       const playListSongs = playlist.songs
-      // const playListSongs = songs.filter(
-      //   (song) => song.albumId === playlist.id
-      // )
       setCurrentPlaylist(playListSongs)
       setSongRefToScroll(undefined)
     }

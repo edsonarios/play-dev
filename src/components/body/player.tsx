@@ -28,11 +28,12 @@ export default function PlayerComponent () {
     songs,
     setSongs,
     playlists,
-    setPlaylists,
     pictureInPicture,
     setPictureInPicture,
     randomPlaylist,
-    setIsLoading
+    setIsLoading,
+    sections,
+    setSections
   } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
@@ -256,7 +257,7 @@ export default function PlayerComponent () {
         setPictureInPicture(!pictureInPicture)
       }
       if (event.key === 'o') {
-        await OpenFolder(playlists, setPlaylists, setSongs, songs, setIsLoading)
+        await OpenFolder(sections, setSections, setIsLoading)
       }
     }
     window.addEventListener('keydown', handleKeyPress)

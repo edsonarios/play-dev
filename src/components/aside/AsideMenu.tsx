@@ -24,8 +24,6 @@ export default function AsideMenu () {
   const {
     playlists,
     setPlaylists,
-    setSongs,
-    songs,
     homeHideSongs,
     setHomeHideSongs,
     setPlaylistView,
@@ -35,8 +33,8 @@ export default function AsideMenu () {
     setSections
   } = usePlayerStore<StoreType>((state) => state)
 
-  const handleSelectFolder = async () => {
-    await OpenFolder(playlists, setPlaylists, setSongs, songs, setIsLoading)
+  const handledOpenFolder = async () => {
+    await OpenFolder(sections, setSections, setIsLoading)
   }
 
   const handledNewPlaylist = (sectionID: string) => {
@@ -131,7 +129,7 @@ export default function AsideMenu () {
             Icon={FolderIcon}
             text={t('aside.folder')}
             href="#"
-            handledFunction={handleSelectFolder}
+            handledFunction={handledOpenFolder}
           />
         </ul>
       </div>
