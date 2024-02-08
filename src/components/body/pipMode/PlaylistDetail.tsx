@@ -9,7 +9,6 @@ import { SearchLittleIcon } from '@/icons/aside/Search'
 import debounce from 'lodash.debounce'
 import ModalEditPlaylist from './ModalEditPlaylist'
 import { withViewTransition } from '@/utils/transition'
-import { deletePlaylistInCurrentSongsIfNeeded } from '@/utils/currentSongs'
 import { useTranslation } from 'react-i18next'
 import { type ISong } from '@/lib/data'
 
@@ -17,22 +16,18 @@ export function PlaylistDetail () {
   const { t } = useTranslation()
 
   const {
-    playlists,
-    songs,
-    setSongs,
-    setPlaylists,
     setPlaylistView,
     editTemporallyTitle,
     setEditTemporallyTitle,
     setEditTemporallyColor,
     editTemporallyCover,
     setEditTemporallyCover,
-    currentMusic,
-    setCurrentMusic,
     sections,
+    setSections,
     setEditTemporallySection,
     currentSectionView,
-    currentPlaylistView
+    currentPlaylistView,
+    setCurrentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
   const totalDurationSongs = currentPlaylistView?.songs.reduce(
     (acc, song) => acc + song.duration,
@@ -48,20 +43,40 @@ export function PlaylistDetail () {
   const deletePlaylist = () => {
     withViewTransition(() => {
       if (currentPlaylistView === undefined) return
-      if (currentPlaylistView.title === 'All Songs') return
-      deletePlaylistInCurrentSongsIfNeeded({
-        playlistID: currentPlaylistView.id,
-        currentMusic,
-        setCurrentMusic
+      if (currentPlaylistView.id === '1') {
+        // Todo clear all songs
+        const newSections = sections.map((section) => {
+          const newPlaylists = section.playlists.map((playlist) => {
+            if (playlist.id === '1') {
+              return {
+                ...playlist,
+                songs: []
+              }
+            }
+            return playlist
+          })
+          return {
+            ...section,
+            playlists: newPlaylists
+          }
+        })
+        setSections(newSections)
+        setCurrentPlaylistView({
+          ...currentPlaylistView,
+          songs: []
+        })
+        return
+      }
+      const newSections = sections.map((section) => {
+        const newPlaylists = section.playlists.filter(
+          (playlist) => playlist.id !== currentPlaylistView.id
+        )
+        return {
+          ...section,
+          playlists: newPlaylists
+        }
       })
-      const newSongs = songs.filter(
-        (song) => song.albumId !== currentPlaylistView.id
-      )
-      setSongs(newSongs)
-      const newPlaylists = playlists.filter(
-        (item) => item.id !== currentPlaylistView.id
-      )
-      setPlaylists(newPlaylists)
+      setSections(newSections)
       setPlaylistView('0')
     })
   }
@@ -139,8 +154,7 @@ export function PlaylistDetail () {
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
         <div className="w-40">
           {currentPlaylistView?.cover.length === 1 ||
-          editTemporallyCover.length === 1
-            ? (
+          editTemporallyCover.length === 1 ? (
             <picture className="aspect-square">
               <img
                 src={
@@ -157,8 +171,7 @@ export function PlaylistDetail () {
                 }}
               />
             </picture>
-              )
-            : (
+              ) : (
             <div className="grid grid-cols-2 aspect-square w-full h-44">
               {currentPlaylistView?.cover.map((cover, index) => (
                 <div key={index} className="relative w-full h-full">
