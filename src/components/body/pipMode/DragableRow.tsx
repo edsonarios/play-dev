@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 interface IDragableRow {
   song: ISong
   index: number
-  playSong: (event: any, song: ISong) => void
+  playSong: (song: ISong) => void
   deleteSong: (event: any, song: ISong) => void
 }
 export function DragableRow ({
@@ -206,9 +206,7 @@ export function DragableRow ({
       ${isDragOver ? 'border-t-4 border-blue-600 border-opacity-60' : ''}`}
       style={style}
       onClick={handleRowClick}
-      onDoubleClick={(event) => {
-        playSong(event, song)
-      }}
+      onDoubleClick={() => { playSong(song) }}
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -235,9 +233,7 @@ export function DragableRow ({
             )}
         <button
           className="absolute p-2 right-3 bottom-6 opacity-0 hover:opacity-50 bg-zinc-700 z-20 "
-          onClick={(event) => {
-            playSong(event, song)
-          }}
+          onClick={() => { playSong(song) }}
         >
           {<PlayTableIcon />}
         </button>

@@ -15,7 +15,6 @@ import {
 import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
 import { withViewTransition } from '@/utils/transition'
-import { deleteSongInCurrentSongsIfNeeded, updateCurrentSongsByDragDropIfNeeded } from '@/utils/currentSongs'
 import { useTranslation } from 'react-i18next'
 
 interface PlayListTable {
@@ -31,21 +30,19 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   const { t } = useTranslation()
 
   const {
-    currentMusic,
     setCurrentMusic,
     randomPlaylist,
-    setIsPlaying,
     songs,
     setSongs,
-    songsIdSelected
+    songsIdSelected,
+    sections,
+    setSections,
+    currentSectionView
   } = usePlayerStore<StoreType>((state) => state)
 
-  const playSong = (event: any, toPlaySong: ISong) => {
-    event.stopPropagation()
-    if (toPlaySong === undefined) return
-    let playListSongs = songs.filter(
-      (song) => song.albumId === toPlaySong.albumId
-    )
+  const playSong = (toPlaySong: ISong) => {
+    if (playlist === undefined) return
+    let playListSongs = playlist.songs
 
     if (randomPlaylist) {
       playListSongs = shuffleSongsWithCurrentSong(playListSongs, toPlaySong.id)
@@ -55,23 +52,40 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       song: toPlaySong,
       songs: playListSongs
     })
-
-    setIsPlaying(true)
   }
 
   const deleteSong = (event: any, toDeleteSong: ISong) => {
     event.stopPropagation()
     event.preventDefault()
-    const newPlaylistSongs = songs.filter(
+    const filterPlaylistSongs = playlist?.songs.filter(
       (song) => song.id !== toDeleteSong.id
     )
-    withViewTransition(() => {
-      deleteSongInCurrentSongsIfNeeded({
-        song: toDeleteSong,
-        currentMusic,
-        setCurrentMusic
+    const newSectionsToFilter = structuredClone(sections)
+    const newSection = newSectionsToFilter.find(
+      (section) => section.id === currentSectionView
+    )
+    if (newSection !== undefined && playlist !== undefined) {
+      newSection.playlists = newSection.playlists.map((ply) => {
+        if (ply.id === playlist?.id) {
+          playlist.songs = filterPlaylistSongs!
+        }
+        return playlist
       })
-      setSongs(newPlaylistSongs)
+    }
+    const newSections = newSectionsToFilter.map((section) => {
+      if (section.id === currentSectionView) {
+        section.playlists = section.playlists.map((ply) => {
+          if (ply.id === playlist?.id) {
+            ply.songs = filterPlaylistSongs!
+          }
+          return ply
+        })
+      }
+      return section
+    })
+
+    withViewTransition(() => {
+      setSections(newSections)
     })
   }
 
@@ -126,12 +140,6 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         ...songsWithoutCurrentAlbum,
         ...newSongs
       ]
-      updateCurrentSongsByDragDropIfNeeded({
-        newSongs,
-        currentMusic,
-        setCurrentMusic,
-        randomPlaylist
-      })
       setSongs(newSongsWithCurrentAlbum)
     }
     // If the song is dragged over itself, do nothing, but returned the songs was removed temporarily
@@ -221,26 +229,24 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         <SortableContext items={playlistSongs.map((song) => song.id)}>
           <tbody>
             {playlistSongs.map((song, index) => (
-                <DragableRow
-                  key={song.id}
-                  song={song}
-                  index={index}
-                  playSong={playSong}
-                  deleteSong={deleteSong}
-                />
+              <DragableRow
+                key={song.id}
+                song={song}
+                index={index}
+                playSong={playSong}
+                deleteSong={deleteSong}
+              />
             ))}
           </tbody>
         </SortableContext>
       </table>
-      {playlistSongs.length === 0
-        ? (
+      {playlistSongs.length === 0 ? (
         <h1 className="flex justify-center self-center w-full h-36 mt-20">
           {t('playlist.empty')}
         </h1>
-          )
-        : (
-            ''
-          )}
+      ) : (
+        ''
+      )}
     </DndContext>
   )
 }

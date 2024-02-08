@@ -44,7 +44,6 @@ export function PlaylistDetail () {
     withViewTransition(() => {
       if (currentPlaylistView === undefined) return
       if (currentPlaylistView.id === '1') {
-        // Todo clear all songs
         const newSections = sections.map((section) => {
           const newPlaylists = section.playlists.map((playlist) => {
             if (playlist.id === '1') {
