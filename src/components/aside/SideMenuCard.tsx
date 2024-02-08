@@ -158,6 +158,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
   const handleDrop = async (event: any) => {
     event.preventDefault()
     event.stopPropagation()
+    console.log('Drop')
     setIsDragOver(false)
     dragCounter.current = 0
 

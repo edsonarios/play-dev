@@ -22,8 +22,6 @@ import { type ISections, type IPlaylist } from '@/lib/data'
 export default function AsideMenu () {
   const { t } = useTranslation()
   const {
-    playlists,
-    setPlaylists,
     homeHideSongs,
     setHomeHideSongs,
     setPlaylistView,
@@ -68,12 +66,15 @@ export default function AsideMenu () {
     setSections([...sections, newSection])
   }
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = (event: DragEndEvent, sectionID: string) => {
     const { active, over } = event
     const activeId = active.id as string
     const overId = over?.id as string
-    if (overId === undefined) return
-    const currentPlaylists = playlists
+    if (activeId === overId || activeId === undefined || overId === undefined) { return }
+    const currentPlaylists = sections.find(
+      (section) => section.id === sectionID
+    )?.playlists
+    if (currentPlaylists === undefined) return
     const activeIndex = currentPlaylists.findIndex(
       (playlist) => playlist.id === activeId
     )
@@ -82,7 +83,14 @@ export default function AsideMenu () {
     )
     const [removed] = currentPlaylists.splice(activeIndex, 1)
     currentPlaylists.splice(overIndex, 0, removed)
-    setPlaylists(currentPlaylists)
+    const newSections = sections.map((section) => {
+      if (section.id === sectionID) {
+        section.playlists = currentPlaylists
+      }
+      return section
+    })
+
+    setSections(newSections)
   }
 
   // Delay in drang and drop
@@ -174,9 +182,14 @@ export default function AsideMenu () {
                   <PlusIcon className="w-3 h-3" />
                 </button>
               </div>
-              <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
+              <DndContext
+                onDragEnd={(event) => {
+                  handleDragEnd(event, section.id)
+                }}
+                sensors={sensors}
+              >
                 <SortableContext
-                  items={playlists.map((playlist) => playlist.id)}
+                  items={section.playlists.map((playlist) => playlist.id)}
                 >
                   {section.playlists.map((playlist) => (
                     <SideMenuCard

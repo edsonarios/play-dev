@@ -9,7 +9,6 @@ export const OpenFolder = async (
   withViewTransition(async () => {
     setIsLoading(true)
     const folder = await window.electronAPI.openDirectoryDialog()
-    console.log(folder)
     if (folder?.playlist !== undefined) {
       const newSections = structuredClone(sections)
       newSections.map((section) => {
