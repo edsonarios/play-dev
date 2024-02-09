@@ -13,11 +13,18 @@ import { type ISections } from '@/lib/data'
 
 export default function Header () {
   const { t } = useTranslation()
-  const { setPlaylistView, modeColor, setModeColor, sections, setSections } =
-    usePlayerStore<StoreType>((state) => state)
+  const {
+    setPlaylistView,
+    modeColor,
+    setModeColor,
+    sections,
+    setSections,
+    setSongsIdSelected
+  } = usePlayerStore<StoreType>((state) => state)
 
   // Set playlist view to 0
   const handledSetPlaylist = () => {
+    setSongsIdSelected([])
     withViewTransition(() => {
       setPlaylistView('0')
     })

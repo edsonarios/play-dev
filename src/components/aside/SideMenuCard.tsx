@@ -166,7 +166,6 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
   const handleDrop = async (event: any) => {
     event.preventDefault()
     event.stopPropagation()
-    console.log('Drop')
     setIsDragOver(false)
     dragCounter.current = 0
 
@@ -210,7 +209,9 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
             setCurrentPlaylist([...currentPlaylist, ...songsToAdd])
           }
           // Update current playlist view
-          setCurrentPlaylistView(newSections[currentSectionIndex].playlists[currentPlaylistIndex])
+          if (playlist.id === currentPlaylistView?.id) {
+            setCurrentPlaylistView(newSections[currentSectionIndex].playlists[currentPlaylistIndex])
+          }
         })
       }
     }

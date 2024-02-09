@@ -13,7 +13,7 @@ interface IDragableRow {
   song: ISong
   index: number
   playSong: (song: ISong) => void
-  deleteSong: (event: any, song: ISong) => void
+  deleteSong: (song: ISong) => void
 }
 export function DragableRow ({
   song,
@@ -25,7 +25,6 @@ export function DragableRow ({
 
   const {
     currentMusic,
-    songs,
     songsIdSelected,
     setSongsIdSelected,
     lastSongIdSelected,
@@ -76,27 +75,21 @@ export function DragableRow ({
       )
     }
     if (shift && lastSongIdSelected !== '') {
-      const currentSongs = songs.filter(
-        (allSong) => allSong.albumId === song?.albumId
-      )
-      const lasSongIdSelectedIndex = currentSongs.findIndex(
+      const lasSongIdSelectedIndex = currentPlaylistView?.songs.findIndex(
         (song) => song.id === lastSongIdSelected
       )
-      const range = [lasSongIdSelectedIndex, index].sort((a, b) => a - b)
-      const rangeSelected = currentSongs
-        .slice(range[0], range[1] + 1)
+      const range = [lasSongIdSelectedIndex, index].sort((a, b) => a! - b!)
+      const rangeSelected = currentPlaylistView?.songs
+        .slice(range[0], range[1]! + 1)
         .map((song) => song.id)
-      setSongsIdSelected(rangeSelected)
+      setSongsIdSelected(rangeSelected!)
     }
     if (shift && lastSongIdSelected === '') {
-      const currentSongs = songs.filter(
-        (allSong) => allSong.albumId === song?.albumId
-      )
       const range = [0, index].sort((a, b) => a - b)
-      const rangeSelected = currentSongs
+      const rangeSelected = currentPlaylistView?.songs
         .slice(range[0], range[1] + 1)
         .map((song) => song.id)
-      setSongsIdSelected(rangeSelected)
+      setSongsIdSelected(rangeSelected!)
     }
   }
 
@@ -271,8 +264,8 @@ export function DragableRow ({
       <td className="relative text-zinc-400 px-4 py-2 rounded-tr-lg rounded-br-lg">
         <button
           className="opacity-10 hover:opacity-100 p-1"
-          onClick={(event) => {
-            deleteSong(event, song)
+          onClick={() => {
+            deleteSong(song)
           }}
           title={t('playlist.deleteSong')}
         >

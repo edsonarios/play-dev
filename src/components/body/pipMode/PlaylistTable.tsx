@@ -32,12 +32,11 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   const {
     setCurrentMusic,
     randomPlaylist,
-    songs,
-    setSongs,
     songsIdSelected,
     sections,
     setSections,
-    currentSectionView
+    currentSectionView,
+    setCurrentPlaylistView
   } = usePlayerStore<StoreType>((state) => state)
 
   const playSong = (toPlaySong: ISong) => {
@@ -54,38 +53,27 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     })
   }
 
-  const deleteSong = (event: any, toDeleteSong: ISong) => {
-    event.stopPropagation()
-    event.preventDefault()
-    const filterPlaylistSongs = playlist?.songs.filter(
-      (song) => song.id !== toDeleteSong.id
-    )
-    const newSectionsToFilter = structuredClone(sections)
-    const newSection = newSectionsToFilter.find(
-      (section) => section.id === currentSectionView
-    )
-    if (newSection !== undefined && playlist !== undefined) {
-      newSection.playlists = newSection.playlists.map((ply) => {
-        if (ply.id === playlist?.id) {
-          playlist.songs = filterPlaylistSongs!
-        }
-        return playlist
-      })
-    }
-    const newSections = newSectionsToFilter.map((section) => {
+  const deleteSong = (toDeleteSong: ISong) => {
+    const updatedSections = sections.map((section) => {
       if (section.id === currentSectionView) {
-        section.playlists = section.playlists.map((ply) => {
-          if (ply.id === playlist?.id) {
-            ply.songs = filterPlaylistSongs!
+        const updatedPlaylists = section.playlists.map((playlist) => {
+          if (playlist.id === playlist?.id) {
+            const updatedSongs = playlist.songs.filter(song => song.id !== toDeleteSong.id)
+            return { ...playlist, songs: updatedSongs }
           }
-          return ply
+          return playlist
         })
+        return { ...section, playlists: updatedPlaylists }
       }
       return section
     })
+    const newCurrentPlaylist = updatedSections.find(
+      (section) => section.id === currentSectionView
+    )?.playlists.find((ply) => ply.id === playlist?.id)
 
     withViewTransition(() => {
-      setSections(newSections)
+      setCurrentPlaylistView(newCurrentPlaylist)
+      setSections(updatedSections)
     })
   }
 
@@ -133,14 +121,36 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       } else {
         newSongs.splice(newIndex, 0, ...removedSong)
       }
-      const songsWithoutCurrentAlbum = songs.filter(
+      const songsWithoutCurrentAlbum = playlistSongs.filter(
         (song) => song.albumId !== albumId
       )
       const newSongsWithCurrentAlbum = [
         ...songsWithoutCurrentAlbum,
         ...newSongs
       ]
-      setSongs(newSongsWithCurrentAlbum)
+
+      // set the new songs
+      const newSections = sections.map((section) => {
+        if (section.id === currentSectionView) {
+          const newPlaylists = section.playlists.map((playlist) => {
+            if (playlist.id === playlist?.id) {
+              return { ...playlist, songs: newSongsWithCurrentAlbum }
+            }
+            return playlist
+          })
+          return { ...section, playlists: newPlaylists }
+        }
+        return section
+      })
+
+      const newCurrentPlaylist = newSections.find(
+        (section) => section.id === currentSectionView
+      )?.playlists.find((ply) => ply.id === playlist?.id)
+
+      setCurrentPlaylistView(newCurrentPlaylist)
+      withViewTransition(() => {
+        setSections(newSections)
+      })
     }
     // If the song is dragged over itself, do nothing, but returned the songs was removed temporarily
     if (activeId === overId && songsIdSelected.length > 1) {
@@ -163,14 +173,35 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
 
       // Restore the songs that were removed temporarily
       newSongs.splice(findIndex + 1, 0, ...songsDragged)
-      const songsWithoutCurrentAlbum = songs.filter(
+      const songsWithoutCurrentAlbum = playlistSongs.filter(
         (song) => song.albumId !== albumId
       )
       const newSongsWithCurrentAlbum = [
         ...songsWithoutCurrentAlbum,
         ...newSongs
       ]
-      setSongs(newSongsWithCurrentAlbum)
+      // set the new songs
+      const newSections = sections.map((section) => {
+        if (section.id === currentSectionView) {
+          const newPlaylists = section.playlists.map((playlist) => {
+            if (playlist.id === playlist?.id) {
+              return { ...playlist, songs: newSongsWithCurrentAlbum }
+            }
+            return playlist
+          })
+          return { ...section, playlists: newPlaylists }
+        }
+        return section
+      })
+
+      const newCurrentPlaylist = newSections.find(
+        (section) => section.id === currentSectionView
+      )?.playlists.find((ply) => ply.id === playlist?.id)
+
+      setCurrentPlaylistView(newCurrentPlaylist)
+      withViewTransition(() => {
+        setSections(newSections)
+      })
     }
   }
 
@@ -180,17 +211,39 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       const playlistWithouActiveId = songsIdSelected.filter(
         (song) => song !== activeId
       )
-      const playlistWithoutSelectedSongs = songs.filter(
+      const playlistWithoutSelectedSongs = playlistSongs.filter(
         (song) => !playlistWithouActiveId.includes(song.id)
       )
 
-      const temporalSongs = songs.filter((song) => {
+      const temporalSongs = playlistSongs.filter((song) => {
         if (playlistWithouActiveId.includes(song.id)) {
           song.isDragging = true
           return song
         }
       })
-      setSongs(playlistWithoutSelectedSongs.concat(temporalSongs))
+      const newSongs = playlistWithoutSelectedSongs.concat(temporalSongs)
+      // set the new songs
+      const newSections = sections.map((section) => {
+        if (section.id === currentSectionView) {
+          const newPlaylists = section.playlists.map((playlist) => {
+            if (playlist.id === playlist?.id) {
+              return { ...playlist, songs: newSongs }
+            }
+            return playlist
+          })
+          return { ...section, playlists: newPlaylists }
+        }
+        return section
+      })
+
+      const newCurrentPlaylist = newSections.find(
+        (section) => section.id === currentSectionView
+      )?.playlists.find((ply) => ply.id === playlist?.id)
+
+      setCurrentPlaylistView(newCurrentPlaylist)
+      withViewTransition(() => {
+        setSections(newSections)
+      })
     }
   }
 
