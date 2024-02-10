@@ -188,7 +188,7 @@ export function PlaylistDetail () {
               )}
         </div>
         <div className="flex flex-col">
-          <h2 className="flex flex-1 items-end">Playlist</h2>
+          <h2 className="flex flex-1 items-end">{t('playlist.playlist')}</h2>
           <button
             className="flex flex-1 items-end"
             onClick={handledOpenEditPlaylist}

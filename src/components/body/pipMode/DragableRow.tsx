@@ -1,5 +1,5 @@
 import { DeleteOptionsIcon } from '@/icons/playlist/Options'
-import { PlayTableIcon } from '@/icons/playlist/PlayPause'
+import { PauseTableIcon, PlayTableIcon } from '@/icons/playlist/PlayPause'
 import { type ISong } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { withViewTransition } from '@/utils/transition'
@@ -33,7 +33,8 @@ export function DragableRow ({
     setSections,
     currentSectionView,
     currentPlaylistView,
-    setCurrentPlaylistView
+    setCurrentPlaylistView,
+    isPlaying
   } = usePlayerStore<StoreType>((state) => state)
   const {
     isDragging,
@@ -210,7 +211,7 @@ export function DragableRow ({
       {/* Id or equaliser icon */}
       <td
         className={
-          'relative px-4 py-2 rounded-tl-lg rounded-bl-lg w-5 hover:opacity-0'
+          'group relative px-4 py-2 rounded-tl-lg rounded-bl-lg w-5'
         }
       >
         {currentMusic.song?.id === song.id &&
@@ -219,16 +220,18 @@ export function DragableRow ({
             src="equaliser-animated-green.gif"
             alt="equaliser"
             width={16}
-            className=""
+            className="group-hover:opacity-0"
           />
             ) : (
-          <div>{index + 1}</div>
+          <div className='group-hover:opacity-0'>{index + 1}</div>
             )}
         <button
-          className="absolute p-2 right-3 bottom-6 opacity-0 hover:opacity-50 bg-zinc-700 z-20 "
+          className="absolute p-2 right-2 bottom-4 opacity-0 group-hover:opacity-80 z-10 "
           onClick={() => { playSong(song) }}
         >
-          {<PlayTableIcon />}
+          {currentMusic.song?.id === song.id && isPlaying
+            ? <PauseTableIcon />
+            : <PlayTableIcon />}
         </button>
       </td>
       {/* Title */}

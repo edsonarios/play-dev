@@ -5,6 +5,7 @@ import { type IPlaylist } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { updateSections } from '@/utils/sections'
 import { withViewTransition } from '@/utils/transition'
+import { useTranslation } from 'react-i18next'
 
 export default function ModalEditPlaylist ({
   playlist,
@@ -17,6 +18,7 @@ export default function ModalEditPlaylist ({
   setIsOpen: (isOpen: boolean) => void
   handledCloseModal: () => void
 }) {
+  const { t } = useTranslation()
   const {
     editTemporallyColor,
     setEditTemporallyColor,
@@ -100,7 +102,7 @@ export default function ModalEditPlaylist ({
             className="relative flex flex-col bg-zinc-900 rounded-md p-6 gap-4 px-6 mt-12 mb-8"
           >
             <div className="flex justify-between">
-              <h1>Edit Playlist</h1>
+              <h1>{t('edit.modalTitle')}</h1>
               <button
                 className="flex p-2 rounded-full opacity-70 hover:bg-zinc-800 hover:opacity-100"
                 onClick={handledCloseModal}
@@ -129,7 +131,7 @@ export default function ModalEditPlaylist ({
                     className="absolute bg-black opacity-0 hover:opacity-80 w-full h-full top-0 flex justify-center items-center flex-col"
                   >
                     <PencilIcon />
-                    <h1 className="mt-6">Chooise image</h1>
+                    <h1 className="mt-6">{t('edit.choose')}</h1>
                   </div>
                 </picture>
                   )
@@ -149,12 +151,12 @@ export default function ModalEditPlaylist ({
                     className="absolute bg-black opacity-0 hover:opacity-80 w-full h-full top-0 flex justify-center items-center flex-col"
                   >
                     <PencilIcon />
-                    <h1 className="mt-6">Chooise image</h1>
+                    <h1 className="mt-6">{t('edit.choose')}</h1>
                   </div>
                 </div>
                   )}
               <div className="flex flex-col">
-                <label htmlFor="title">Title</label>
+                <label htmlFor="title">{t('edit.title')}</label>
                 <input
                   type="text"
                   id="title"
@@ -163,7 +165,7 @@ export default function ModalEditPlaylist ({
                   onChange={handledEditPlaylist}
                 />
 
-                <label htmlFor="title">Cover</label>
+                <label htmlFor="title">{t('edit.cover')}</label>
                 <input
                   type="text"
                   id="title"
@@ -173,7 +175,7 @@ export default function ModalEditPlaylist ({
                 />
 
                 <label htmlFor="color" className="block mb-4">
-                  <span className="">Color</span>
+                  <span className="">{t('edit.color')}</span>
                   <select
                     id="color"
                     onChange={handleColorChange}
@@ -182,14 +184,14 @@ export default function ModalEditPlaylist ({
                   >
                     {Object.entries(colors).map(([colorName]) => (
                       <option key={colorName} value={colorName}>
-                        {colorName.charAt(0).toUpperCase() + colorName.slice(1)}
+                        {t(`colors.${colorName}`)}
                       </option>
                     ))}
                   </select>
                 </label>
 
                 <label htmlFor="color" className="block mb-4">
-                  <span className="">Section</span>
+                  <span className="">{t('edit.section')}</span>
                   <select
                     id="color"
                     onChange={handledSection}
@@ -208,7 +210,7 @@ export default function ModalEditPlaylist ({
                   className="bg-gray-200 text-black rounded-full font-bold w-32 py-3 self-end"
                   type="submit"
                 >
-                  Save
+                  {t('edit.save')}
                 </button>
               </div>
             </form>

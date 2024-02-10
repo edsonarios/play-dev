@@ -40,6 +40,7 @@
         "fullScreen": "Pantalla completa"
     },
     "playlist": {
+        "playlist": "Lista de reproducción",
         "songs": "canciones",
         "approximately": "aproximadamente",
         "search": "Buscar canciones",
@@ -48,6 +49,30 @@
         "deletePlaylist": "Eliminar lista de reproducción",
         "deleteSong": "Eliminar canción",
         "empty": "No hay canciones en esta lista de reproducción"
+    },
+    "edit": {
+        "modalTitle": "Editar lista de reproducción",
+        "choose": "Elegir imagen",
+        "title": "Título",
+        "cover": "Imagen",
+        "color": "Color",
+        "section": "Sección",
+        "save": "Guardar"
+    },
+    "colors": {
+        "red": "Rojo",
+        "orange": "Naranja",
+        "yellow": "Amarillo",
+        "green": "Verde",
+        "teal": "Verde azulado",
+        "blue": "Azul",
+        "indigo": "Índigo",
+        "purple": "Púrpura",
+        "pink": "Rosa",
+        "emerald": "Esmeralda",
+        "rose": "Rosa",
+        "gray": "Gris",
+        "dark": "Oscuro"
     },
     "update": {
         "title": "Descargando actualización...",

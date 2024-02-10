@@ -123,7 +123,7 @@ export function PlaylistPipMode () {
         <div key={section.id}>
           <div className="group flex">
             <button
-              className="absolute z-20 bg-slate-900 w-2 rounded-md text-xs opacity-0 hover:opacity-70 transition-opacity -left-2 -top-2"
+              className="absolute z-20 bg-slate-900 w-2 rounded-md text-xs opacity-0 hover:opacity-70 transition-opacity -left-1 -top-1"
               onClick={() => {
                 handledDeleteSection(section.id)
               }}

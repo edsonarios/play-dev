@@ -64,7 +64,7 @@ export default function Header () {
         <IconButton
           Icon={PlusIcon}
           className="ml-4"
-          title={t('body.next')}
+          title={t('aside.newSection')}
           handledFunction={handledNewSection}
         />
       </div>

@@ -30,17 +30,24 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   const { t } = useTranslation()
 
   const {
+    currentMusic,
     setCurrentMusic,
     randomPlaylist,
     songsIdSelected,
     sections,
     setSections,
     currentSectionView,
-    setCurrentPlaylistView
+    setCurrentPlaylistView,
+    isPlaying,
+    setIsPlaying
   } = usePlayerStore<StoreType>((state) => state)
 
   const playSong = (toPlaySong: ISong) => {
     if (playlist === undefined) return
+    if (currentMusic.song?.id === toPlaySong.id) {
+      setIsPlaying(!isPlaying)
+      return
+    }
     let playListSongs = playlist.songs
 
     if (randomPlaylist) {
@@ -58,7 +65,9 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       if (section.id === currentSectionView) {
         const updatedPlaylists = section.playlists.map((playlist) => {
           if (playlist.id === playlist?.id) {
-            const updatedSongs = playlist.songs.filter(song => song.id !== toDeleteSong.id)
+            const updatedSongs = playlist.songs.filter(
+              (song) => song.id !== toDeleteSong.id
+            )
             return { ...playlist, songs: updatedSongs }
           }
           return playlist
@@ -67,9 +76,9 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       }
       return section
     })
-    const newCurrentPlaylist = updatedSections.find(
-      (section) => section.id === currentSectionView
-    )?.playlists.find((ply) => ply.id === playlist?.id)
+    const newCurrentPlaylist = updatedSections
+      .find((section) => section.id === currentSectionView)
+      ?.playlists.find((ply) => ply.id === playlist?.id)
 
     withViewTransition(() => {
       setCurrentPlaylistView(newCurrentPlaylist)
@@ -143,9 +152,9 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         return section
       })
 
-      const newCurrentPlaylist = newSections.find(
-        (section) => section.id === currentSectionView
-      )?.playlists.find((ply) => ply.id === playlist?.id)
+      const newCurrentPlaylist = newSections
+        .find((section) => section.id === currentSectionView)
+        ?.playlists.find((ply) => ply.id === playlist?.id)
 
       setCurrentPlaylistView(newCurrentPlaylist)
       withViewTransition(() => {
@@ -194,9 +203,9 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         return section
       })
 
-      const newCurrentPlaylist = newSections.find(
-        (section) => section.id === currentSectionView
-      )?.playlists.find((ply) => ply.id === playlist?.id)
+      const newCurrentPlaylist = newSections
+        .find((section) => section.id === currentSectionView)
+        ?.playlists.find((ply) => ply.id === playlist?.id)
 
       setCurrentPlaylistView(newCurrentPlaylist)
       withViewTransition(() => {
@@ -236,9 +245,9 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         return section
       })
 
-      const newCurrentPlaylist = newSections.find(
-        (section) => section.id === currentSectionView
-      )?.playlists.find((ply) => ply.id === playlist?.id)
+      const newCurrentPlaylist = newSections
+        .find((section) => section.id === currentSectionView)
+        ?.playlists.find((ply) => ply.id === playlist?.id)
 
       setCurrentPlaylistView(newCurrentPlaylist)
       withViewTransition(() => {

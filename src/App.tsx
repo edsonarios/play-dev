@@ -70,7 +70,6 @@ export default function App () {
         playlistsMap.set(playlist.id, playlist)
       })
     })
-    console.log(playlistsMap)
   }, [])
 
   const { i18n } = useTranslation()
@@ -84,7 +83,6 @@ export default function App () {
     let newColor = colors.gray.dark
     let codeColor = colors.gray
     if (playlistView !== '0' && pictureInPicture) {
-      console.log(playlistView)
       const [sectionId, playlistId] = playlistView.split(';')
       // Take color in pip mode from current view playlist
       const viewPlaylist = sections.find(section => section.id === sectionId)?.playlists.find(ply => ply.id === playlistId)
