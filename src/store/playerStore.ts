@@ -25,12 +25,6 @@ export interface StoreType {
   playerOptions: PlyrOptions
   setPlayerOptions: (playerOptions: PlyrOptions) => void
 
-  // playlists: IPlaylist[]
-  // setPlaylists: (playlists: IPlaylist[]) => void
-
-  // songs: ISong[]
-  // setSongs: (songs: ISong[]) => void
-
   isPlaying: boolean
   setIsPlaying: (isPlaying: boolean) => void
 
@@ -127,20 +121,6 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
     controls: ['play-large', 'pip', 'fullscreen']
   },
   setPlayerOptions: (playerOptions) => { set({ playerOptions }) },
-
-  // playlists: [{
-  //   id: '1',
-  //   albumId: '1',
-  //   title: 'All Songs',
-  //   color: getRandomColor(),
-  //   cover: ['Covers/cover1.jpg'],
-  //   artists: [],
-  //   songs: []
-  // }],
-  // setPlaylists: (playlists) => { set({ playlists }) },
-
-  // songs: [],
-  // setSongs: (songs) => { set({ songs }) },
 
   isPlaying: false,
   setIsPlaying: (isPlaying) => { set({ isPlaying }) },
@@ -260,8 +240,6 @@ export const usePlayerStore = create<StoreType>()(
       partialize: (state) => ({
         modeColor: state.modeColor,
         sections: state.sections,
-        // playlists: state.playlists,
-        // songs: state.songs,
         currentMusic: state.currentMusic,
         randomPlaylist: state.randomPlaylist,
         repeatPlaylist: state.repeatPlaylist,

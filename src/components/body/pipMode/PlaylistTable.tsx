@@ -1,4 +1,3 @@
-/* eslint-disable array-callback-return */
 import { TimeIcon } from '@/icons/Time'
 import { type IPlaylist, type ISong } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'

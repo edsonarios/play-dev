@@ -37,8 +37,8 @@ export default function Header () {
   }, [])
   const handledThemeChange = (event: any) => {
     setIsChecked(!isChecked)
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    const newTheme = event.target.checked ? 'light' : 'dark'
+    const buttonIsCheked = event.target.checked as boolean
+    const newTheme = buttonIsCheked ? 'light' : 'dark'
     setModeColor(newTheme)
   }
 

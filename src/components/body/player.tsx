@@ -25,7 +25,6 @@ export default function PlayerComponent () {
     playerOptions,
     speed,
     setSpeed,
-    playlists,
     pictureInPicture,
     setPictureInPicture,
     randomPlaylist,
@@ -278,7 +277,7 @@ export default function PlayerComponent () {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [playlists, pictureInPicture])
+  }, [pictureInPicture])
 
   // Set speed from right control
   useEffect(() => {

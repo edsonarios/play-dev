@@ -24,5 +24,6 @@ module.exports = {
     "react-hooks/exhaustive-deps": "off",
     "multiline-ternary": "off",
     "@typescript-eslint/comma-dangle": "off",
+    "array-callback-return": "off",
   },
 }

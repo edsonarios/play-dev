@@ -56,7 +56,7 @@ export default function App () {
     currentMusic,
     pictureInPicture,
     playlistView,
-    playlists,
+    // playlists,
     editTemporallyColor,
     modeColor,
     language,
@@ -108,7 +108,7 @@ export default function App () {
     playlistView,
     pictureInPicture,
     currentMusic.playlist,
-    playlists,
+    // playlists,
     modeColor
   ])
 
@@ -205,7 +205,7 @@ export default function App () {
         language: state.language,
         currentMusic: state.currentMusic,
         sections: state.sections,
-        playlists: state.playlists,
+        // playlists: state.playlists,
         // songs: state.songs
       }
       const json = JSON.stringify(exportState, null, 2)
@@ -232,7 +232,7 @@ export default function App () {
       language: configParsed.language,
       currentMusic: configParsed.currentMusic,
       sections: configParsed.sections,
-      playlists: configParsed.playlists,
+      // playlists: configParsed.playlists,
       // songs: configParsed.songs
     })
   }, [])

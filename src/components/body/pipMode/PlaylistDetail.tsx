@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { CardPlayButton } from '@/components/CardPlay'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { formatTotalDuration } from '@/utils/time'
