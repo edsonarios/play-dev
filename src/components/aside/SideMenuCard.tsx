@@ -57,7 +57,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
 
   const [currentPlaylist, setCurrentPlaylist] = useState<ISong[]>([])
   useEffect(() => {
-    if (playlist.id === currentPlaylistView?.id && isPlaylistExpanded) {
+    if (isPlaylistExpanded) {
       setCurrentPlaylist(playlist.songs)
     }
   }, [sections])

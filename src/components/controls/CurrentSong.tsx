@@ -4,11 +4,9 @@ import { useTranslation } from 'react-i18next'
 
 export default function CurrentSong () {
   const { t } = useTranslation()
-  const { currentMusic, songs, setSongRefToScroll } = usePlayerStore<StoreType>((state) => state)
-  const allSongsFromPlaylist = songs.filter(
-    (song) => song.albumId === currentMusic.playlist?.id
-  )
-  const findIndexSong = allSongsFromPlaylist.findIndex(
+  const { currentMusic, setSongRefToScroll } = usePlayerStore<StoreType>((state) => state)
+
+  const findIndexSong = currentMusic.songs.findIndex(
     (song) => song.id === currentMusic.song?.id
   )
   const { song } = currentMusic

@@ -3,7 +3,7 @@
 import { useRef, useEffect } from 'react'
 import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
-import { type ISong } from '@/lib/data'
+import { type IPlaylist, type ISections, type ISong } from '@/lib/data'
 import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
@@ -26,7 +26,7 @@ export default function PlayerComponent () {
     speed,
     setSpeed,
     songs,
-    setSongs,
+    // setSongs,
     playlists,
     pictureInPicture,
     setPictureInPicture,
@@ -45,7 +45,13 @@ export default function PlayerComponent () {
         newVideoSrc = `file://${currentMusic.song.directoryPath}/${currentMusic.song.title}`
       }
       console.log(newVideoSrc)
-      if (playerRef !== undefined && playerRef.current !== undefined && playerRef.current?.plyr !== undefined && currentMusic.song !== undefined && playerRef.current?.plyr.source !== null) {
+      if (
+        playerRef !== undefined &&
+        playerRef.current !== undefined &&
+        playerRef.current?.plyr !== undefined &&
+        currentMusic.song !== undefined &&
+        playerRef.current?.plyr.source !== null
+      ) {
         if (currentMusic.song.format === 'youtube') {
           playerRef.current.plyr.autoplay = true
           playerRef.current.plyr.source = {
@@ -87,7 +93,9 @@ export default function PlayerComponent () {
         )
         const { songs } = currentMusic
         let nextSong = songs[currentVideoIndex + 1]
-        if (nextSong === undefined && repeatPlaylist === 'on') { nextSong = songs[0] }
+        if (nextSong === undefined && repeatPlaylist === 'on') {
+          nextSong = songs[0]
+        }
         if (nextSong === undefined && repeatPlaylist === 'off') return
         if (repeatPlaylist === 'one' && currentMusic.song !== undefined) {
           void playerRef.current?.plyr.play()
@@ -231,11 +239,15 @@ export default function PlayerComponent () {
       let newSpeedIndex
 
       if (increase) {
-        newSpeedIndex = speedOptions.findIndex(speed => speed > currentSpeed)
+        newSpeedIndex = speedOptions.findIndex((speed) => speed > currentSpeed)
         if (newSpeedIndex === -1) newSpeedIndex = speedOptions.length - 1
       } else {
-        newSpeedIndex = speedOptions.slice().reverse().findIndex(speed => speed < currentSpeed)
-        newSpeedIndex = newSpeedIndex !== -1 ? speedOptions.length - 1 - newSpeedIndex : 0
+        newSpeedIndex = speedOptions
+          .slice()
+          .reverse()
+          .findIndex((speed) => speed < currentSpeed)
+        newSpeedIndex =
+          newSpeedIndex !== -1 ? speedOptions.length - 1 - newSpeedIndex : 0
       }
       const newSpeed = speedOptions[newSpeedIndex]
       setSpeed(newSpeed)
@@ -246,7 +258,11 @@ export default function PlayerComponent () {
   // Event keys press
   useEffect(() => {
     const handleKeyPress = async (event: any) => {
-      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'SELECT') return
+      if (
+        event.target.tagName === 'INPUT' ||
+        event.target.tagName === 'TEXTAREA' ||
+        event.target.tagName === 'SELECT'
+      ) { return }
       if (event.key === '+') {
         changePlaybackSpeed(true)
       }
@@ -353,48 +369,69 @@ export default function PlayerComponent () {
   // drang and drop main process
   const handleDropElectron = async (event: any) => {
     event.preventDefault()
-    // Use DataTransferItemList interface to access the file(s)
+    // Usa DataTransferItemList para acceder a los archivos
     const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
-    const filesWithMetadata = await window.electronAPI.getMusicMetadata(dataFiles.map(file => file.path))
-    if (dataFiles !== undefined) {
-      if (dataFiles.length > 0) {
-        const defaultSongsToAdd: ISong[] = []
-        for (const item of filesWithMetadata) {
-          const newSong: ISong = {
-            ...item,
-            albumId: '1',
-            image: playlists[0].cover[0]
-          }
-          defaultSongsToAdd.push(newSong)
-        }
+    const filesWithMetadata = await window.electronAPI.getMusicMetadata(
+      dataFiles.map((file) => file.path)
+    )
 
-        // Find songs from default playlist and add new songs from the drag and drop
-        let songsFromDefaultPlaylist = songs.filter((song) => song.albumId === playlists[0].id)
-        songsFromDefaultPlaylist = [...songsFromDefaultPlaylist, ...defaultSongsToAdd]
+    if (filesWithMetadata.length === 0) return
 
-        // If random playlist is active, shuffle the songs
-        if (randomPlaylist) {
-          songsFromDefaultPlaylist = shuffleSongsWithCurrentSong(songsFromDefaultPlaylist, defaultSongsToAdd[0].id)
-          console.log(songsFromDefaultPlaylist)
-        }
-
-        // Put the new songs in the current music and reproduce it the first song from the drag and drop
-        withViewTransition(() => {
-          setCurrentMusic({
-            playlist: playlists[0],
-            song: defaultSongsToAdd[0],
-            songs: songsFromDefaultPlaylist
-          })
-          const newSongs = [...songs, ...defaultSongsToAdd]
-          setSongs(newSongs)
-        })
-      }
+    // Found the "All Songs" playlist directly without mapping all sections first
+    let defaultPlaylist: IPlaylist | undefined
+    for (const section of sections) {
+      defaultPlaylist = section.playlists.find((ply) => ply.id === '1')!
+      if (defaultPlaylist !== undefined) break
     }
+
+    if (defaultPlaylist === undefined) return
+    // Prepara las nuevas canciones para añadir
+    const defaultSongsToAdd: ISong[] = filesWithMetadata.map((item) => {
+      const newSong: ISong = {
+        ...item,
+        albumId: '1',
+        image: defaultPlaylist?.cover[0] ?? ''
+      }
+      return newSong
+    })
+
+    // Update directly the default playlist with the new songs
+    defaultPlaylist.songs = [...defaultPlaylist.songs, ...defaultSongsToAdd]
+
+    // Prepare the updated state of the sections (if necessary)
+    const updatedSections = sections.map((section) => {
+      if (section.playlists.some((ply) => ply?.id === '1')) {
+        return {
+          ...section,
+          playlists: section.playlists.map((ply) =>
+            ply?.id === '1' ? defaultPlaylist : ply
+          )
+        }
+      }
+      return section
+    })
+
+    // Determine the new songs and the current song based on the random playback setting
+    const newSongs = randomPlaylist
+      ? shuffleSongsWithCurrentSong(
+        defaultPlaylist.songs,
+        defaultSongsToAdd[0].id
+      )
+      : defaultPlaylist.songs
+
+    // Set the new state
+    withViewTransition(() => {
+      setSections(updatedSections as ISections[])
+      setCurrentMusic({
+        playlist: defaultPlaylist,
+        song: defaultSongsToAdd[0],
+        songs: newSongs
+      })
+    })
   }
 
   return (
-    <div
-    className=''>
+    <div className="">
       <div
         onDragOver={handleDragOver}
         onDrop={handleDropElectron}
@@ -403,10 +440,7 @@ export default function PlayerComponent () {
         {/* disable error, because de source is handled by useEffect */}
         {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error */}
-        <Plyr
-          ref={playerRef}
-          options={playerOptions}
-        />
+        <Plyr ref={playerRef} options={playerOptions} />
       </div>
     </div>
   )

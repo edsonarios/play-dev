@@ -28,8 +28,7 @@ export default function Controls () {
     setIsPlaying,
     isPlaying,
     setRandomPlaylist,
-    randomPlaylist,
-    songs
+    randomPlaylist
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleRandomPlaylist = (): void => {
@@ -43,10 +42,11 @@ export default function Controls () {
         songs: shufflededSongs
       })
     } else {
-      const songsOrdered = songs.filter(song => song.albumId === currentMusic.playlist?.id)
+      const newSongs = currentMusic.playlist?.songs
+      if (newSongs === undefined) return
       setCurrentMusic({
         ...currentMusic,
-        songs: songsOrdered
+        songs: newSongs
       })
     }
   }
@@ -155,7 +155,7 @@ export default function Controls () {
       default:
         break
     }
-  }, [currentMusic.song, repeatPlaylist, randomPlaylist, isPlaying, songs])
+  }, [currentMusic.song, repeatPlaylist, randomPlaylist, isPlaying])
 
   useEffect(() => {
     window.electronAPI.receive('media-action', handleMediaAction)
