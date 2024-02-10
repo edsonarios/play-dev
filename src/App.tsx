@@ -206,7 +206,7 @@ export default function App () {
         currentMusic: state.currentMusic,
         sections: state.sections,
         playlists: state.playlists,
-        songs: state.songs
+        // songs: state.songs
       }
       const json = JSON.stringify(exportState, null, 2)
       const response = await window.electronAPI.exportConfig(json)
@@ -233,7 +233,7 @@ export default function App () {
       currentMusic: configParsed.currentMusic,
       sections: configParsed.sections,
       playlists: configParsed.playlists,
-      songs: configParsed.songs
+      // songs: configParsed.songs
     })
   }, [])
 

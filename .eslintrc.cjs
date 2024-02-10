@@ -23,5 +23,6 @@ module.exports = {
     "@typescript-eslint/no-misused-promises": "off",
     "react-hooks/exhaustive-deps": "off",
     "multiline-ternary": "off",
+    "@typescript-eslint/comma-dangle": "off",
   },
 }

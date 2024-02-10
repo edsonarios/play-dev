@@ -25,8 +25,6 @@ export default function PlayerComponent () {
     playerOptions,
     speed,
     setSpeed,
-    songs,
-    // setSongs,
     playlists,
     pictureInPicture,
     setPictureInPicture,
@@ -113,7 +111,7 @@ export default function PlayerComponent () {
     return () => {
       window.removeEventListener('ended', handleVideoEnd)
     }
-  }, [currentMusic, songs.length, repeatPlaylist, randomPlaylist])
+  }, [currentMusic, repeatPlaylist, randomPlaylist])
 
   // Event play
   useEffect(() => {
@@ -280,7 +278,7 @@ export default function PlayerComponent () {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [playlists, songs, pictureInPicture])
+  }, [playlists, pictureInPicture])
 
   // Set speed from right control
   useEffect(() => {
