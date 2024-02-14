@@ -26,7 +26,7 @@ export function PlaylistDetail () {
     setEditTemporallySection,
     currentSectionView,
     currentPlaylistView,
-    setCurrentPlaylistView
+    setCurrentPlaylistView,
   } = usePlayerStore<StoreType>((state) => state)
   const totalDurationSongs = currentPlaylistView?.songs.reduce(
     (acc, song) => acc + song.duration,

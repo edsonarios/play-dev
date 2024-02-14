@@ -14,7 +14,7 @@ export function PlaylistPipMode () {
     sections,
     setCurrentSectionView,
     setCurrentPlaylistView,
-    setSections
+    setSections,
   } = usePlayerStore<StoreType>((state) => state)
 
   const handleSetPlaylistView = (sectionID: string, playlistId: string) => {
@@ -22,11 +22,11 @@ export function PlaylistPipMode () {
       .find((section) => section.id === sectionID)
       ?.playlists.find((playlist) => playlist.id === playlistId)
 
-    if (playlistToView === undefined) return
     setCurrentSectionView(sectionID)
     setCurrentPlaylistView(playlistToView)
     withViewTransition(() => {
       setPlaylistView(`${sectionID};${playlistId}`)
+      console.timeEnd('time2')
     })
   }
 

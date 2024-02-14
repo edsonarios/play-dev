@@ -64,6 +64,9 @@ export interface StoreType {
   currentPlaylistView: IPlaylist | undefined
   setCurrentPlaylistView: (currentPlaylistView: IPlaylist | undefined) => void
 
+  currentPlaylistSongsView: ISong[]
+  setCurrentPlaylistSongsView: (currentPlaylistSongsView: ISong[]) => void
+
   songsIdSelected: string[]
   setSongsIdSelected: (songsSelected: string[]) => void
 
@@ -164,6 +167,9 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
 
   currentPlaylistView: undefined,
   setCurrentPlaylistView: (currentPlaylistView) => { set({ currentPlaylistView }) },
+
+  currentPlaylistSongsView: [],
+  setCurrentPlaylistSongsView: (currentPlaylistSongsView) => { set({ currentPlaylistSongsView }) },
 
   songsIdSelected: [],
   setSongsIdSelected: (songsIdSelected) => { set({ songsIdSelected }) },

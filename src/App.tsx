@@ -56,21 +56,11 @@ export default function App () {
     currentMusic,
     pictureInPicture,
     playlistView,
-    // playlists,
     editTemporallyColor,
     modeColor,
     language,
     sections,
-    playlistsMap
   } = usePlayerStore<StoreType>((state) => state)
-
-  useEffect(() => {
-    sections.forEach((section) => {
-      section.playlists.forEach((playlist) => {
-        playlistsMap.set(playlist.id, playlist)
-      })
-    })
-  }, [])
 
   const { i18n } = useTranslation()
   useEffect(() => {
@@ -85,10 +75,9 @@ export default function App () {
     if (playlistView !== '0' && pictureInPicture) {
       const [sectionId, playlistId] = playlistView.split(';')
       // Take color in pip mode from current view playlist
-      const viewPlaylist = sections.find(section => section.id === sectionId)?.playlists.find(ply => ply.id === playlistId)
-      // const viewPlaylist = playlists.find(
-      //   (playlist) => playlist.id === playlistId
-      // )
+      const viewPlaylist = sections
+        .find((section) => section.id === sectionId)
+        ?.playlists.find((ply) => ply.id === playlistId)
       if (viewPlaylist?.color !== undefined) {
         codeColor = colors[viewPlaylist.color]
       }
@@ -108,8 +97,7 @@ export default function App () {
     playlistView,
     pictureInPicture,
     currentMusic.playlist,
-    // playlists,
-    modeColor
+    modeColor,
   ])
 
   useEffect(() => {
@@ -205,8 +193,6 @@ export default function App () {
         language: state.language,
         currentMusic: state.currentMusic,
         sections: state.sections,
-        // playlists: state.playlists,
-        // songs: state.songs
       }
       const json = JSON.stringify(exportState, null, 2)
       const response = await window.electronAPI.exportConfig(json)
@@ -232,8 +218,6 @@ export default function App () {
       language: configParsed.language,
       currentMusic: configParsed.currentMusic,
       sections: configParsed.sections,
-      // playlists: configParsed.playlists,
-      // songs: configParsed.songs
     })
   }, [])
 
@@ -263,7 +247,7 @@ export default function App () {
             className="rounded-lg overflow-y-auto overflow-x-hidden w-full h-full flex items-center relative flex-col"
             style={{
               background: `linear-gradient(to bottom, ${currentColor}, #18181b)`,
-              transition: 'opacity 0.5s ease'
+              transition: 'opacity 0.5s ease',
             }}
           >
             {/* Just gradient with pictureInPicture is enable */}
@@ -272,7 +256,7 @@ export default function App () {
               style={{
                 background: `linear-gradient(to bottom, ${backGroundColor}, #18181b)`,
                 transition: 'opacity 0.7s ease',
-                opacity: pictureInPicture && playlistView === '0' ? 1 : 0
+                opacity: pictureInPicture && playlistView === '0' ? 1 : 0,
               }}
             />
             <Header />
