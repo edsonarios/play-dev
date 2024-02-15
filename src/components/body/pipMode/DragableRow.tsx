@@ -2,6 +2,7 @@ import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 import { PauseTableIcon, PlayTableIcon } from '@/icons/playlist/PlayPause'
 import { type ISong } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { withViewTransition } from '@/utils/transition'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -19,7 +20,7 @@ export function DragableRow ({
   song,
   index,
   playSong,
-  deleteSong
+  deleteSong,
 }: IDragableRow) {
   const { t } = useTranslation()
 
@@ -34,7 +35,9 @@ export function DragableRow ({
     currentSectionView,
     currentPlaylistView,
     setCurrentPlaylistView,
-    isPlaying
+    isPlaying,
+    setCurrentMusic,
+    randomPlaylist,
   } = usePlayerStore<StoreType>((state) => state)
   const {
     isDragging,
@@ -43,18 +46,18 @@ export function DragableRow ({
     setNodeRef,
     transform,
     transition,
-    overIndex
+    overIndex,
   } = useSortable({
     id: song.id,
     transition: {
       duration: 300,
-      easing: 'cubic-bezier(1,1,0,0)'
-    }
+      easing: 'cubic-bezier(1,1,0,0)',
+    },
   })
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition
+    transition,
   }
 
   const handleRowClick = (event: any) => {
@@ -145,7 +148,7 @@ export function DragableRow ({
           const newSong: ISong = {
             ...item,
             albumId: song.albumId,
-            image: song.image
+            image: song.image,
           }
           songsToAdd.push(newSong)
         }
@@ -171,10 +174,28 @@ export function DragableRow ({
           }
           return section
         })
+        // Update current playlist if is playing
+        if (currentPlaylistView?.id === currentMusic.playlist?.id) {
+          const newSongs = randomPlaylist
+            ? shuffleSongsWithCurrentSong(
+              newPlaylistSongs!,
+              currentMusic.song!.id
+            )
+            : newPlaylistSongs
+
+          setCurrentMusic({
+            ...currentMusic,
+            playlist: {
+              ...currentMusic.playlist!,
+              songs: newPlaylistSongs!,
+            },
+            songs: newSongs!,
+          })
+        }
         withViewTransition(() => {
           setCurrentPlaylistView({
             ...currentPlaylistView!,
-            songs: newPlaylistSongs!
+            songs: newPlaylistSongs!,
           })
           setSections(newSectionToAdd)
         })
@@ -200,7 +221,9 @@ export function DragableRow ({
       ${isDragOver ? 'border-t-4 border-blue-600 border-opacity-60' : ''}`}
       style={style}
       onClick={handleRowClick}
-      onDoubleClick={() => { playSong(song) }}
+      onDoubleClick={() => {
+        playSong(song)
+      }}
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -210,9 +233,7 @@ export function DragableRow ({
     >
       {/* Id or equaliser icon */}
       <td
-        className={
-          'group relative px-4 py-2 rounded-tl-lg rounded-bl-lg w-5'
-        }
+        className={'group relative px-4 py-2 rounded-tl-lg rounded-bl-lg w-5'}
       >
         {currentMusic.song?.id === song.id &&
         currentMusic.song?.albumId === song.albumId ? (
@@ -223,15 +244,19 @@ export function DragableRow ({
             className="group-hover:opacity-0"
           />
             ) : (
-          <div className='group-hover:opacity-0'>{index + 1}</div>
+          <div className="group-hover:opacity-0">{index + 1}</div>
             )}
         <button
           className="absolute p-2 right-2 bottom-4 opacity-0 group-hover:opacity-80 z-10 "
-          onClick={() => { playSong(song) }}
+          onClick={() => {
+            playSong(song)
+          }}
         >
-          {currentMusic.song?.id === song.id && isPlaying
-            ? <PauseTableIcon />
-            : <PlayTableIcon />}
+          {currentMusic.song?.id === song.id && isPlaying ? (
+            <PauseTableIcon />
+          ) : (
+            <PlayTableIcon />
+          )}
         </button>
       </td>
       {/* Title */}

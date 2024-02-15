@@ -30,7 +30,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     setSections,
     setPlaylistView,
     setCurrentPlaylistView,
-    currentPlaylistView
+    currentPlaylistView,
   } = usePlayerStore<StoreType>((state) => state)
 
   const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
@@ -40,25 +40,25 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     listeners,
     setNodeRef,
     transform,
-    transition
+    transition,
   } = useSortable({
     id: playlist.id,
     transition: {
       duration: 300,
-      easing: 'cubic-bezier(1,1,0,0)'
+      easing: 'cubic-bezier(1,1,0,0)',
     },
-    disabled: isPlaylistExpanded
+    disabled: isPlaylistExpanded,
   })
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition
+    transition,
   }
 
-  const [currentPlaylist, setCurrentPlaylist] = useState<ISong[]>([])
+  const [currentSongs, setCurrentSongs] = useState<ISong[]>([])
   useEffect(() => {
     if (isPlaylistExpanded) {
-      setCurrentPlaylist(playlist.songs)
+      setCurrentSongs(playlist.songs)
     }
   }, [sections])
 
@@ -70,12 +70,12 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     } else {
       setIsPlaylistExpanded(true)
     }
-    if (isPlaylistExpanded && currentPlaylist.length > 0) {
-      setCurrentPlaylist([])
+    if (isPlaylistExpanded && currentSongs.length > 0) {
+      setCurrentSongs([])
       return
     }
     const playListSongs = playlist.songs
-    setCurrentPlaylist(playListSongs)
+    setCurrentSongs(playListSongs)
   }
 
   const playSong = (song: ISong) => {
@@ -87,7 +87,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     setCurrentMusic({
       playlist,
       song,
-      songs: playListSongs
+      songs: playListSongs,
     })
 
     setIsPlaying(true)
@@ -97,23 +97,23 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     withViewTransition(() => {
       if (playlist.id === '1') {
         const newSections = structuredClone(sections)
-        const sectionUpdated = newSections.map(section => {
-          const newPlaylist = section.playlists.map(ply => {
+        const sectionUpdated = newSections.map((section) => {
+          const newPlaylist = section.playlists.map((ply) => {
             if (ply.id === '1') {
               return {
                 ...ply,
-                songs: []
+                songs: [],
               }
             }
             return ply
           })
           return {
             ...section,
-            playlists: newPlaylist
+            playlists: newPlaylist,
           }
         })
         setSections(sectionUpdated)
-        setCurrentPlaylist([])
+        setCurrentSongs([])
         setIsPlaylistExpanded(false)
         return
       }
@@ -170,68 +170,83 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     dragCounter.current = 0
 
     const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
+    if (dataFiles.length === 0) return
+
     const filesWithMetadata = await window.electronAPI.getMusicMetadata(
       dataFiles.map((file) => file.path)
     )
-    if (dataFiles !== undefined) {
-      if (dataFiles.length > 0) {
-        const songsToAdd: ISong[] = []
-        for (const item of filesWithMetadata) {
-          const newSong: ISong = {
-            ...item,
-            albumId: playlist.id,
-            image: playlist.cover[0]
-          }
-          songsToAdd.push(newSong)
-        }
-        withViewTransition(() => {
-          const newSections = structuredClone(sections)
-          const currentSectionIndex = newSections.findIndex(
-            (section) => section.id === sectionID
-          )
-          if (currentSectionIndex === -1) return
-          const currentPlaylistIndex = newSections[
-            currentSectionIndex
-          ].playlists.findIndex((item) => item.id === playlist.id)
-          if (currentPlaylistIndex === -1) return
-          newSections[currentSectionIndex].playlists[
-            currentPlaylistIndex
-          ].songs = [
-            ...newSections[currentSectionIndex].playlists[currentPlaylistIndex]
-              .songs,
-            ...songsToAdd
-          ]
-          // Update sections
-          setSections(newSections)
+    const songsToAdd = filesWithMetadata.map((item) => ({
+      ...item,
+      albumId: playlist.id,
+      image: playlist.cover[0],
+    }))
 
-          // Update aside playlist
-          if (isPlaylistExpanded) {
-            setCurrentPlaylist([...currentPlaylist, ...songsToAdd])
+    const newSections = sections.map((section) => {
+      if (section.id !== sectionID) return section
+      const newPlaylists = section.playlists.map((ply) => {
+        if (ply.id === playlist.id) {
+          return {
+            ...ply,
+            songs: [...ply.songs, ...songsToAdd],
           }
-          // Update current playlist view
-          if (playlist.id === currentPlaylistView?.id) {
-            setCurrentPlaylistView(newSections[currentSectionIndex].playlists[currentPlaylistIndex])
-          }
-        })
+        }
+        return ply
+      })
+      return {
+        ...section,
+        playlists: newPlaylists,
       }
+    })
+    // Update sections
+    setSections(newSections)
+
+    // Update aside playlist
+    if (isPlaylistExpanded) {
+      setCurrentSongs([...currentSongs, ...songsToAdd])
+    }
+    // Update current playlist view
+    if (playlist.id === currentPlaylistView?.id) {
+      setCurrentPlaylistView({
+        ...currentPlaylistView,
+        songs: [...currentPlaylistView.songs, ...songsToAdd],
+      })
+    }
+
+    // Update current playlist if is playing
+    if (playlist.id === currentMusic.playlist?.id) {
+      const newSongsToAdd = [...currentMusic.playlist.songs, ...songsToAdd]
+      const newSongs = randomPlaylist
+        ? shuffleSongsWithCurrentSong(
+          newSongsToAdd,
+          currentMusic.song!.id
+        )
+        : newSongsToAdd
+      setCurrentMusic({
+        ...currentMusic,
+        playlist: {
+          ...currentMusic.playlist,
+          songs: newSongsToAdd,
+        },
+        songs: newSongs,
+      })
     }
   }
 
   // Focus in current song
   const songRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (songRefToScroll === undefined || currentPlaylist === undefined) return
+    if (songRefToScroll === undefined || currentSongs === undefined) return
     if (
-      currentPlaylist !== undefined &&
+      currentSongs !== undefined &&
       playlist.id === songRefToScroll.albumId &&
       !isPlaylistExpanded
     ) {
       setIsPlaylistExpanded(true)
       const playListSongs = playlist.songs
-      setCurrentPlaylist(playListSongs)
+      setCurrentSongs(playListSongs)
       setSongRefToScroll(undefined)
     }
-    const currentSong = currentPlaylist.find(
+    const currentSong = currentSongs.find(
       (song) => song.id === currentMusic.song?.id
     )
     if (songRefToScroll.id === currentSong?.id) {
@@ -242,9 +257,9 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
 
   // Hiden all songs from playlists
   useEffect(() => {
-    if (currentPlaylist === undefined || currentPlaylist.length === 0) return
+    if (currentSongs === undefined || currentSongs.length === 0) return
     setIsPlaylistExpanded(false)
-    setCurrentPlaylist([])
+    setCurrentSongs([])
   }, [homeHideSongs])
 
   return (
@@ -311,10 +326,10 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
       </a>
 
       {/* Playlist songs */}
-      {currentPlaylist.length > 0 && (
+      {currentSongs.length > 0 && (
         <div className="bg-zinc-800 rounded-md">
           <ul className="flex flex-col ">
-            {currentPlaylist.map((song, index) => (
+            {currentSongs.map((song, index) => (
               <li
                 key={song.id}
                 className={`${
@@ -340,16 +355,14 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
                     className="mr-3 flex-shrink-0"
                   >
                     {currentMusic.song?.id === song.id &&
-                    currentMusic.song?.albumId === song.albumId
-                      ? (
+                    currentMusic.song?.albumId === song.albumId ? (
                       <img
                         src="equaliser-animated-green.gif"
                         alt="equaliser"
                         width={16}
                         height={16}
                       />
-                        )
-                      : (
+                        ) : (
                           index + 1
                         )}
                   </div>
@@ -367,7 +380,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
           </ul>
         </div>
       )}
-      {isPlaylistExpanded && currentPlaylist.length === 0 && (
+      {isPlaylistExpanded && currentSongs.length === 0 && (
         <h3 className="ml-4 mt-1 text-xs">Not Found Songs in this playlist</h3>
       )}
     </div>

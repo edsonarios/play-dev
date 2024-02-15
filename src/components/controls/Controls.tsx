@@ -155,7 +155,7 @@ export default function Controls () {
       default:
         break
     }
-  }, [currentMusic.song, repeatPlaylist, randomPlaylist, isPlaying])
+  }, [currentMusic.song, currentMusic.songs, repeatPlaylist, randomPlaylist, isPlaying])
 
   useEffect(() => {
     window.electronAPI.receive('media-action', handleMediaAction)

@@ -34,6 +34,8 @@ export default function PlayerComponent () {
   } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
+    console.log('PlayerComponent')
+    console.log(currentMusic)
     if (currentMusic.song !== undefined) {
       let newVideoSrc
       if (currentMusic.song.format === 'youtube') {
@@ -77,6 +79,17 @@ export default function PlayerComponent () {
             }
           })
         }
+      }
+    }
+    if (currentMusic.song === undefined && playerRef.current !== null) {
+      playerRef.current.plyr.source = {
+        type: 'video',
+        sources: [
+          {
+            src: '',
+            provider: 'html5'
+          }
+        ]
       }
     }
   }, [currentMusic.song])

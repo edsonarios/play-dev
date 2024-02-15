@@ -9,7 +9,7 @@ import {
   useSensor,
   MouseSensor,
   TouchSensor,
-  type DragStartEvent
+  type DragStartEvent,
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
@@ -38,7 +38,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     currentSectionView,
     setCurrentPlaylistView,
     isPlaying,
-    setIsPlaying
+    setIsPlaying,
   } = usePlayerStore<StoreType>((state) => state)
 
   const playSong = (toPlaySong: ISong) => {
@@ -55,7 +55,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     setCurrentMusic({
       playlist,
       song: toPlaySong,
-      songs: playListSongs
+      songs: playListSongs,
     })
   }
 
@@ -78,6 +78,27 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
     const newCurrentPlaylist = updatedSections
       .find((section) => section.id === currentSectionView)
       ?.playlists.find((ply) => ply.id === playlist?.id)
+
+    // Update current playlist if is playing
+    if (playlist?.id === currentMusic.playlist?.id) {
+      let continueCurrentSong = true
+      if (currentMusic.song?.id === toDeleteSong.id) {
+        continueCurrentSong = false
+        setIsPlaying(false)
+      }
+      const newSongs = currentMusic.songs.filter(
+        (song) => song.id !== toDeleteSong.id
+      )
+      setCurrentMusic({
+        ...currentMusic,
+        song: continueCurrentSong ? currentMusic.song : undefined,
+        playlist: {
+          ...currentMusic.playlist!,
+          songs: newCurrentPlaylist!.songs,
+        },
+        songs: newSongs,
+      })
+    }
 
     withViewTransition(() => {
       setCurrentPlaylistView(newCurrentPlaylist)
@@ -134,7 +155,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       )
       const newSongsWithCurrentAlbum = [
         ...songsWithoutCurrentAlbum,
-        ...newSongs
+        ...newSongs,
       ]
 
       // set the new songs
@@ -186,7 +207,7 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       )
       const newSongsWithCurrentAlbum = [
         ...songsWithoutCurrentAlbum,
-        ...newSongs
+        ...newSongs,
       ]
       // set the new songs
       const newSections = sections.map((section) => {
@@ -258,14 +279,14 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
   // Delay in drang and drop
   const activationConstraint = {
     delay: 300,
-    tolerance: 5
+    tolerance: 5,
   }
   const sensors = useSensors(
     useSensor(MouseSensor, {
-      activationConstraint
+      activationConstraint,
     }),
     useSensor(TouchSensor, {
-      activationConstraint
+      activationConstraint,
     })
   )
   return (
