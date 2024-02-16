@@ -30,7 +30,7 @@ export default function PlayerComponent () {
     randomPlaylist,
     setIsLoading,
     sections,
-    setSections
+    setSections,
   } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
@@ -58,9 +58,9 @@ export default function PlayerComponent () {
             sources: [
               {
                 src: newVideoSrc,
-                provider: 'youtube'
-              }
-            ]
+                provider: 'youtube',
+              },
+            ],
           }
         } else {
           playerRef.current.plyr.autoplay = false
@@ -69,9 +69,9 @@ export default function PlayerComponent () {
             sources: [
               {
                 src: newVideoSrc,
-                provider: 'html5'
-              }
-            ]
+                provider: 'html5',
+              },
+            ],
           }
           void (playerRef.current.plyr.play() as Promise<void>).then(() => {
             if (playerRef.current !== null && pictureInPicture) {
@@ -87,9 +87,9 @@ export default function PlayerComponent () {
         sources: [
           {
             src: '',
-            provider: 'html5'
-          }
-        ]
+            provider: 'html5',
+          },
+        ],
       }
     }
   }, [currentMusic.song])
@@ -114,7 +114,7 @@ export default function PlayerComponent () {
 
         setCurrentMusic({
           ...currentMusic,
-          song: nextSong
+          song: nextSong,
         })
       }
     }
@@ -272,7 +272,9 @@ export default function PlayerComponent () {
         event.target.tagName === 'INPUT' ||
         event.target.tagName === 'TEXTAREA' ||
         event.target.tagName === 'SELECT'
-      ) { return }
+      ) {
+        return
+      }
       if (event.key === '+') {
         changePlaybackSpeed(true)
       }
@@ -400,7 +402,7 @@ export default function PlayerComponent () {
       const newSong: ISong = {
         ...item,
         albumId: '1',
-        image: defaultPlaylist?.cover[0] ?? ''
+        image: defaultPlaylist?.cover[0] ?? '',
       }
       return newSong
     })
@@ -415,7 +417,7 @@ export default function PlayerComponent () {
           ...section,
           playlists: section.playlists.map((ply) =>
             ply?.id === '1' ? defaultPlaylist : ply
-          )
+          ),
         }
       }
       return section
@@ -435,7 +437,7 @@ export default function PlayerComponent () {
       setCurrentMusic({
         playlist: defaultPlaylist,
         song: defaultSongsToAdd[0],
-        songs: newSongs
+        songs: newSongs,
       })
     })
   }

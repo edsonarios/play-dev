@@ -161,20 +161,28 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       // set the new songs
       const newSections = sections.map((section) => {
         if (section.id === currentSectionView) {
-          const newPlaylists = section.playlists.map((playlist) => {
-            if (playlist.id === playlist?.id) {
-              return { ...playlist, songs: newSongsWithCurrentAlbum }
+          section.playlists = section.playlists.map((ply) => {
+            if (ply.id === playlist?.id) {
+              ply.songs = newSongsWithCurrentAlbum
             }
-            return playlist
+            return ply
           })
-          return { ...section, playlists: newPlaylists }
         }
         return section
       })
 
       const newCurrentPlaylist = newSections
         .find((section) => section.id === currentSectionView)
-        ?.playlists.find((ply) => ply.id === playlist?.id)
+        ?.playlists.find((ply) => ply?.id === playlist?.id)
+
+      // Update current playlist if is playing
+      if (playlist?.id === currentMusic.playlist?.id && !randomPlaylist) {
+        setCurrentMusic({
+          ...currentMusic,
+          playlist: newCurrentPlaylist,
+          songs: newCurrentPlaylist!.songs,
+        })
+      }
 
       setCurrentPlaylistView(newCurrentPlaylist)
       withViewTransition(() => {
