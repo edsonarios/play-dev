@@ -109,6 +109,9 @@ export interface StoreType {
   playlistsMap: Map<string, IPlaylist>
   setPlaylistsMap: (playlistsMap: Map<string, IPlaylist>) => void
 
+  theatreMode: boolean
+  setTheatreMode: (theatreMode: boolean) => void
+
   isShowFullControls: boolean
   setIsShowFullControls: (isShowFullControls: boolean) => void
 }
@@ -119,7 +122,7 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   playerOptions: {
     loop: { active: false },
     autoplay: false,
-    hideControls: false,
+    hideControls: true,
     keyboard: {
       global: true
     },
@@ -239,6 +242,9 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
 
   playlistsMap: new Map(),
   setPlaylistsMap: (playlistsMap) => { set({ playlistsMap }) },
+
+  theatreMode: false,
+  setTheatreMode: (theatreMode) => { set({ theatreMode }) },
 
   isShowFullControls: false,
   setIsShowFullControls: (isShowFullControls) => { set({ isShowFullControls }) }

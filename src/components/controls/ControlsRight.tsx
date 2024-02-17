@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   VolumeFullIcon,
   VolumeLowIcon,
@@ -12,6 +12,7 @@ import { PictureInPictureOffIcon } from '@/icons/controls/PictureInPicture'
 import { speedOptions } from '@/utils/constants'
 import { useTranslation } from 'react-i18next'
 import { ShortCutsIcon } from '@/icons/controls/Shortcuts'
+import { IconTheater } from '@/icons/controls/Thread'
 
 export function ControlsRight () {
   const { t } = useTranslation()
@@ -23,7 +24,9 @@ export function ControlsRight () {
     pictureInPicture,
     setPictureInPicture,
     isShowShortcuts,
-    setIsShowShortcuts
+    setIsShowShortcuts,
+    setTheatreMode,
+    setIsShowFullControls,
   } = usePlayerStore<StoreType>((state) => state)
   const previousVolumeRef = useRef(volume)
 
@@ -77,6 +80,25 @@ export function ControlsRight () {
   const handleShowShortcuts = () => {
     setIsShowShortcuts(true)
   }
+
+  const handledTheaterMode = () => {
+    setIsShowFullControls(true)
+    setTheatreMode(true)
+  }
+
+  // Event key escape to close edit playlist
+  useEffect(() => {
+    const handleKeyPress = (event: any) => {
+      if (event.key === 'Escape') {
+        setTheatreMode(false)
+        setIsShowFullControls(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
 
   return (
     <div className="flex justify-center gap-x-2 text-white">
@@ -146,6 +168,15 @@ export function ControlsRight () {
         onClick={handlePictureInPicture}
       >
         {showIconPictureInPicture()}
+      </button>
+      <button
+        className={`ml-2 opacity-60 hover:opacity-100 transition ${
+          pictureInPicture ? 'text-green-400' : ''
+        }`}
+        title={t('controls.pip')}
+        onClick={handledTheaterMode}
+      >
+        <IconTheater />
       </button>
     </div>
   )

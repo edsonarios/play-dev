@@ -33,6 +33,8 @@ export default function PlayerComponent () {
     setSections,
     isShowFullControls,
     setIsShowFullControls,
+    theatreMode,
+    setTheatreMode,
   } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
@@ -287,6 +289,10 @@ export default function PlayerComponent () {
       if (event.key === 'o') {
         await OpenFolder(sections, setSections, setIsLoading)
       }
+      if (event.key === 't') {
+        setIsShowFullControls(true)
+        setTheatreMode(true)
+      }
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
@@ -366,7 +372,7 @@ export default function PlayerComponent () {
   // Leave full screen
   useEffect(() => {
     const handleFullScreen = (event: any) => {
-      if (event.target !== undefined) {
+      if (event.target !== undefined && !theatreMode) {
         setIsShowFullControls(false)
       }
     }
@@ -377,7 +383,7 @@ export default function PlayerComponent () {
         window.removeEventListener('exitfullscreen', handleFullScreen)
       }
     }
-  }, [])
+  }, [theatreMode])
 
   // drang and drop
   const handleDragOver = (event: any) => {
@@ -455,13 +461,15 @@ export default function PlayerComponent () {
         onDrop={handleDropElectron}
         className={pictureInPicture ? 'opacity-0 pointer-events-none' : ''}
       >
-        {/* disable error, because de source is handled by useEffect */}
-        {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error */}
-        <Plyr
-          ref={playerRef}
-          options={playerOptions}
-        />
+        <div className={`${theatreMode ? 'theatre-mode' : ''}`}>
+          {/* disable error, because de source is handled by useEffect */}
+          {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error */}
+          <Plyr
+            ref={playerRef}
+            options={playerOptions}
+          />
+        </div>
       </div>
     </div>
   )

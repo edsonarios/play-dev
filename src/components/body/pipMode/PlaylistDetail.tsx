@@ -120,6 +120,7 @@ export function PlaylistDetail () {
   useEffect(() => {
     const handleKeyPress = (event: any) => {
       if (event.key === 'Escape' && currentPlaylistView !== undefined) {
+        console.log('close modal')
         withViewTransition(() => {
           setEditTemporallyTitle('')
           setEditTemporallyColor(currentPlaylistView.color)

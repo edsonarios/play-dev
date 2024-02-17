@@ -60,6 +60,7 @@ export default function App () {
     modeColor,
     language,
     sections,
+    theatreMode,
   } = usePlayerStore<StoreType>((state) => state)
 
   const { i18n } = useTranslation()
@@ -93,12 +94,7 @@ export default function App () {
     newColor = codeColor[modeColor as keyof typeof codeColor]
     backGroundColor = colors.gray[modeColor as keyof typeof colors.gray]
     setCurrentColor(newColor)
-  }, [
-    playlistView,
-    pictureInPicture,
-    currentMusic.playlist,
-    modeColor,
-  ])
+  }, [playlistView, pictureInPicture, currentMusic.playlist, modeColor])
 
   useEffect(() => {
     if (editTemporallyColor !== '') {
@@ -110,38 +106,61 @@ export default function App () {
 
   const setPlaylist = () => {
     if (pictureInPicture && playlistView !== '0') {
-      return (
-        <PlaylistDetail />
-      )
+      return <PlaylistDetail />
     }
     return <PlaylistPipMode />
   }
 
+  // resize player
+  const appContainerRef = useRef<HTMLDivElement>(null)
   const playerContainerRef = useRef<HTMLElement>(null)
   const updatePlayerSize = () => {
     if (playerContainerRef.current !== null) {
-      const containerWidth = playerContainerRef.current.offsetWidth
-      const containerHeight = playerContainerRef.current.offsetHeight
-
-      const aspectRatio = 16 / 8
-
-      let playerHeight = containerHeight
-      let playerWidth = containerHeight * aspectRatio
-
-      if (playerWidth > containerWidth) {
-        playerWidth = containerWidth
-        playerHeight = containerWidth / aspectRatio
-      }
-
-      if (playerHeight > containerHeight) {
-        playerHeight = containerHeight
-        playerWidth = playerHeight * aspectRatio
-      }
-
       const playerWrapper = document.querySelector(
         '.plyr__video-wrapper'
       ) as HTMLElement
-      if (playerWrapper !== null) {
+
+      if (playerWrapper !== null && !theatreMode) {
+        // Resize player in normal mode
+        const containerWidth = playerContainerRef.current.offsetWidth
+        const containerHeight = playerContainerRef.current.offsetHeight
+        const aspectRatio = 16 / 8
+
+        let playerHeight = containerHeight
+        let playerWidth = containerHeight * aspectRatio
+
+        if (playerWidth > containerWidth) {
+          playerWidth = containerWidth
+          playerHeight = containerWidth / aspectRatio
+        }
+
+        if (playerHeight > containerHeight) {
+          playerHeight = containerHeight
+          playerWidth = playerHeight * aspectRatio
+        }
+        playerWrapper.style.maxWidth = `${playerWidth}px`
+        playerWrapper.style.minWidth = `${playerWidth}px`
+        playerWrapper.style.maxHeight = `${playerHeight}px`
+        playerWrapper.style.minHeight = `${playerHeight}px`
+      } else {
+        // Resize player in theatre mode
+        if (appContainerRef.current === null) return
+        const appWidth = appContainerRef.current.offsetWidth
+        const appHeight = appContainerRef.current.offsetHeight
+        const aspectRatio = 16 / 9
+
+        let playerHeight = appHeight
+        let playerWidth = appHeight * aspectRatio
+
+        if (playerWidth > appWidth) {
+          playerWidth = appWidth
+          playerHeight = appWidth / aspectRatio
+        }
+
+        if (playerHeight > appHeight) {
+          playerHeight = appHeight
+          playerWidth = playerHeight * aspectRatio
+        }
         playerWrapper.style.maxWidth = `${playerWidth}px`
         playerWrapper.style.minWidth = `${playerWidth}px`
         playerWrapper.style.maxHeight = `${playerHeight}px`
@@ -156,7 +175,7 @@ export default function App () {
     return () => {
       window.removeEventListener('resize', updatePlayerSize)
     }
-  }, [currentMusic.song])
+  }, [currentMusic.song, theatreMode])
 
   // Event full screen
   useEffect(() => {
@@ -229,7 +248,11 @@ export default function App () {
   }, [])
 
   return (
-    <div id="app" className="h-screen p-2 gap-3 overflow-x-hidden">
+    <div
+      id="app"
+      ref={appContainerRef}
+      className="h-screen p-2 gap-3 overflow-x-hidden"
+    >
       <div className="[grid-area:main] overflow-y-auto">
         <Split
           className="flex flex-row h-full"
