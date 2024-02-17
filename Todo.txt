@@ -14,13 +14,10 @@
 * Integrate with Spotify and Youtube - Done Youtube
 
 * [Bug] open folder, is mandatory choise any song, to select the actual folder, should be select the actual folder or just select a folder 
-* [Bug] in DragableRow, when added new song, the if the current playlist is the currentMusic, the currentMusic is not updated, is needed to play manually the new playlist with double click in the song or any song in the AsideMenu "updateCurrentSongsIfNeeded"
 
 Press alt in a song and open the folder where is the song
 
 * Add custom loader when the application is loading
-
-* Refactor playlist, now the playlists is separated from the songs, all songs is in a single place, in every click a playlist, made filter in all songs, and it's not the best idea in quality - use indexation with new Map()
 
 Publish
 - Packaging
@@ -34,5 +31,3 @@ Publish
 In Mac
 - MediaNext and MediaPrevious not work
 - Verify if the update is working
-
-- Add description to playlist, include youtube

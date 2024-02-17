@@ -223,16 +223,6 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
         artists: [],
         songs: []
       }]
-    },
-    {
-      id: window.crypto.randomUUID(),
-      title: 'Favorites',
-      playlists: []
-    },
-    {
-      id: window.crypto.randomUUID(),
-      title: 'Youtube',
-      playlists: []
     }
   ],
   setSections: (sections) => { set({ sections }) },
