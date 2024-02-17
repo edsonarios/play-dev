@@ -108,6 +108,9 @@ export interface StoreType {
 
   playlistsMap: Map<string, IPlaylist>
   setPlaylistsMap: (playlistsMap: Map<string, IPlaylist>) => void
+
+  isShowFullControls: boolean
+  setIsShowFullControls: (isShowFullControls: boolean) => void
 }
 const storePlyr: StateCreator<StoreType> = (set) => ({
   modeColor: 'dark',
@@ -116,12 +119,12 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   playerOptions: {
     loop: { active: false },
     autoplay: false,
-    hideControls: true,
+    hideControls: false,
     keyboard: {
       global: true
     },
     invertTime: false,
-    controls: ['play-large', 'pip', 'fullscreen']
+    controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
   },
   setPlayerOptions: (playerOptions) => { set({ playerOptions }) },
 
@@ -235,7 +238,10 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
   setEditTemporallySection: (editTemporallySection) => { set({ editTemporallySection }) },
 
   playlistsMap: new Map(),
-  setPlaylistsMap: (playlistsMap) => { set({ playlistsMap }) }
+  setPlaylistsMap: (playlistsMap) => { set({ playlistsMap }) },
+
+  isShowFullControls: false,
+  setIsShowFullControls: (isShowFullControls) => { set({ isShowFullControls }) }
 })
 
 export const usePlayerStore = create<StoreType>()(
@@ -251,7 +257,8 @@ export const usePlayerStore = create<StoreType>()(
         repeatPlaylist: state.repeatPlaylist,
         volume: state.volume,
         profile: state.profile,
-        language: state.language
+        language: state.language,
+        isShowFullControls: state.isShowFullControls
       })
     }
   )

@@ -145,3 +145,19 @@ html {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Hide controls in !fullScreen*/
+.hide-controls [data-plyr="play"],
+.hide-controls [aria-label="Current time"],
+.hide-controls .plyr__volume,
+.hide-controls .plyr__menu,
+.hide-controls .plyr__progress {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Show play center control*/
+.hide-controls .plyr__control--overlaid {
+  opacity: 1;
+  pointer-events: all;
+}

@@ -11,13 +11,13 @@ export const OpenFolder = async (
     const folder = await window.electronAPI.openDirectoryDialog()
     if (folder?.playlist !== undefined) {
       const newSections = structuredClone(sections)
-      newSections.map((section) => {
+      const sectionUpdates = newSections.map((section) => {
         if (section.id === '1') {
           section.playlists.push(folder.playlist)
         }
         return section
       })
-      setSections(newSections)
+      setSections(sectionUpdates)
     }
     setIsLoading(false)
   })

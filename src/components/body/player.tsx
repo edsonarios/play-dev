@@ -31,11 +31,11 @@ export default function PlayerComponent () {
     setIsLoading,
     sections,
     setSections,
+    isShowFullControls,
+    setIsShowFullControls,
   } = usePlayerStore<StoreType>((state) => state)
 
   useEffect(() => {
-    console.log('PlayerComponent')
-    console.log(currentMusic)
     if (currentMusic.song !== undefined) {
       let newVideoSrc
       if (currentMusic.song.format === 'youtube') {
@@ -292,7 +292,7 @@ export default function PlayerComponent () {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [pictureInPicture])
+  }, [sections, pictureInPicture])
 
   // Set speed from right control
   useEffect(() => {
@@ -348,20 +348,10 @@ export default function PlayerComponent () {
   useEffect(() => {
     const handleFullScreen = (event: any) => {
       if (event.target !== undefined) {
-        // Implement full screen to add controls
-        // console.log(playerOptions)
-        // console.log('enter full screen')
-        // setPlayerOptions({
-        //   loop: { active: false },
-        //   autoplay: true,
-        //   hideControls: true,
-        //   keyboard: {
-        //     global: true
-        //   },
-        //   invertTime: false,
-        //   controls: ['play-large', 'pip', 'volume', 'progress', 'fullscreen']
-        // })
-        // console.log(playerOptions)
+        if (pictureInPicture) {
+          setPictureInPicture(false)
+        }
+        setIsShowFullControls(true)
       }
     }
     if (typeof window !== 'undefined') {
@@ -369,6 +359,22 @@ export default function PlayerComponent () {
 
       return () => {
         window.removeEventListener('enterfullscreen', handleFullScreen)
+      }
+    }
+  }, [pictureInPicture])
+
+  // Leave full screen
+  useEffect(() => {
+    const handleFullScreen = (event: any) => {
+      if (event.target !== undefined) {
+        setIsShowFullControls(false)
+      }
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('exitfullscreen', handleFullScreen)
+
+      return () => {
+        window.removeEventListener('exitfullscreen', handleFullScreen)
       }
     }
   }, [])
@@ -443,7 +449,7 @@ export default function PlayerComponent () {
   }
 
   return (
-    <div className="">
+    <div className={`${!isShowFullControls ? 'hide-controls' : ''}`}>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDropElectron}
@@ -452,7 +458,10 @@ export default function PlayerComponent () {
         {/* disable error, because de source is handled by useEffect */}
         {/* // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error */}
-        <Plyr ref={playerRef} options={playerOptions} />
+        <Plyr
+          ref={playerRef}
+          options={playerOptions}
+        />
       </div>
     </div>
   )
