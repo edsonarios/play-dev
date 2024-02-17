@@ -37,7 +37,8 @@
         "seek%": "Adelantar/Retroceder a 10% - 90%",
         "volumeUpDown": "Subir/Bajar volumen",
         "sppedID": "Subir/Bajar velocidad",
-        "fullScreen": "Pantalla completa"
+        "fullScreen": "Pantalla completa",
+        "theatre": "Modo teatro"
     },
     "playlist": {
         "playlist": "Lista de reproducción",

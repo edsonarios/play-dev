@@ -163,20 +163,14 @@ html {
 }
 
 .theatre-mode {
-  max-width: none;
-  min-width: none;
-  max-height: none;
-  min-height: none;
-  position: fixed; /* Posición fija para cubrir toda la pantalla */
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100vw; /* Ancho total de la ventana */
-  height: 100vh; /* Altura total de la ventana */
-  z-index: 10000; /* Asegura que esté por encima de todo */
-  display: flex; /* Usa Flexbox para centrar el contenido */
-  justify-content: center; /* Centrado horizontal */
-  align-items: center; /* Centrado vertical */
-  background-color: #000; /* Fondo negro para el modo teatro */
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
 }

@@ -164,6 +164,14 @@ export default function ModalShowShortcuts () {
                       </div>
                     </td>
                   </tr>
+                  <tr>
+                    <td className="px-4 py-2 ">{t('controls.theatre')} :</td>
+                    <td className="px-4 py-2 flex flex-row justify-center items-center mb-2">
+                      <div className="border-2 rounded-md border-zinc-600 py-1 px-2 flex flex-row items-center ml-4">
+                        T
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </section>
