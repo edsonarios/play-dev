@@ -310,11 +310,12 @@ ipcMain.handle('import-youtube', async () => {
     await authenticate()
     const profile = await getProfile()
     const playlistsWithSongs = await getDatasFromYoutube()
-    const playlistsWithCovers = improveCovers(playlistsWithSongs.playlistsPlayed, playlistsWithSongs.songsPlayed)
+    const playlistsWithCovers = improveCovers(playlistsWithSongs.playlistsPlayed)
+    // fs.writeFileSync('playlistWithSongs.json', JSON.stringify(playlistsWithSongs))
+    // fs.writeFileSync('playlistWithCovers.json', JSON.stringify(playlistsWithCovers))
     const data = {
       profile,
       playlists: playlistsWithCovers,
-      songs: playlistsWithSongs.songsPlayed
     }
     return data
   } catch (error) {

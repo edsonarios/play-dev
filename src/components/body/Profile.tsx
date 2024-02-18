@@ -2,20 +2,28 @@ import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { UserIcon } from '@/icons/header/User'
 import { useTranslation } from 'react-i18next'
 import { SpotifyIcon, YoutubeIcon } from '@/icons/header/Profile'
+import { type ISections } from '@/lib/data'
 export function ProfileComponent () {
   const { t } = useTranslation()
-  const { setProfile, setPlaylists, setSongs, playlists, songs, profile, setIsLoading } =
-    usePlayerStore<StoreType>((state) => state)
+  const {
+    setProfile,
+    profile,
+    setIsLoading,
+    sections,
+    setSections,
+  } = usePlayerStore<StoreType>((state) => state)
 
   // Import PLaylist from Youtube
   const handledImportYoutube = async () => {
     setIsLoading(true)
     const response = await window.electronAPI.importYoutube()
-    const newPlaylists = [...playlists, ...response.playlists]
-    const newSongs = [...songs, ...response.songs]
+    const newSection: ISections = {
+      id: window.crypto.randomUUID(),
+      title: 'Youtube',
+      playlists: response.playlists,
+    }
     setProfile(response.profile)
-    setPlaylists(newPlaylists)
-    setSongs(newSongs)
+    setSections([...sections, newSection])
     console.log(response)
     setIsLoading(false)
   }
@@ -28,20 +36,19 @@ export function ProfileComponent () {
     {
       text: t('body.importYoutube'),
       onClick: handledImportYoutube,
-      icon: YoutubeIcon
+      icon: YoutubeIcon,
     },
     {
       text: t('body.importSpotify'),
       onClick: handledImportSpotify,
-      icon: SpotifyIcon
-    }
+      icon: SpotifyIcon,
+    },
   ]
 
   return (
     <div className="relative inline-block text-left mr-4">
-      <div className="group text-white transition-all">
-        {profile === undefined
-          ? (
+      <div className="group text-white transition-all w-8">
+        {profile === undefined ? (
           <button
             className={
               'text-zinc-300 hover:text-zinc-100 rounded-full bg-black opacity-60 p-2 mr-4 hover:scale-110 transition-transform'
@@ -49,17 +56,16 @@ export function ProfileComponent () {
           >
             <UserIcon />
           </button>
-            )
-          : (
-          <picture className="w-8 mr-4" title="Edson">
+        ) : (
+          <picture>
             <img
               src={profile.image}
               alt={profile.email}
               title={profile.name}
-              className="object-cover w-full h-full shadow-lg rounded-full hover:scale-120"
+              className="rounded-full"
             />
           </picture>
-            )}
+        )}
         <ul className="group-hover:block group-hover:animate-fade-down group-hover:animate-duration-200 hidden pt-0.5 absolute right-0 w-28">
           {menuOptions.map((option, index) => (
             <li

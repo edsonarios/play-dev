@@ -117,19 +117,16 @@ async function getPlaylistItems (playlistId) {
 export async function getDatasFromYoutube () {
   const playlists = await getAllPlaylists(null)
   const playlistsPlayed: IPlaylist[] = []
-  const songsPlayed: ISong[] = []
-  const output = []
+  let songsPlayed: ISong[] = []
   for (const playlist of playlists) {
     console.log('----------------------------------------')
     console.log(playlist.snippet.title)
     console.log(playlist)
     const items = await getPlaylistItems(playlist.id)
 
-    output.push(playlist)
     items.forEach(item => {
       console.log(item)
       console.log(item.snippet.title)
-      output.push(item)
       if (item.snippet.title !== 'Private video' && item.snippet.title !== 'Deleted video') {
         const newSong: ISong = {
           id: item.contentDetails.videoId,
@@ -156,9 +153,7 @@ export async function getDatasFromYoutube () {
       songs: songsPlayed
     }
     playlistsPlayed.push(newPlaylist)
+    songsPlayed = []
   }
-  fs.writeFileSync('Allplaylists.json', JSON.stringify(output))
-  fs.writeFileSync('playlists.json', JSON.stringify(playlistsPlayed))
-  fs.writeFileSync('songs.json', JSON.stringify(songsPlayed))
-  return { playlistsPlayed, songsPlayed }
+  return { playlistsPlayed }
 }

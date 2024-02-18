@@ -1,5 +1,4 @@
 import { type IPlaylist, colors, covers } from './entities/playlist.entity'
-import { type ISong } from './entities/song.entity'
 
 export const formatTime = (time: number | undefined) => {
   if (time === undefined) return '0:00'
@@ -28,38 +27,31 @@ export const getRandomImage = () => {
   return covers[randomIndex]
 }
 
-export function improveCovers (playlists: IPlaylist[], songs: ISong[]): IPlaylist[] {
-  // Mapeo de todas las canciones por playlist para un acceso rápido
-  const songsByPlaylist = songs.reduce<Record<string, ISong[]>>((acc, song) => {
-    if (acc[song.albumId] !== undefined) {
-      acc[song.albumId].push(song)
-    } else {
-      acc[song.albumId] = [song]
-    }
-    return acc
-  }, {})
-
-  const improvedPlaylists = playlists.map(playlist => {
+export function improveCovers (playlists: IPlaylist[]): IPlaylist[] {
+  return playlists.map(playlist => {
+    // Copy the playlist
     const copiedPlaylist = { ...playlist, cover: [...playlist.cover] }
 
-    const playlistSongs = songsByPlaylist[playlist.id]
-    if (playlistSongs !== undefined && playlistSongs.length >= 4) {
-      const uniqueCovers = new Set<string>()
+    // Get the songs of the playlist
+    const playlistSongs = playlist.songs
 
-      for (const song of playlistSongs) {
-        uniqueCovers.add(song.image)
-        if (uniqueCovers.size === 4) break
-      }
-
-      if (uniqueCovers.size === 4) {
-        copiedPlaylist.cover = Array.from(uniqueCovers)
-      }
+    // Get unique covers to maximun 4
+    const uniqueCovers = new Set<string>()
+    for (const song of playlistSongs) {
+      uniqueCovers.add(song.image)
+      if (uniqueCovers.size === 4) break
     }
-    if (copiedPlaylist.cover.length === 0) copiedPlaylist.cover.push(getRandomImage())
-    if (copiedPlaylist.cover.length > 4) copiedPlaylist.cover = [playlistSongs[0].image]
 
+    // Asigned covers to the playlist
+    if (uniqueCovers.size === 4) {
+      copiedPlaylist.cover = Array.from(uniqueCovers)
+    }
+    if (uniqueCovers.size > 0 && uniqueCovers.size < 4) {
+      copiedPlaylist.cover = [playlistSongs[0].image]
+    }
+    if (uniqueCovers.size === 0) {
+      copiedPlaylist.cover = [getRandomImage()]
+    }
     return copiedPlaylist
   })
-
-  return improvedPlaylists
 }
