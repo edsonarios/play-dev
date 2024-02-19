@@ -4,7 +4,7 @@ import { withViewTransition } from '@/utils/transition'
 export const OpenFolder = async (
   sections: ISections[],
   setSections: (sections: ISections[]) => void,
-  setIsLoading: (isLoading: boolean) => void
+  setIsLoading: (isLoading: boolean) => void,
 ) => {
   withViewTransition(async () => {
     setIsLoading(true)

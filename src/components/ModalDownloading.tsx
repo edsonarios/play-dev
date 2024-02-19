@@ -1,10 +1,11 @@
-import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export default function ModalDownloading () {
-  const { isLoading, setIsLoading } = usePlayerStore<StoreType>((state) => state)
   const { t } = useTranslation()
+  const { isLoading, setIsLoading, messageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
+
   // Event key escape to close the modal
   useEffect(() => {
     const handleKeyPress = (event: any) => {
@@ -33,7 +34,7 @@ export default function ModalDownloading () {
             className="relative flex flex-col bg-zinc-900 rounded-md p-6 gap-2 w-full max-w-md z-40 items-center"
           >
             <div id="spinner" className="loader"></div>
-            <p className="text-lg">{t('body.isLoading')}</p>
+            <p className="text-lg">{messageLoading !== '' ? messageLoading : t('loading.loading')}</p>
           </section>
         </div>
       )}

@@ -3,18 +3,20 @@ import { UserIcon } from '@/icons/header/User'
 import { useTranslation } from 'react-i18next'
 import { SpotifyIcon, YoutubeIcon } from '@/icons/header/Profile'
 import { type ISections } from '@/lib/data'
+import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
 export function ProfileComponent () {
   const { t } = useTranslation()
   const {
     setProfile,
     profile,
-    setIsLoading,
     sections,
     setSections,
   } = usePlayerStore<StoreType>((state) => state)
+  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
 
   // Import PLaylist from Youtube
   const handledImportYoutube = async () => {
+    setMessageLoading(t('loading.requestingPermissions'))
     setIsLoading(true)
     const response = await window.electronAPI.importYoutube()
     const newSection: ISections = {
@@ -24,7 +26,6 @@ export function ProfileComponent () {
     }
     setProfile(response.profile)
     setSections([...sections, newSection])
-    console.log(response)
     setIsLoading(false)
   }
 

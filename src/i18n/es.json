@@ -1,5 +1,12 @@
 {
     "title": "Played (edsonarios)",
+    "loading": {
+        "loading": "Cargando...",
+        "exploreFolder": "Explorando carpetas...",
+        "loadingSongs": "Cargando canciones...",
+        "requestingPermissions": "Navegador abierto, solicitando permisos...",
+        "loadingPlaylists": "Cargando listas de reproducción..."
+    },
     "aside": {
         "home": "Inicio",
         "folder": "Abrir carpeta",
@@ -14,7 +21,6 @@
         "back": "Volver",
         "next": "Avanzar",
         "theme": "Tema Oscuro/Claro",
-        "isLoading": "Cargando...",
         "importYoutube": "Importar Youtube",
         "importSpotify": "Importar Spotify"
     },

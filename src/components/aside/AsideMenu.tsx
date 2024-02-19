@@ -18,6 +18,7 @@ import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
 import { useTranslation } from 'react-i18next'
 import { type ISections, type IPlaylist } from '@/lib/data'
+import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
 
 export default function AsideMenu () {
   const { t } = useTranslation()
@@ -26,12 +27,14 @@ export default function AsideMenu () {
     setHomeHideSongs,
     setPlaylistView,
     setPictureInPicture,
-    setIsLoading,
     sections,
     setSections
   } = usePlayerStore<StoreType>((state) => state)
+  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
 
   const handledOpenFolder = async () => {
+    console.log('Open Folder')
+    setMessageLoading(t('loading.exploreFolder'))
     await OpenFolder(sections, setSections, setIsLoading)
   }
 
@@ -66,6 +69,7 @@ export default function AsideMenu () {
     setSections([...sections, newSection])
   }
 
+  // Reorder playlists
   const handleDragEnd = (event: DragEndEvent, sectionID: string) => {
     const { active, over } = event
     const activeId = active.id as string

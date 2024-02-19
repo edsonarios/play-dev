@@ -4,12 +4,15 @@ import { useRef, useEffect } from 'react'
 import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { type IPlaylist, type ISections, type ISong } from '@/lib/data'
-import { OpenFolder } from '../services/ElectronUtils'
 import { withViewTransition } from '@/utils/transition'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { speedOptions } from '@/utils/constants'
+import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
+import { useTranslation } from 'react-i18next'
+import { OpenFolder } from '../services/ElectronUtils'
 
 export default function PlayerComponent () {
+  const { t } = useTranslation()
   const playerRef = useRef<APITypes>(null)
   const {
     currentMusic,
@@ -28,7 +31,6 @@ export default function PlayerComponent () {
     pictureInPicture,
     setPictureInPicture,
     randomPlaylist,
-    setIsLoading,
     sections,
     setSections,
     isShowFullControls,
@@ -36,6 +38,7 @@ export default function PlayerComponent () {
     theatreMode,
     setTheatreMode,
   } = usePlayerStore<StoreType>((state) => state)
+  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
 
   useEffect(() => {
     if (currentMusic.song !== undefined) {
@@ -287,18 +290,24 @@ export default function PlayerComponent () {
         setPictureInPicture(!pictureInPicture)
       }
       if (event.key === 'o') {
+        setMessageLoading(t('loading.exploreFolder'))
         await OpenFolder(sections, setSections, setIsLoading)
       }
       if (event.key === 't') {
-        setIsShowFullControls(true)
-        setTheatreMode(true)
+        if (theatreMode) {
+          setTheatreMode(false)
+          setIsShowFullControls(false)
+        } else {
+          setTheatreMode(true)
+          setIsShowFullControls(true)
+        }
       }
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [sections, pictureInPicture])
+  }, [sections, pictureInPicture, theatreMode])
 
   // Set speed from right control
   useEffect(() => {

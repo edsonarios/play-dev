@@ -94,9 +94,6 @@ export interface StoreType {
   language: string
   setLanguage: (language: string) => void
 
-  isLoading: boolean
-  setIsLoading: (isLoading: boolean) => void
-
   isShowShortcuts: boolean
   setIsShowShortcuts: (showShortcuts: boolean) => void
 
@@ -203,9 +200,6 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
 
   language: 'en',
   setLanguage: (language) => { set({ language }) },
-
-  isLoading: false,
-  setIsLoading: (isLoading) => { set({ isLoading }) },
 
   isShowShortcuts: false,
   setIsShowShortcuts: (isShowShortcuts) => { set({ isShowShortcuts }) },

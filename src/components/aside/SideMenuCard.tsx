@@ -10,6 +10,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { withViewTransition } from '@/utils/transition'
 import { useTranslation } from 'react-i18next'
+import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
 
 interface CardPlaylist {
   sectionID: string
@@ -32,7 +33,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     setCurrentPlaylistView,
     currentPlaylistView,
   } = usePlayerStore<StoreType>((state) => state)
-
+  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
   const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
   const {
     isDragging,
@@ -163,7 +164,10 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     }
   }
 
+  // Add new songs to playlist
   const handleDrop = async (event: any) => {
+    setMessageLoading(t('loading.loadingSongs'))
+    setIsLoading(true)
     event.preventDefault()
     event.stopPropagation()
     setIsDragOver(false)
@@ -230,6 +234,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
         songs: newSongs,
       })
     }
+    setIsLoading(false)
   }
 
   // Focus in current song

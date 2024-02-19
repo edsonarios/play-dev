@@ -67,6 +67,7 @@ export async function getProfile () {
     email: res.data.emailAddresses[0].value,
     image: res.data.photos[0].url
   }
+  // fs.writeFileSync('youtubeProfile.json', JSON.stringify(profile))
   return profile
 }
 
@@ -115,18 +116,15 @@ async function getPlaylistItems (playlistId) {
 }
 
 export async function getDatasFromYoutube () {
-  const playlists = await getAllPlaylists(null)
+  const youtubePlaylists = await getAllPlaylists(null)
   const playlistsPlayed: IPlaylist[] = []
-  let songsPlayed: ISong[] = []
-  for (const playlist of playlists) {
-    console.log('----------------------------------------')
-    console.log(playlist.snippet.title)
-    console.log(playlist)
+  const youtubeAllSongs = []
+  let songsfromYoutubePlaylist: ISong[] = []
+  // fs.writeFileSync('youtubePlaylists.json', JSON.stringify(youtubePlaylists))
+  for (const playlist of youtubePlaylists) {
     const items = await getPlaylistItems(playlist.id)
 
     items.forEach(item => {
-      console.log(item)
-      console.log(item.snippet.title)
       if (item.snippet.title !== 'Private video' && item.snippet.title !== 'Deleted video') {
         const newSong: ISong = {
           id: item.contentDetails.videoId,
@@ -140,7 +138,8 @@ export async function getDatasFromYoutube () {
           format: 'youtube',
           isDragging: false
         }
-        songsPlayed.push(newSong)
+        songsfromYoutubePlaylist.push(newSong)
+        youtubeAllSongs.push(item)
       }
     })
     const newPlaylist: IPlaylist = {
@@ -150,10 +149,11 @@ export async function getDatasFromYoutube () {
       color: getRandomColor(),
       cover: playlist.snippet.thumbnails.default.url,
       artists: ['youtube'],
-      songs: songsPlayed
+      songs: songsfromYoutubePlaylist
     }
     playlistsPlayed.push(newPlaylist)
-    songsPlayed = []
+    songsfromYoutubePlaylist = []
   }
+  // fs.writeFileSync('youtubePlaylistsSongs.json', JSON.stringify(youtubeAllSongs))
   return { playlistsPlayed }
 }

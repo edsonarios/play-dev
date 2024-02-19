@@ -1,6 +1,7 @@
 import { DeleteOptionsIcon } from '@/icons/playlist/Options'
 import { PauseTableIcon, PlayTableIcon } from '@/icons/playlist/PlayPause'
 import { type ISong } from '@/lib/data'
+import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { withViewTransition } from '@/utils/transition'
@@ -39,6 +40,7 @@ export function DragableRow ({
     setCurrentMusic,
     randomPlaylist,
   } = usePlayerStore<StoreType>((state) => state)
+  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
   const {
     isDragging,
     attributes,
@@ -60,6 +62,7 @@ export function DragableRow ({
     transition,
   }
 
+  // Select songs with click
   const handleRowClick = (event: any) => {
     const ctrl = event.ctrlKey as boolean
     const shift = event.shiftKey as boolean
@@ -131,6 +134,8 @@ export function DragableRow ({
 
   // Insert new songs by drag and drop
   const handleDrop = async (event: any, songIndex: ISong) => {
+    setMessageLoading(t('loading.loadingSongs'))
+    setIsLoading(true)
     event.preventDefault()
     event.stopPropagation()
     setIsDragOver(false)
@@ -201,6 +206,7 @@ export function DragableRow ({
         })
       }
     }
+    setIsLoading(false)
   }
 
   return (

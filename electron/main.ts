@@ -127,6 +127,9 @@ ipcMain.handle('open-directory-dialog', async () => {
   const result = await dialog.showOpenDialog({ properties: ['openFile'] })
   if (result.canceled || result.filePaths.length === 0) return {}
 
+  // Send the current status to UI
+  win?.webContents.send('electron-status-loading', 'loading.loadingSongs')
+
   let originalDirectoryPath: string
 
   if (fs.lstatSync(result.filePaths[0]).isDirectory()) {
@@ -134,10 +137,8 @@ ipcMain.handle('open-directory-dialog', async () => {
   } else {
     originalDirectoryPath = path.dirname(result.filePaths[0])
   }
-
   try {
     const files = fs.readdirSync(originalDirectoryPath)
-
     const randomImage = getRandomImage()
     const newPlaylistUUID = crypto.randomUUID()
     const titlePlaylist = path.basename(originalDirectoryPath)
@@ -308,6 +309,10 @@ function importConfig () {
 ipcMain.handle('import-youtube', async () => {
   try {
     await authenticate()
+
+    // Send the current status to UI
+    win?.webContents.send('electron-status-loading', 'loading.loadingPlaylists')
+
     const profile = await getProfile()
     const playlistsWithSongs = await getDatasFromYoutube()
     const playlistsWithCovers = improveCovers(playlistsWithSongs.playlistsPlayed)

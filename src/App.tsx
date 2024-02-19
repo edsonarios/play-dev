@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import ModalUpdateStatus from './components/ModalUpdateStatus'
 import ModalDownloading from './components/ModalDownloading'
 import ModalShowShortcuts from './components/controls/ModalShortcuts'
+import { type StoreLoadingType, useLoadingStore } from './store/loadingStore'
 
 interface OpenDirectoryDialog {
   playlist: IPlaylist
@@ -52,6 +53,8 @@ declare global {
 }
 
 export default function App () {
+  const { i18n } = useTranslation()
+  const { t } = useTranslation()
   const {
     currentMusic,
     pictureInPicture,
@@ -63,7 +66,8 @@ export default function App () {
     theatreMode,
   } = usePlayerStore<StoreType>((state) => state)
 
-  const { i18n } = useTranslation()
+  const { setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
+
   useEffect(() => {
     void i18n.changeLanguage(language)
   }, [language, i18n])
@@ -244,6 +248,19 @@ export default function App () {
     window.electronAPI.receive('trigger-import-config', importConfig)
     return () => {
       window.electronAPI.removeListener('trigger-import-config', importConfig)
+    }
+  }, [])
+
+  // Listen to loading status
+  useEffect(() => {
+    const handleExport = async (_event: any, action: string) => {
+      setMessageLoading(t(action))
+    }
+
+    window.electronAPI.receive('electron-status-loading', handleExport)
+
+    return () => {
+      window.electronAPI.removeListener('electron-status-loading', handleExport)
     }
   }, [])
 
