@@ -13,6 +13,13 @@
   [*] Integrate with Spotify and Youtube - Done Youtube
   [*] Add custom loader when the application is loading
   [*] Sort Songs in Playlist
+  [*] Click right https://floatui.com/components/context-menus
+  [*] In edit playlist, show all the covers with the posibility to put a new text
+  [*] If view playlist detail if not thare are any song, it's not possible add new song by drag and drop
+  [*] Show and hiden all playlists in the section
+  [*] Add new song and read async the metadata, add instantly to the playlist and update the metadata async
+  [*] Mute volume with key "M"
+  [*] Show shortucts with key "H"
 
 "Publish"
   - Packaging
@@ -26,3 +33,66 @@
 "In Mac"
   - MediaNext and MediaPrevious not work
   - Verify if the update is working
+
+"Features to show"
+  [Aside section]
+  - Reproduce a song by drag and drop and show in the playlist
+  - Add multiple songs by drag and drop with the playlist opened
+  - Open Folder with button "Open Folder" or shortcut "O"
+  - Add new playlists
+  - Add multiple songs in differents playlist by drag and drop
+  - Hiden and show songs in all playlist
+  - Reorganize playlists by drag and drop
+  - Add new sections with new playlists
+
+  [Body section]
+  - Press "Home" button to show playlist in the body or shortcut "P"
+  - Double click in section to change the name
+  - Create new section
+  - Create new playlist in new section
+  - Delete playlist in section
+  
+  [Playlist detail section]
+  - Enter to any first
+  - Play playlist with play button
+  - Search a song with the search field
+  - Double click in a song to reproduce
+  - Hover in number of song to reproduce it
+  - Reorganize a song in the playlist
+  - Select multiple songs with alt and control to reorganize
+  - Add multiple songs by drag and drop
+  - Delete a simple song
+  - Delete playlist
+
+  [Edit playlist section]
+  - Clik in the name of the playlist detail to edit
+  - Change the name of the playlist, the cover and the color
+  - Change in the image to upload a new image from the local machine
+  - Put an url in the image field to change the cover
+  - Save changes in the playlist
+  - Click outside to edit modal to close or press "Escape" key
+
+  [Header section]
+  - Dark/Light mode
+  - Change language EN/ES
+  - Import playlist from Youtube
+
+  [Controls section]
+    [Left]
+    - Show the current song and the playlist
+    - Click on the currently playing song, located at the bottom left corner, to open your playlist in the sidebar. If you click again, the interface will adjust to highlight the current song within the list, making it easy to locate.
+    
+    [Center]
+    - Play/Pause song or shortcut "Space" or "MediaPlayPause" or "Click in the screen"
+    - Next/Previous song or shortcut "MediaNext/MediaPrevious"
+    - Random playlist
+    - Repeat playlist/one/off
+    - Time of the song and control the time with shortcut "ArrowLeft/ArrowRight" or keys "0-9"
+    
+    [Right]
+    - Volume or shortcut "ArrowUp/ArrowDown" or "MediaVolumeUp/MediaVolumeDown"
+    - Mute volume or shortcut "M"
+    - Velocity of the song or shortcut "+/-"
+    - Thread mode or shortcut "T", exit with "T" or "Escape"
+    - Fullscreen mode or shortcut "F", exit with "F" or "Escape"
+    - Show shortcuts or shortcut "H", exit with "H" or "Escape"

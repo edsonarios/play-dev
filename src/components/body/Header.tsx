@@ -15,6 +15,7 @@ export default function Header () {
   const { t } = useTranslation()
   const {
     setPlaylistView,
+    playlistView,
     modeColor,
     setModeColor,
     sections,
@@ -61,12 +62,12 @@ export default function Header () {
           handledFunction={handledSetPlaylist}
         />
         <IconButton Icon={RightIcon} className="ml-4" title={t('body.next')} />
-        <IconButton
+        {playlistView === '0' && <IconButton
           Icon={PlusIcon}
           className="ml-4"
           title={t('aside.newSection')}
           handledFunction={handledNewSection}
-        />
+        />}
       </div>
       <div className="flex flex-row">
         <button className="bg-white rounded-full w-36 text-slate-900 font-bold text-sm border-white mr-4 hover:scale-110 transition-transform">

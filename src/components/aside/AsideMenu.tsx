@@ -27,6 +27,7 @@ export default function AsideMenu () {
     setHomeHideSongs,
     setPlaylistView,
     setPictureInPicture,
+    pictureInPicture,
     sections,
     setSections
   } = usePlayerStore<StoreType>((state) => state)
@@ -114,7 +115,7 @@ export default function AsideMenu () {
   const handledHome = () => {
     setHomeHideSongs(!homeHideSongs)
     setPlaylistView('0')
-    setPictureInPicture(true)
+    setPictureInPicture(!pictureInPicture)
   }
 
   const handledExportStore = () => {
