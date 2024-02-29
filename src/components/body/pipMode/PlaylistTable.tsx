@@ -262,13 +262,12 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
       // set the new songs
       const newSections = sections.map((section) => {
         if (section.id === currentSectionView) {
-          const newPlaylists = section.playlists.map((playlist) => {
-            if (playlist.id === playlist?.id) {
-              return { ...playlist, songs: newSongs }
+          section.playlists = section.playlists.map((ply) => {
+            if (ply.id === playlist?.id) {
+              playlist.songs = newSongs
             }
-            return playlist
+            return ply
           })
-          return { ...section, playlists: newPlaylists }
         }
         return section
       })

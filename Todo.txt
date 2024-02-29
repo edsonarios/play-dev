@@ -14,12 +14,10 @@
   [*] Add custom loader when the application is loading
   [*] Sort Songs in Playlist
   [*] Click right https://floatui.com/components/context-menus
-  [*] In edit playlist, show all the covers with the posibility to put a new text
   [*] If view playlist detail if not thare are any song, it's not possible add new song by drag and drop
   [*] Show and hiden all playlists in the section
   [*] Add new song and read async the metadata, add instantly to the playlist and update the metadata async
-  [*] Mute volume with key "M"
-  [*] Show shortucts with key "H"
+  [*] In edit playlist, show all the covers with the posibility to put a new text
 
 "Publish"
   - Packaging

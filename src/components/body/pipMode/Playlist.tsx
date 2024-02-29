@@ -121,7 +121,7 @@ export function PlaylistPipMode () {
     <div className="absolute top-24 w-[95%] flex overflow-y-disable flex-col">
       {sections.map((section) => (
         <div key={section.id}>
-          <div className="group flex">
+          <div className="relative flex group">
             <button
               className="absolute z-20 bg-slate-900 w-2 rounded-md text-xs opacity-0 hover:opacity-70 transition-opacity -left-1 -top-1"
               onClick={() => {
@@ -174,7 +174,7 @@ export function PlaylistPipMode () {
                   {section.title}
                 </header>
                 <button
-                  className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-900 group-hover:opacity-100"
+                  className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-900 group-hover:opacity-100 ml-2"
                   onClick={() => {
                     handledNewPlaylist(section.id)
                   }}

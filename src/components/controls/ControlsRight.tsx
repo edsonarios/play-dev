@@ -3,7 +3,7 @@ import {
   VolumeFullIcon,
   VolumeLowIcon,
   VolumeMediumIcon,
-  VolumeSilenceIcon
+  VolumeSilenceIcon,
 } from '@/icons/controls/Volume'
 import { Slider } from './Slider'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
@@ -78,7 +78,7 @@ export function ControlsRight () {
   }
 
   const handleShowShortcuts = () => {
-    setIsShowShortcuts(true)
+    setIsShowShortcuts(!isShowShortcuts)
   }
 
   const handledTheaterMode = () => {
@@ -93,12 +93,18 @@ export function ControlsRight () {
         setTheatreMode(false)
         setIsShowFullControls(false)
       }
+      if (event.key === 'm') {
+        handleClickVolumen()
+      }
+      if (event.key === 'h') {
+        handleShowShortcuts()
+      }
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
+  }, [volume, isShowShortcuts])
 
   return (
     <div className="flex justify-center gap-x-2 text-white">
@@ -106,7 +112,7 @@ export function ControlsRight () {
         className={`mr-2 opacity-60 hover:opacity-100 transition ${
           isShowShortcuts ? 'text-green-400' : ''
         }`}
-        title={t('controls.shortcuts')}
+        title={t('controls.shortcuts') + ' (H)'}
         onClick={handleShowShortcuts}
       >
         <ShortCutsIcon />
@@ -119,7 +125,9 @@ export function ControlsRight () {
           <div className="mx-1">
             <SpeedIcon />
           </div>
-          <div className="text-sm mr-2">{t('controls.speed')} {speed}x</div>
+          <div className="text-sm mr-2">
+            {t('controls.speed')} {speed}x
+          </div>
         </button>
 
         {showSpeedOptions && (
