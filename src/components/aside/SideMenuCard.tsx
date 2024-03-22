@@ -11,6 +11,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { withViewTransition } from '@/utils/transition'
 import { useTranslation } from 'react-i18next'
 import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
+import { PencilIcon } from '@/icons/edit/Pencil'
 
 interface CardPlaylist {
   sectionID: string
@@ -33,7 +34,9 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     setCurrentPlaylistView,
     currentPlaylistView,
   } = usePlayerStore<StoreType>((state) => state)
-  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
+  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>(
+    (state) => state
+  )
   const [isPlaylistExpanded, setIsPlaylistExpanded] = useState(false)
   const {
     isDragging,
@@ -65,7 +68,8 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
 
   const artistsString = playlist.artists.join(', ')
 
-  const getPlaylist = () => {
+  const displayPlaylist = () => {
+    if (isEditPlaylist !== '') return
     if (isPlaylistExpanded) {
       setIsPlaylistExpanded(false)
     } else {
@@ -77,6 +81,32 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     }
     const playListSongs = playlist.songs
     setCurrentSongs(playListSongs)
+  }
+
+  const [isEditPlaylist, setIsEditPlaylist] = useState('')
+  const [valueEditPlaylist, setValueEditPlaylist] = useState('')
+  const editNamePlaylist = (playlistID: string, playlistTitle: string) => {
+    setIsEditPlaylist(playlistID)
+    setValueEditPlaylist(playlistTitle)
+  }
+
+  const handledEditTitlePlaylist = (newValueEditPlaylist: string) => {
+    const newSections = structuredClone(sections)
+    const sectionsUpdated = newSections.map((section) => {
+      return {
+        ...section,
+        playlists: section.playlists.map((ply) => {
+          if (ply.id === playlist.id) {
+            return {
+              ...ply,
+              title: newValueEditPlaylist,
+            }
+          }
+          return ply
+        }),
+      }
+    })
+    setSections(sectionsUpdated)
   }
 
   const playSong = (song: ISong) => {
@@ -220,10 +250,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     if (playlist.id === currentMusic.playlist?.id) {
       const newSongsToAdd = [...currentMusic.playlist.songs, ...songsToAdd]
       const newSongs = randomPlaylist
-        ? shuffleSongsWithCurrentSong(
-          newSongsToAdd,
-          currentMusic.song!.id
-        )
+        ? shuffleSongsWithCurrentSong(newSongsToAdd, currentMusic.song!.id)
         : newSongsToAdd
       setCurrentMusic({
         ...currentMusic,
@@ -289,11 +316,23 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
       >
         X
       </button>
+      {/* Edit Playlist button */}
+      {currentSongs.length === 0 && !isPlaylistExpanded && (
+        <button
+          className="absolute z-20 bg-slate-900 w-3 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity bottom-0 left-0"
+          onClick={() => {
+            editNamePlaylist(playlist.id, playlist.title)
+          }}
+          title={t('aside.editPlaylist')}
+        >
+          <PencilIcon />
+        </button>
+      )}
       {/* Playlist item */}
       <a
         href="#"
         className="playlist-item flex relative group p-2 overflow-hidden items-center gap-5 rounded-md hover:bg-zinc-800"
-        onClick={getPlaylist}
+        onClick={displayPlaylist}
       >
         {/* Image Playlist */}
         <picture className="h-12 w-12 flex-none">
@@ -304,25 +343,60 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
           />
         </picture>
 
-        {/* Title and Artist */}
-        <div className="flex flex-auto flex-col truncate">
-          <h4
-            className={`${
-              currentMusic.song?.albumId === playlist.id
-                ? 'text-green-400'
-                : 'text-white'
-            } text-sm`}
+        {/* Edit Playlist Name */}
+        {isEditPlaylist !== '' ? (
+          <label
+            className={`flex bg-zinc-700 rounded-md opacity-60 border-2
+            ${isEditPlaylist !== '' ? ' border-white' : ''}`}
           >
-            {playlist.title}
-          </h4>
-
-          <span className="text-xs text-gray-400">{artistsString}</span>
-        </div>
-
+            <input
+              type="text"
+              value={valueEditPlaylist}
+              onChange={(event) => {
+                setValueEditPlaylist(event.target.value)
+              }}
+              className="rounded-xl p-1 bg-transparent outline-none text-base"
+              placeholder={'...'}
+              autoFocus
+              onBlur={() => {
+                withViewTransition(() => {
+                  setIsEditPlaylist('')
+                })
+              }}
+              onKeyDown={(e) => {
+                withViewTransition(() => {
+                  if (e.key === 'Enter') {
+                    handledEditTitlePlaylist(valueEditPlaylist)
+                    setIsEditPlaylist('')
+                  } else if (e.key === 'Escape') {
+                    setValueEditPlaylist('')
+                    setIsEditPlaylist('')
+                  }
+                })
+              }}
+            />
+          </label>
+        ) : (
+          <div className="flex flex-auto flex-col truncate">
+            {/* Title and Artist */}
+            <h4
+              className={`${
+                currentMusic.song?.albumId === playlist.id
+                  ? 'text-green-400'
+                  : 'text-white'
+              } text-sm`}
+            >
+              {playlist.title}
+            </h4>
+            <span className="text-xs text-gray-400">{artistsString}</span>
+          </div>
+        )}
         {/* Play button */}
-        <div className="absolute right-4 bottom-4 translate-y-4 transition-all duration-500 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10">
-          <CardPlayButton playlist={playlist} />
-        </div>
+        {isEditPlaylist === '' && (
+          <div className="absolute right-4 bottom-4 translate-y-4 transition-all duration-500 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10">
+            <CardPlayButton playlist={playlist} />
+          </div>
+        )}
         {playlist.id === currentMusic.playlist?.id && (
           <div className="absolute right-[26px] bottom-[35px] translate-y-4 transition-all duration-500 opacity-100 group-hover:translate-y-0 group-hover:opacity-0 z-10 text-green-400">
             <VolumeAsideIcon />

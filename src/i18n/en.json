@@ -13,7 +13,8 @@
         "library": "Your Library",
         "newSection": "Create a New Section",
         "newPlaylist": "Create a new Playlist",
-        "deleteSection": "Delete Section"
+        "deleteSection": "Delete Section",
+        "editPlaylist": "Edit Playlist"
     },
     "body": {
         "premium": "Explore Premium",
