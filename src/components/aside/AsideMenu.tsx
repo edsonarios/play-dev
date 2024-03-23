@@ -11,7 +11,7 @@ import {
   type DragEndEvent,
   useSensor,
   MouseSensor,
-  TouchSensor
+  TouchSensor,
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { OpenFolder } from '../services/ElectronUtils'
@@ -19,6 +19,7 @@ import { withViewTransition } from '@/utils/transition'
 import { useTranslation } from 'react-i18next'
 import { type ISections, type IPlaylist } from '@/lib/data'
 import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
+import { useState } from 'react'
 
 export default function AsideMenu () {
   const { t } = useTranslation()
@@ -29,9 +30,11 @@ export default function AsideMenu () {
     setPictureInPicture,
     pictureInPicture,
     sections,
-    setSections
+    setSections,
   } = usePlayerStore<StoreType>((state) => state)
-  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
+  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>(
+    (state) => state
+  )
 
   const handledOpenFolder = async () => {
     console.log('Open Folder')
@@ -48,7 +51,7 @@ export default function AsideMenu () {
         color: getRandomColor(),
         cover: [getRandomImage()],
         artists: [],
-        songs: []
+        songs: [],
       }
       const newSections = structuredClone(sections)
       newSections.map((section) => {
@@ -65,7 +68,7 @@ export default function AsideMenu () {
     const newSection: ISections = {
       id: window.crypto.randomUUID(),
       title: 'New Section',
-      playlists: []
+      playlists: [],
     }
     setSections([...sections, newSection])
   }
@@ -75,7 +78,9 @@ export default function AsideMenu () {
     const { active, over } = event
     const activeId = active.id as string
     const overId = over?.id as string
-    if (activeId === overId || activeId === undefined || overId === undefined) { return }
+    if (activeId === overId || activeId === undefined || overId === undefined) {
+      return
+    }
     const currentPlaylists = sections.find(
       (section) => section.id === sectionID
     )?.playlists
@@ -101,14 +106,14 @@ export default function AsideMenu () {
   // Delay in drang and drop
   const activationConstraint = {
     delay: 300,
-    tolerance: 5
+    tolerance: 5,
   }
   const sensors = useSensors(
     useSensor(MouseSensor, {
-      activationConstraint
+      activationConstraint,
     }),
     useSensor(TouchSensor, {
-      activationConstraint
+      activationConstraint,
     })
   )
 
@@ -125,6 +130,25 @@ export default function AsideMenu () {
   const handledDeleteSection = (sectionID: string) => {
     if (sectionID === '1') return
     const newSections = sections.filter((section) => section.id !== sectionID)
+    setSections(newSections)
+  }
+
+  const [isEditSection, setIsEditSection] = useState('')
+  const [valueEditSection, setValueEditSection] = useState('')
+  const handledIsEditSection = (sectionID: string, sectionTitle: string) => {
+    withViewTransition(() => {
+      setIsEditSection(sectionID)
+      setValueEditSection(sectionTitle)
+    })
+  }
+
+  const handledEditTitleSection = (newValueEditSection: string) => {
+    const newSections = structuredClone(sections)
+    const sectionIndex = newSections.findIndex(
+      (section) => section.id === isEditSection
+    )
+    if (sectionIndex === -1) return
+    newSections[sectionIndex].title = newValueEditSection
     setSections(newSections)
   }
 
@@ -176,16 +200,59 @@ export default function AsideMenu () {
                 >
                   X
                 </button>
-                <header className="p-2 text-lg">{section.title}</header>
-                <button
-                  className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-800 group-hover:opacity-100"
-                  onClick={() => {
-                    handledNewPlaylist(section.id)
-                  }}
-                  title={t('aside.newPlaylist')}
-                >
-                  <PlusIcon className="w-3 h-3" />
-                </button>
+                {isEditSection !== '' && isEditSection === section.id ? (
+                  <label
+                    className={`flex bg-zinc-900 rounded-md opacity-60 border-2
+            ${isEditSection !== '' ? ' border-white' : 'border-transparent'}`}
+                  >
+                    <input
+                      type="text"
+                      value={valueEditSection}
+                      onChange={(event) => {
+                        setValueEditSection(event.target.value)
+                      }}
+                      className="rounded-xl p-1 bg-transparent outline-none text-lg"
+                      placeholder={'...'}
+                      autoFocus
+                      onBlur={() => {
+                        withViewTransition(() => {
+                          setIsEditSection('')
+                        })
+                      }}
+                      onKeyDown={(e) => {
+                        withViewTransition(() => {
+                          if (e.key === 'Enter') {
+                            handledEditTitleSection(valueEditSection)
+                            setIsEditSection('')
+                          } else if (e.key === 'Escape') {
+                            setValueEditSection('')
+                            setIsEditSection('')
+                          }
+                        })
+                      }}
+                    />
+                  </label>
+                ) : (
+                  <div className="flex mb-2">
+                    <header
+                      className="p-2 text-lg"
+                      onDoubleClick={() => {
+                        handledIsEditSection(section.id, section.title)
+                      }}
+                    >
+                      {section.title}
+                    </header>
+                    <button
+                      className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-800 group-hover:opacity-100"
+                      onClick={() => {
+                        handledNewPlaylist(section.id)
+                      }}
+                      title={t('aside.newPlaylist')}
+                    >
+                      <PlusIcon className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
               </div>
               <DndContext
                 onDragEnd={(event) => {

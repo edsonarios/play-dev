@@ -85,9 +85,11 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
 
   const [isEditPlaylist, setIsEditPlaylist] = useState('')
   const [valueEditPlaylist, setValueEditPlaylist] = useState('')
-  const editNamePlaylist = (playlistID: string, playlistTitle: string) => {
-    setIsEditPlaylist(playlistID)
-    setValueEditPlaylist(playlistTitle)
+  const handledIsEditPlaylistName = (playlistID: string, playlistTitle: string) => {
+    withViewTransition(() => {
+      setIsEditPlaylist(playlistID)
+      setValueEditPlaylist(playlistTitle)
+    })
   }
 
   const handledEditTitlePlaylist = (newValueEditPlaylist: string) => {
@@ -321,7 +323,7 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
         <button
           className="absolute z-20 bg-slate-900 w-3 rounded-md text-base opacity-0 hover:opacity-70 transition-opacity bottom-0 left-0"
           onClick={() => {
-            editNamePlaylist(playlist.id, playlist.title)
+            handledIsEditPlaylistName(playlist.id, playlist.title)
           }}
           title={t('aside.editPlaylist')}
         >

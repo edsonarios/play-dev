@@ -133,7 +133,7 @@ export function PlaylistPipMode () {
             </button>
             {isEditSection !== '' && isEditSection === section.id
               ? (<label
-                className={`flex bg-zinc-900 rounded-2xl opacity-60 border-2
+                className={`flex bg-zinc-900 rounded-md opacity-60 border-2
             ${isEditSection !== '' ? ' border-white' : 'border-transparent'}`}
               >
                 <input
