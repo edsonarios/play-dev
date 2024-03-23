@@ -15,6 +15,7 @@ import { SortableContext } from '@dnd-kit/sortable'
 import { DragableRow } from './DragableRow'
 import { withViewTransition } from '@/utils/transition'
 import { useTranslation } from 'react-i18next'
+import { EmptyPlaylistTable } from './EmptyPlaylistTable'
 
 interface PlayListTable {
   playlist: IPlaylist | undefined
@@ -330,9 +331,9 @@ export function PlaylistTable ({ playlist, playlistSongs }: PlayListTable) {
         </SortableContext>
       </table>
       {playlistSongs.length === 0 ? (
-        <h1 className="flex justify-center self-center w-full h-36 mt-20">
-          {t('playlist.empty')}
-        </h1>
+        <EmptyPlaylistTable
+          playlist={playlist}
+        />
       ) : (
         ''
       )}
