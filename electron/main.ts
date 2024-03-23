@@ -3,13 +3,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import musicMetadata from 'music-metadata'
 import crypto from 'crypto'
-import { getRandomColor, getRandomImage, improveCovers, naturalSort } from './utils'
+import { improveCovers } from './utils'
 import { allowedExtensions } from './constants'
 import { type ISong } from './entities/song.entity'
-import { type IPlaylist } from './entities/playlist.entity'
 import { type ISize } from './entities/size.entity'
 import { authenticate, getDatasFromYoutube, getProfile } from './youtube'
 import { autoUpdater } from 'electron-updater'
+import { getPlaylistFromDirectory } from './features'
 
 autoUpdater.autoDownload = false
 autoUpdater.autoInstallOnAppQuit = true
@@ -131,61 +131,13 @@ ipcMain.handle('open-directory-dialog', async () => {
   win?.webContents.send('electron-status-loading', 'loading.loadingSongs')
 
   let originalDirectoryPath: string
-
   if (fs.lstatSync(result.filePaths[0]).isDirectory()) {
     originalDirectoryPath = result.filePaths[0]
   } else {
     originalDirectoryPath = path.dirname(result.filePaths[0])
   }
   try {
-    const files = fs.readdirSync(originalDirectoryPath)
-    const randomImage = getRandomImage()
-    const newPlaylistUUID = crypto.randomUUID()
-    const titlePlaylist = path.basename(originalDirectoryPath)
-
-    const songsWithMetadata = await Promise.all(
-      files
-        .filter(file => allowedExtensions.has(path.extname(file).toLowerCase()))
-        .sort(naturalSort)
-        .map(async (file) => {
-          const filePath = path.join(originalDirectoryPath, file)
-          const fileName = path.basename(filePath)
-          const format = path.extname(filePath)
-
-          try {
-            const metadata = await musicMetadata.parseFile(filePath)
-            let duration = 0
-            if (metadata.format.duration !== undefined) {
-              duration = metadata.format.duration
-            }
-            const newSong: ISong = {
-              id: crypto.randomUUID(),
-              albumId: newPlaylistUUID,
-              title: fileName,
-              directoryPath: originalDirectoryPath,
-              image: randomImage,
-              artists: ['artist'],
-              album: titlePlaylist,
-              duration,
-              format,
-              isDragging: false
-            }
-            return newSong
-          } catch (error) {
-            console.error(`Error to read the metadata to file: ${file}`, error)
-          }
-        })
-    )
-
-    const newPlaylist: IPlaylist = {
-      id: newPlaylistUUID,
-      albumId: newPlaylistUUID,
-      title: titlePlaylist,
-      color: getRandomColor(),
-      cover: [randomImage],
-      artists: ['artist'],
-      songs: songsWithMetadata as ISong[]
-    }
+    const newPlaylist = await getPlaylistFromDirectory(originalDirectoryPath)
     return {
       playlist: newPlaylist
     }
@@ -193,6 +145,24 @@ ipcMain.handle('open-directory-dialog', async () => {
     console.error('Error in read the directory', err)
     return {}
   }
+})
+
+// Get Playlists from directories
+ipcMain.handle('get-playlist-from-directory', async (_event, filePath: string[]) => {
+  const directoriesCleaned: string[] = []
+  new Set(filePath.map(file => {
+    if (path.extname(file).length === 0) {
+      return file
+    }
+  })).forEach(directory => {
+    if (directory !== undefined) {
+      directoriesCleaned.push(directory)
+    }
+  })
+  return await Promise.all(directoriesCleaned.map(async (directory) => {
+    return await getPlaylistFromDirectory(directory)
+  })
+  )
 })
 
 // Get music metadata
@@ -247,6 +217,7 @@ ipcMain.handle('get-image-to-cover', async (_event) => {
   return 'file://' + result.filePaths[0].replaceAll('\\', '/')
 })
 
+// Edit options of the app
 function createMenu () {
   const menu = Menu.getApplicationMenu()
   if (menu !== null) {

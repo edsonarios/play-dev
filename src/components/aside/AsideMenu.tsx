@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next'
 import { type ISections, type IPlaylist } from '@/lib/data'
 import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
 import { useState } from 'react'
+import { TitleSection } from './TitleSection'
 
 export default function AsideMenu () {
   const { t } = useTranslation()
@@ -133,6 +134,7 @@ export default function AsideMenu () {
     setSections(newSections)
   }
 
+  // Mode edit title section
   const [isEditSection, setIsEditSection] = useState('')
   const [valueEditSection, setValueEditSection] = useState('')
   const handledIsEditSection = (sectionID: string, sectionTitle: string) => {
@@ -142,6 +144,7 @@ export default function AsideMenu () {
     })
   }
 
+  // Edit title section
   const handledEditTitleSection = (newValueEditSection: string) => {
     const newSections = structuredClone(sections)
     const sectionIndex = newSections.findIndex(
@@ -233,25 +236,11 @@ export default function AsideMenu () {
                     />
                   </label>
                 ) : (
-                  <div className="flex mb-2">
-                    <header
-                      className="p-2 text-lg"
-                      onDoubleClick={() => {
-                        handledIsEditSection(section.id, section.title)
-                      }}
-                    >
-                      {section.title}
-                    </header>
-                    <button
-                      className="self-center p-2 rounded-full opacity-0 hover:bg-zinc-800 group-hover:opacity-100"
-                      onClick={() => {
-                        handledNewPlaylist(section.id)
-                      }}
-                      title={t('aside.newPlaylist')}
-                    >
-                      <PlusIcon className="w-3 h-3" />
-                    </button>
-                  </div>
+                  <TitleSection
+                    section={section}
+                    handledIsEditSection={handledIsEditSection}
+                    handledNewPlaylist={handledNewPlaylist}
+                  />
                 )}
               </div>
               <DndContext

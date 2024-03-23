@@ -204,8 +204,9 @@ export default function SideMenuCard ({ sectionID, playlist }: CardPlaylist) {
     event.stopPropagation()
     setIsDragOver(false)
     dragCounter.current = 0
-
+    console.log(event)
     const dataFiles = Array.from(event.dataTransfer.files) as unknown as File[]
+    console.log(dataFiles)
     if (dataFiles.length === 0) return
 
     const filesWithMetadata = await window.electronAPI.getMusicMetadata(
