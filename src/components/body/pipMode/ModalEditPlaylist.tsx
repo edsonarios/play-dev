@@ -167,21 +167,26 @@ export default function ModalEditPlaylist ({
                   onChange={handledEditPlaylist}
                 />
                 {/* Cover */}
-                <label htmlFor="color" className="block mb-4">
-                  <span className="">{t('edit.color')}</span>
-                  <select
-                    id="color"
-                    onChange={handledCoverPlaylist}
-                    className="w-full mt-1 rounded-md p-2 bg-zinc-800"
+                <label htmlFor="color" className="mb-4 flex flex-col">
+                  <span>{t('edit.cover')}</span>
+                  <input
+                    list="options"
                     value={cleanCover(editTemporallyCover[0])}
-                  >
-                    <option value="custom">Enter Custom URL</option>
+                    onChange={handledCoverPlaylist}
+                    placeholder="Chooise a cover..."
+                    className="p-2 rounded-md bg-zinc-800"
+                  />
+                  <datalist id="options" className="bg-zinc-700">
                     {coversCleaned.map((cover) => (
                       <option key={cover} value={cover}>
                         {cover}
                       </option>
                     ))}
-                  </select>
+                    {/* <option value="Option 1">Option 1</option>
+                <option value="Option 2">Option 2</option>
+                <option value="Option 3">Option 3</option> */}
+                    {/* Añade más opciones según sea necesario */}
+                  </datalist>
                 </label>
                 {/* <input
                   type="text"
