@@ -1,8 +1,10 @@
 import { CloseIcon } from '@/icons/edit/Close'
 import { PencilIcon } from '@/icons/edit/Pencil'
 import { colors } from '@/lib/colors'
+import { covers } from '@/lib/data'
 import { type IPlaylist } from '@/lib/data'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
+import { cleanCover, cleanCovers } from '@/utils/clean'
 import { updateSections } from '@/utils/sections'
 import { withViewTransition } from '@/utils/transition'
 import { useTranslation } from 'react-i18next'
@@ -11,7 +13,7 @@ export default function ModalEditPlaylist ({
   playlist,
   isOpen,
   setIsOpen,
-  handledCloseModal
+  handledCloseModal,
 }: {
   playlist?: IPlaylist
   isOpen: boolean
@@ -32,7 +34,7 @@ export default function ModalEditPlaylist ({
     setEditTemporallySection,
     currentSectionView,
     currentPlaylistView,
-    setCurrentPlaylistView
+    setCurrentPlaylistView,
   } = usePlayerStore<StoreType>((state) => state)
 
   const handledEditPlaylist = (event: any) => {
@@ -52,7 +54,7 @@ export default function ModalEditPlaylist ({
       ...currentPlaylistView!,
       title: editTemporallyTitle,
       color: editTemporallyColor,
-      cover: editTemporallyCover
+      cover: editTemporallyCover,
     }
     const newSections = updateSections(
       sections,
@@ -75,10 +77,11 @@ export default function ModalEditPlaylist ({
     setEditTemporallyCover([image])
   }
 
+  const coversCleaned = cleanCovers(covers)
   const handledCoverPlaylist = (event: any) => {
     if (event.target.value === undefined) return
     const newCover = event.target.value as string
-    setEditTemporallyCover([newCover])
+    setEditTemporallyCover([`Covers/${newCover}`])
   }
 
   const handledSection = (event: any) => {
@@ -112,8 +115,7 @@ export default function ModalEditPlaylist ({
             </div>
             <form onSubmit={handleSavePlaylist} className="flex flex-row">
               {playlist?.cover.length === 1 ||
-              editTemporallyCover.length === 1
-                ? (
+              editTemporallyCover.length === 1 ? (
                 <picture className="relative aspect-square w-64 h-64 flex-none mr-6 mt-2">
                   <img
                     src={
@@ -134,8 +136,7 @@ export default function ModalEditPlaylist ({
                     <h1 className="mt-6">{t('edit.choose')}</h1>
                   </div>
                 </picture>
-                  )
-                : (
+                  ) : (
                 <div className="relative grid grid-cols-2 aspect-square  w-64 h-64 mr-4 mt-2">
                   {playlist?.cover.map((cover, index) => (
                     <div key={index} className="relative w-full h-full">
@@ -156,6 +157,7 @@ export default function ModalEditPlaylist ({
                 </div>
                   )}
               <div className="flex flex-col">
+                {/* Title */}
                 <label htmlFor="title">{t('edit.title')}</label>
                 <input
                   type="text"
@@ -164,16 +166,31 @@ export default function ModalEditPlaylist ({
                   className="p-2 rounded-md bg-zinc-800 mb-4"
                   onChange={handledEditPlaylist}
                 />
-
-                <label htmlFor="title">{t('edit.cover')}</label>
-                <input
+                {/* Cover */}
+                <label htmlFor="color" className="block mb-4">
+                  <span className="">{t('edit.color')}</span>
+                  <select
+                    id="color"
+                    onChange={handledCoverPlaylist}
+                    className="w-full mt-1 rounded-md p-2 bg-zinc-800"
+                    value={cleanCover(editTemporallyCover[0])}
+                  >
+                    <option value="custom">Enter Custom URL</option>
+                    {coversCleaned.map((cover) => (
+                      <option key={cover} value={cover}>
+                        {cover}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                {/* <input
                   type="text"
-                  id="title"
+                  id="cover"
                   value={editTemporallyCover[0]}
                   className="p-2 rounded-md bg-zinc-800 mb-4"
                   onChange={handledCoverPlaylist}
-                />
-
+                /> */}
+                {/* Color */}
                 <label htmlFor="color" className="block mb-4">
                   <span className="">{t('edit.color')}</span>
                   <select
@@ -189,11 +206,11 @@ export default function ModalEditPlaylist ({
                     ))}
                   </select>
                 </label>
-
-                <label htmlFor="color" className="block mb-4">
+                {/* Section */}
+                <label htmlFor="section" className="block mb-4">
                   <span className="">{t('edit.section')}</span>
                   <select
-                    id="color"
+                    id="section"
                     onChange={handledSection}
                     className="w-full mt-1 rounded-md p-2 bg-zinc-800"
                     value={editTemporallySection}

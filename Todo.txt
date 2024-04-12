@@ -94,3 +94,8 @@
     - Thread mode or shortcut "T", exit with "T" or "Escape"
     - Fullscreen mode or shortcut "F", exit with "F" or "Escape"
     - Show shortcuts or shortcut "H", exit with "H" or "Escape"
+
+  [Options - Task bar]
+  - Export config
+  - Import config
+  - Update version
