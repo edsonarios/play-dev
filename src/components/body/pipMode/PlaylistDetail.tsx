@@ -151,7 +151,7 @@ export function PlaylistDetail () {
   return (
     <div className="absolute top-14 w-[95%] flex flex-col overflow-y-disable rounded-lg">
       <header className="flex flex-row gap-8 px-6 mt-12 mb-8">
-        <div className="w-40">
+        <div className="w-40 h-40">
           {currentPlaylistView?.cover.length === 1 ||
           editTemporallyCover.length === 1 ? (
             <picture className="aspect-square">

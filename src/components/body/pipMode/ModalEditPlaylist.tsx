@@ -7,7 +7,6 @@ import { type StoreType, usePlayerStore } from '@/store/playerStore'
 import { cleanCover, cleanCovers } from '@/utils/clean'
 import { updateSections } from '@/utils/sections'
 import { withViewTransition } from '@/utils/transition'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export default function ModalEditPlaylist ({
@@ -78,18 +77,10 @@ export default function ModalEditPlaylist ({
     setEditTemporallyCover([image])
   }
 
-  const [isCustomUrl, setIsCustomUrl] = useState(false)
   const coversCleaned = cleanCovers(covers)
-  const handledCoverPlaylist = (event: any) => {
-    if (event.target.value === undefined) return
-    const newCover = event.target.value as string
-    if (newCover === 'custom') {
-      console.log('custom')
-      setEditTemporallyCover([editTemporallyCover[0]])
-      setIsCustomUrl(true)
-      return
-    }
-    if (newCover.startsWith('cover') && newCover.endsWith('.jpg')) {
+  const handledCoverPlaylist = (newCover: string) => {
+    if (newCover === undefined) return
+    if (coversCleaned.includes(newCover)) {
       setEditTemporallyCover([`Covers/${newCover}`])
     } else {
       setEditTemporallyCover([newCover])
@@ -179,47 +170,23 @@ export default function ModalEditPlaylist ({
                   onChange={handledEditPlaylist}
                 />
                 {/* Cover */}
-                <label htmlFor="color" className="block mb-4">
-                  <span className='flex flex-col '>
-                  {t('edit.color')}
-                  {isCustomUrl ? (
-                    <input
-                      type="text"
-                      id="cover"
-                      value={editTemporallyCover[0]}
-                      className="p-2 mt-1 rounded-md bg-zinc-800"
-                      onChange={handledCoverPlaylist}
-                      autoFocus
-                      onBlur={() => {
-                        withViewTransition(() => {
-                          setIsCustomUrl(false)
-                        })
-                      }}
-                    />
-                  ) : (
-                  <select
-                    id="color"
-                    onChange={handledCoverPlaylist}
-                    className="w-full mt-1 rounded-md p-2 bg-zinc-800"
+                <label htmlFor="color" className="mb-4 flex flex-col">
+                  <span>{t('edit.cover')}</span>
+                  <input
+                    list="options"
                     value={cleanCover(editTemporallyCover[0])}
-                  >
-                    <option value="custom">Enter Custom URL</option>
+                    onChange={(event: any) => { handledCoverPlaylist(event.target.value) }}
+                    placeholder="Chooise a cover..."
+                    className="p-2 rounded-md bg-zinc-800"
+                  />
+                  <datalist id="options" className="bg-zinc-700">
                     {coversCleaned.map((cover) => (
                       <option key={cover} value={cover}>
                         {cover}
                       </option>
                     ))}
-                  </select>
-                  )}
-                  </span>
+                  </datalist>
                 </label>
-                {/* <input
-                  type="text"
-                  id="cover"
-                  value={editTemporallyCover[0]}
-                  className="p-2 rounded-md bg-zinc-800 mb-4"
-                  onChange={handledCoverPlaylist}
-                /> */}
                 {/* Color */}
                 <label htmlFor="color" className="block mb-4">
                   <span className="">{t('edit.color')}</span>

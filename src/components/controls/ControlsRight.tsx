@@ -93,6 +93,13 @@ export function ControlsRight () {
         setTheatreMode(false)
         setIsShowFullControls(false)
       }
+      if (
+        event.target.tagName === 'INPUT' ||
+        event.target.tagName === 'TEXTAREA' ||
+        event.target.tagName === 'SELECT'
+      ) {
+        return
+      }
       if (event.key === 'm') {
         handleClickVolumen()
       }
