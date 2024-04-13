@@ -217,6 +217,7 @@ export default function App () {
         language: state.language,
         currentMusic: state.currentMusic,
         sections: state.sections,
+        speed: state.speed,
       }
       const json = JSON.stringify(exportState, null, 2)
       const response = await window.electronAPI.exportConfig(json)
@@ -242,6 +243,7 @@ export default function App () {
       language: configParsed.language,
       currentMusic: configParsed.currentMusic,
       sections: configParsed.sections,
+      speed: configParsed.speed,
     })
   }, [])
 

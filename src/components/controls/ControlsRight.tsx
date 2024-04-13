@@ -115,6 +115,7 @@ export function ControlsRight () {
 
   return (
     <div className="flex justify-center gap-x-2 text-white">
+      {/* Show shorcuts */}
       <button
         className={`mr-2 opacity-60 hover:opacity-100 transition ${
           isShowShortcuts ? 'text-green-400' : ''
@@ -124,6 +125,8 @@ export function ControlsRight () {
       >
         <ShortCutsIcon />
       </button>
+
+      {/* Spped */}
       <div className="relative inline-block">
         <button
           className="bg-white rounded-full w-26 text-slate-900 text-sm border-white mr-4 hover:scale-110 flex flex-row items-center justify-center cursor-pointer opacity-70 hover:opacity-100 transition"
@@ -154,6 +157,7 @@ export function ControlsRight () {
         )}
       </div>
 
+      {/* Volume */}
       <button
         className="opacity-70 hover:opacity-100 transition"
         title={t('controls.mute') + ' (M)'}
@@ -174,7 +178,7 @@ export function ControlsRight () {
           setVolume(volumeValue)
         }}
       />
-
+      {/* Pip */}
       <button
         className={`ml-2 opacity-60 hover:opacity-100 transition ${
           pictureInPicture ? 'text-green-400' : ''
@@ -184,6 +188,7 @@ export function ControlsRight () {
       >
         {showIconPictureInPicture()}
       </button>
+      {/* Theather */}
       <button
         className={`ml-2 opacity-60 hover:opacity-100 transition ${
           pictureInPicture ? 'text-green-400' : ''

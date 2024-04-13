@@ -165,11 +165,10 @@ ipcMain.handle('get-playlist-from-directory', async (_event, filePath: string[])
   )
 })
 
-// Get music metadata
-ipcMain.handle('get-music-metadata', async (_event, filePath: string[]) => {
+export async function getMusicMetadata (filesPath: string[]) {
   try {
     const songsWithMetadata = await Promise.all(
-      filePath
+      filesPath
         .filter(file => allowedExtensions.has(path.extname(file).toLowerCase()))
         .map(async (file) => {
           const folderPathParsed = file.replaceAll('\\', '/')
@@ -208,6 +207,12 @@ ipcMain.handle('get-music-metadata', async (_event, filePath: string[]) => {
     console.error('Error to get metada', error)
     throw error
   }
+}
+
+// Get music metadata
+ipcMain.handle('get-music-metadata', async (_event, filePath: string[]) => {
+  if (filePath === undefined) return []
+  return await getMusicMetadata(filePath)
 })
 
 // Get image to cover in playlist
@@ -338,4 +343,27 @@ function checkForUpdates () {
   autoUpdater.on('download-progress', (progressObj) => {
     win?.webContents.send('update-download-progress', progressObj)
   })
+}
+
+const gotTheLock = app.requestSingleInstanceLock()
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', async (_event, commandLine, _workingDirectory) => {
+    if (win !== null) {
+      if (win.isMinimized()) win.restore()
+      win.focus()
+    }
+    const songsWithMetadata = await extractPathFromArguments(commandLine)
+    if (songsWithMetadata !== null) {
+      console.log('open-file1', songsWithMetadata)
+      win?.webContents.send('open-file', songsWithMetadata)
+    }
+  })
+}
+
+async function extractPathFromArguments (argv: string []) {
+  if (argv.length > 2) {
+    return await getMusicMetadata(argv.slice(2))
+  }
 }

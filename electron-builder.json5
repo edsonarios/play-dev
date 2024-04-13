@@ -30,7 +30,23 @@
         ]
       }
     ],
-    "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
+    "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
+    "fileAssociations":[
+      {
+        "ext": "mp3",
+        "name": "MP3",
+        "description": "MP3 File",
+        "icon": "dist/icon-played.png",
+        "role": "Editor"
+      },
+      {
+        "ext": "mp4",
+        "name": "MP4",
+        "description": "MP4 File",
+        "icon": "dist/icon-played.png",
+        "role": "Editor"
+      }
+    ]
   },
   "nsis": {
     "oneClick": false,

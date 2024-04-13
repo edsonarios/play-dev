@@ -3,7 +3,7 @@
 import { useRef, useEffect } from 'react'
 import Plyr, { type APITypes } from 'plyr-react'
 import { type StoreType, usePlayerStore } from '@/store/playerStore'
-import { type IPlaylist, type ISections, type ISong } from '@/lib/data'
+import { type ISections, type IPlaylist, type ISong } from '@/lib/data'
 import { withViewTransition } from '@/utils/transition'
 import { shuffleSongsWithCurrentSong } from '@/utils/random'
 import { speedOptions } from '@/utils/constants'
@@ -462,6 +462,55 @@ export default function PlayerComponent () {
       })
     })
   }
+
+  useEffect(() => {
+    const handleOpenFile = async (_event: any, songs: ISong[]) => {
+      console.log('Archivo recibido:', songs)
+      let defaultPlaylist: IPlaylist
+      let newSongsToUpdate: ISong[] = []
+      let newSongsToAdd: ISong[] = []
+      const newSections = sections.map((section) => {
+        const newPlaylists = section.playlists.map((playlist) => {
+          if (playlist.id !== '1') return playlist
+          const newSongs = songs.map((song) => {
+            return {
+              ...song,
+              albumId: playlist.id,
+              image: playlist.cover[0],
+            }
+          })
+          console.log(playlist)
+          defaultPlaylist = playlist
+          newSongsToUpdate = [...playlist.songs, ...newSongs]
+          newSongsToAdd = newSongs
+          defaultPlaylist = {
+            ...defaultPlaylist,
+            songs: newSongsToUpdate
+          }
+          return defaultPlaylist
+        })
+        return {
+          ...section,
+          playlists: newPlaylists,
+        }
+      })
+      // Set the new state
+      withViewTransition(() => {
+        setSections(newSections)
+        setCurrentMusic({
+          playlist: defaultPlaylist,
+          song: newSongsToAdd[0],
+          songs: newSongsToUpdate,
+        })
+      })
+    }
+
+    window.electronAPI.receive('open-file', handleOpenFile)
+
+    return () => {
+      window.electronAPI.removeListener('open-file', handleOpenFile)
+    }
+  }, [sections])
 
   return (
     <div className={`${!isShowFullControls ? 'hide-controls' : ''}`}>

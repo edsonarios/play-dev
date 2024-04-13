@@ -248,6 +248,7 @@ export const usePlayerStore = create<StoreType>()(
         volume: state.volume,
         profile: state.profile,
         language: state.language,
+        speed: state.speed,
       })
     }
   )
