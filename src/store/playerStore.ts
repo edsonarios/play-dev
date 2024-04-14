@@ -124,7 +124,7 @@ const storePlyr: StateCreator<StoreType> = (set) => ({
       global: true
     },
     invertTime: false,
-    controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+    controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
   },
   setPlayerOptions: (playerOptions) => { set({ playerOptions }) },
 

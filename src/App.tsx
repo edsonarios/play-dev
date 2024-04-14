@@ -15,6 +15,7 @@ import ModalUpdateStatus from './components/ModalUpdateStatus'
 import ModalDownloading from './components/ModalDownloading'
 import ModalShowShortcuts from './components/controls/ModalShortcuts'
 import { type StoreLoadingType, useLoadingStore } from './store/loadingStore'
+import ModalShow from './components/ModalShow'
 
 interface OpenDirectoryDialog {
   playlist: IPlaylist
@@ -316,6 +317,7 @@ export default function App () {
       <ModalUpdateStatus />
       <ModalDownloading />
       <ModalShowShortcuts />
+      <ModalShow />
     </div>
   )
 }

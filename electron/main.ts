@@ -1,4 +1,12 @@
-import { app, BrowserWindow, dialog, globalShortcut, ipcMain, Menu, MenuItem } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  globalShortcut,
+  ipcMain,
+  Menu,
+  MenuItem
+} from 'electron'
 import fs from 'node:fs'
 import path from 'node:path'
 import musicMetadata from 'music-metadata'
@@ -356,7 +364,6 @@ if (!gotTheLock) {
     }
     const songsWithMetadata = await extractPathFromArguments(commandLine)
     if (songsWithMetadata !== null) {
-      console.log('open-file1', songsWithMetadata)
       win?.webContents.send('open-file', songsWithMetadata)
     }
   })

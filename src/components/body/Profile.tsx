@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { SpotifyIcon, YoutubeIcon } from '@/icons/header/Profile'
 import { type ISections } from '@/lib/data'
 import { type StoreLoadingType, useLoadingStore } from '@/store/loadingStore'
+import { type IModalStore, useModalStore } from '@/store/modals.store'
 export function ProfileComponent () {
   const { t } = useTranslation()
   const {
@@ -12,7 +13,16 @@ export function ProfileComponent () {
     sections,
     setSections,
   } = usePlayerStore<StoreType>((state) => state)
-  const { setIsLoading, setMessageLoading } = useLoadingStore<StoreLoadingType>((state) => state)
+  const {
+    setIsLoading,
+    setMessageLoading
+  } = useLoadingStore<StoreLoadingType>((state) => state)
+  const {
+    setIsShow,
+    setMessageModal
+  } = useModalStore<IModalStore>(
+    (state) => state
+  )
 
   // Import PLaylist from Youtube
   const handledImportYoutube = async () => {
@@ -30,17 +40,18 @@ export function ProfileComponent () {
   }
 
   const handledImportSpotify = async () => {
-    console.log('Import Spotify')
+    setMessageModal(t('profile.spotify'))
+    setIsShow(true)
   }
 
   const menuOptions = [
     {
-      text: t('body.importYoutube'),
+      text: t('profile.importYoutube'),
       onClick: handledImportYoutube,
       icon: YoutubeIcon,
     },
     {
-      text: t('body.importSpotify'),
+      text: t('profile.importSpotify'),
       onClick: handledImportSpotify,
       icon: SpotifyIcon,
     },

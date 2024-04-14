@@ -10,6 +10,7 @@ import { ProfileComponent } from './Profile'
 import { PlusIcon } from '@/icons/aside/Library'
 import { withViewTransition } from '@/utils/transition'
 import { type ISections } from '@/lib/data'
+import { type IModalStore, useModalStore } from '@/store/modals.store'
 
 export default function Header () {
   const { t } = useTranslation()
@@ -22,6 +23,12 @@ export default function Header () {
     setSections,
     setSongsIdSelected
   } = usePlayerStore<StoreType>((state) => state)
+  const {
+    setIsShow,
+    setMessageModal
+  } = useModalStore<IModalStore>(
+    (state) => state
+  )
 
   // Set playlist view to 0
   const handledSetPlaylist = () => {
@@ -70,9 +77,16 @@ export default function Header () {
         />}
       </div>
       <div className="flex flex-row">
-        <button className="bg-white rounded-full w-36 text-slate-900 font-bold text-sm border-white mr-4 hover:scale-110 transition-transform">
+        {/* Premium button */}
+        <button className="bg-white rounded-full w-36 text-slate-900 font-bold text-sm border-white mr-4 hover:scale-110 transition-transform"
+        onClick={() => {
+          setMessageModal(t('body.premiumMessage'))
+          setIsShow(true)
+        }}
+        >
           {t('body.premium')}
         </button>
+        {/* Theme button */}
         <label className="swap swap-rotate mr-4" title={t('body.theme')}>
           <input
             type="checkbox"
@@ -83,7 +97,9 @@ export default function Header () {
           <LightIcon />
           <DarkIcon />
         </label>
+        {/* Languages */}
         <I18nComponent />
+        {/* Import Playlists */}
         <ProfileComponent />
       </div>
     </div>

@@ -16,14 +16,20 @@
         "deleteSection": "Eliminar sección",
         "editPlaylist": "Editar lista de reproducción"
     },
+    "profile": {
+        "importYoutube": "Importar Youtube",
+        "importSpotify": "Importar Spotify",
+        "youtube": "Importa tu biblioteca de Youtube",
+        "spotify": "Sobre Spotify\n\nEsta opcion aun no esta disponible, pero puedes apoyar el proyecto para que se pueda implementar en un futuro\n\nhttps://paypal.me/edsonarios\n\nhttps://github.com/edsonarios/played\n\nGracias por usar Played 💖"
+    },
     "body": {
         "premium": "Explorar Premium",
         "profile": "Perfil",
         "back": "Volver",
         "next": "Avanzar",
         "theme": "Tema Oscuro/Claro",
-        "importYoutube": "Importar Youtube",
-        "importSpotify": "Importar Spotify"
+        "soon": "Próximamente",
+        "premiumMessage": "📢 Sobre la Versión Premium\n\nPor ahora, no tenemos planes de lanzar una versión premium\n\nTodo el contenido es gratuito 🎉\n\nPero si deseas apoyar el proyecto para seguir mejorando el projecto, puedes hacerlo a través de PayPal 💳\n\nhttps://paypal.me/edsonarios\n\nGracias por usar Played 💖"
     },
     "controls": {
         "playPause": "Reproducir/Pausar",
