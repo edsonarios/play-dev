@@ -1,6 +1,6 @@
 export const formatTime = (time: number | undefined) => {
   if (time === undefined) return '0:00'
-
+  if (time === 0) return ''
   const seconds = Math.floor(time % 60)
   const minutes = Math.floor(time / 60)
 

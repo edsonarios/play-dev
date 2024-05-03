@@ -1,5 +1,5 @@
 {
-    "title": "Played (edsonarios)",
+    "title": "eDev Play",
     "loading": {
         "loading": "Cargando...",
         "exploreFolder": "Explorando carpetas...",
@@ -20,7 +20,7 @@
         "importYoutube": "Importar Youtube",
         "importSpotify": "Importar Spotify",
         "youtube": "Importa tu biblioteca de Youtube",
-        "spotify": "Sobre Spotify\n\nEsta opcion aun no esta disponible, pero puedes apoyar el proyecto para que se pueda implementar en un futuro\n\nhttps://paypal.me/edsonarios\n\nhttps://github.com/edsonarios/played\n\nGracias por usar Played 💖"
+        "spotify": "Sobre Spotify\n\nEsta opcion aun no esta disponible, pero puedes apoyar el proyecto para que se pueda implementar en un futuro\n\nhttps://paypal.me/edsonarios\n\nhttps://github.com/edsonarios/play\n\nGracias por usar eDev Play 💖"
     },
     "body": {
         "premium": "Explorar Premium",
@@ -29,7 +29,7 @@
         "next": "Avanzar",
         "theme": "Tema Oscuro/Claro",
         "soon": "Próximamente",
-        "premiumMessage": "📢 Sobre la Versión Premium\n\nPor ahora, no tenemos planes de lanzar una versión premium\n\nTodo el contenido es gratuito 🎉\n\nPero si deseas apoyar el proyecto para seguir mejorando el projecto, puedes hacerlo a través de PayPal 💳\n\nhttps://paypal.me/edsonarios\n\nGracias por usar Played 💖"
+        "premiumMessage": "📢 Sobre la Versión Premium\n\nPor ahora, no tenemos planes de lanzar una versión premium\n\nTodo el contenido es gratuito 🎉\n\nPero si deseas apoyar el proyecto para seguir mejorando el projecto, puedes hacerlo a través de PayPal 💳\n\nhttps://paypal.me/edsonarios\n\nGracias por usar eDev Play 💖"
     },
     "controls": {
         "playPause": "Reproducir/Pausar",

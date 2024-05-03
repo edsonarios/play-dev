@@ -14,10 +14,11 @@
   [*] Add custom loader when the application is loading
   [*] Sort Songs in Playlist
   [*] Click right https://floatui.com/components/context-menus
-  [*] If view playlist detail if not thare are any song, it's not possible add new song by drag and drop
   [*] Show and hiden all playlists in the section
   [*] Add new song and read async the metadata, add instantly to the playlist and update the metadata async
-  [*] In edit playlist, show all the covers with the posibility to put a new text
+  [*] Use scroll mouse to change the volume
+  [*] Keys R to change repeat song and A to activate/deactivate random
+  [*] Press library button to show in miniature the playlists
 
 "Publish"
   - Packaging
@@ -33,7 +34,7 @@
   - Verify if the update is working
 
 "Features to show"
-  [Aside section]
+  [Aside Menu]
   - Reproduce a song by drag and drop and show in the playlist
   - Add multiple songs by drag and drop with the playlist opened
   - Open Folder with button "Open Folder" or shortcut "O"
