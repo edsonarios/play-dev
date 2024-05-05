@@ -50,7 +50,7 @@ function createWindow () {
   }
 
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'playIcon.png'),
+    icon: path.join(process.env.VITE_PUBLIC, 'iconPlay.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,

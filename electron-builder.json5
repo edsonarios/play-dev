@@ -14,14 +14,14 @@
     "dist-electron"
   ],
   "mac": {
-    "icon": "dist/playIcon.icns",
+    "icon": "dist/iconPlay.icns",
     "target": [
       "dmg"
     ],
-    "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
+    "artifactName": "${productName}-Mac-${version}-universal.${ext}"
   },
   "win": {
-    "icon": "dist/playIcon.png",
+    "icon": "dist/iconPlay.png",
     "target": [
       {
         "target": "nsis",
@@ -30,20 +30,20 @@
         ]
       }
     ],
-    "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
-    "fileAssociations":[
+    "artifactName": "${productName}-Windows-${version}.${ext}",
+    "fileAssociations": [
       {
         "ext": "mp3",
         "name": "MP3",
         "description": "MP3 File",
-        "icon": "dist/playIcon.png",
+        "icon": "dist/iconPlay.png",
         "role": "Editor"
       },
       {
         "ext": "mp4",
         "name": "MP4",
         "description": "MP4 File",
-        "icon": "dist/playIcon.png",
+        "icon": "dist/iconPlay.png",
         "role": "Editor"
       }
     ]
@@ -55,8 +55,11 @@
     "deleteAppDataOnUninstall": false
   },
   "linux": {
+    "icon": "dist/iconPlay.png",
     "target": [
-      "AppImage"
+      "AppImage",
+      "deb",
+      "snap"
     ],
     "artifactName": "${productName}-Linux-${version}.${ext}"
   }
