@@ -315,15 +315,22 @@ ipcMain.handle('import-youtube', async () => {
 
 // Check for updates
 function checkForUpdates () {
-  void autoUpdater.checkForUpdates()
+  // Remove previous events
+  autoUpdater.removeAllListeners('update-available')
+  autoUpdater.removeAllListeners('update-not-available')
+  autoUpdater.removeAllListeners('update-downloaded')
+  autoUpdater.removeAllListeners('download-progress')
 
   autoUpdater.on('update-available', () => {
     void dialog.showMessageBox({
       type: 'info',
       title: 'Update Available',
       message: 'A new version is available. Do you want to update now?',
-      buttons: ['Update', 'Later']
+      buttons: ['Update', 'Later'],
+      noLink: true,
+      cancelId: 1
     }).then(result => {
+      win?.webContents.send('debug-electron', result)
       if (result.response === 0) {
         void autoUpdater.downloadUpdate()
       }
@@ -351,6 +358,8 @@ function checkForUpdates () {
   autoUpdater.on('download-progress', (progressObj) => {
     win?.webContents.send('update-download-progress', progressObj)
   })
+
+  void autoUpdater.checkForUpdates()
 }
 
 const gotTheLock = app.requestSingleInstanceLock()

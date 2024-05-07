@@ -268,6 +268,21 @@ export default function App () {
     }
   }, [])
 
+  // Listen debug from electron
+  useEffect(() => {
+    const handleExport = async (_event: any, action: string) => {
+      console.log('debug-electron')
+      console.log(action)
+      console.log('-----------------------------------------')
+    }
+
+    window.electronAPI.receive('debug-electron', handleExport)
+
+    return () => {
+      window.electronAPI.removeListener('debug-electron', handleExport)
+    }
+  }, [])
+
   return (
     <div
       id="app"
