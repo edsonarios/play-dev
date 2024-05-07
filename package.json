@@ -1,8 +1,11 @@
 {
   "name": "play",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "A music player for your local files.",
-  "author": "edsonrios9@gmail.com",
+  "author": {
+    "name": "Edson Rios",
+    "email": "edsonrios9@gmail.com"
+  },
   "license": "MIT",
   "repository": "https://github.com/edsonarios/play",
   "publish:": {

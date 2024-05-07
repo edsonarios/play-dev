@@ -18,7 +18,19 @@
     "target": [
       "dmg"
     ],
-    "artifactName": "${productName}-Mac-${version}-universal.${ext}"
+    "artifactName": "${productName}-Mac-${version}-universal.${ext}",
+    "fileAssociations": [
+      {
+        "ext": "mp3",
+        "name": "MP3",
+        "description": "MP3 File"
+      },
+      {
+        "ext": "mp4",
+        "name": "MP4",
+        "description": "MP4 File"
+      }
+    ]
   },
   "win": {
     "icon": "dist/iconPlay.png",
@@ -35,16 +47,12 @@
       {
         "ext": "mp3",
         "name": "MP3",
-        "description": "MP3 File",
-        "icon": "dist/iconPlay.png",
-        "role": "Editor"
+        "description": "MP3 File"
       },
       {
         "ext": "mp4",
         "name": "MP4",
-        "description": "MP4 File",
-        "icon": "dist/iconPlay.png",
-        "role": "Editor"
+        "description": "MP4 File"
       }
     ]
   },
@@ -61,6 +69,18 @@
       "deb",
       "snap"
     ],
-    "artifactName": "${productName}-Linux-${version}.${ext}"
+    "artifactName": "${productName}-Linux-${version}.${ext}",
+    "fileAssociations": [
+      {
+        "ext": "mp3",
+        "name": "MP3",
+        "description": "MP3 File"
+      },
+      {
+        "ext": "mp4",
+        "name": "MP4",
+        "description": "MP4 File"
+      }
+    ]
   }
 }
