@@ -330,7 +330,6 @@ function checkForUpdates () {
       noLink: true,
       cancelId: 1
     }).then(result => {
-      win?.webContents.send('debug-electron', result)
       if (result.response === 0) {
         void autoUpdater.downloadUpdate()
       }
